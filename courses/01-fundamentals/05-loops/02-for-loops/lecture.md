@@ -5,21 +5,16 @@ prerequisites: [while-loops]
 
 # For Loops
 
-## Objectives
+> **Objectives**
+> - Write `for` loops and trace their order of execution
+> - Count up, count down, and count by steps
+> - Nest loops to work with rows and columns
+> - Use `break` and `continue`
+> - Choose between `for` and `while`
+>
+> **Prerequisites:** [While Loops](../01-while-loops/lecture.md)
 
-- Write `for` loops and trace their order of execution
-- Count up, count down, and count by steps
-- Nest loops to work with rows and columns
-- Use `break` and `continue`
-- Choose between `for` and `while`
-
-## Prerequisites
-
-- [While Loops](../01-while-loops/lecture.md)
-
-## Content
-
-### Same Loop, One Line
+## Same Loop, One Line
 
 Every counting while loop has the same three parts, scattered across three different places:
 
@@ -47,7 +42,7 @@ The loop block is defined by curly brackets `{ }`.
 
 ![The parts of a for loop](assets/slide-for-loop.png)
 
-### Order of Execution
+## Order of Execution
 
 1. The initialization runs **once**
 2. The condition is checked. If `false`, stop
@@ -63,7 +58,7 @@ for ([1]; [2]; [4]) {
 
 A variable declared in the header **only exists inside the loop**. After the loop ends, `k` is gone.
 
-### Counting Different Ways
+## Counting Different Ways
 
 ```java
 for (int k = 5; k >= 1; k--) {
@@ -77,14 +72,14 @@ for (int k = 0; k <= 20; k += 5) {
 
 Watch out for **off-by-one** errors: `n <= 10` runs ten times starting at 1, `n < 10` runs nine.
 
-### Which Loop Should I Use?
+## Which Loop Should I Use?
 
 - **for** → I know how many times ("print 10 rows", "1 to 100")
 - **while** → I don't ("until the user types 0", "until they guess it")
 
 Any loop can be written either way. Pick the one that makes the code readable.
 
-### Nested For Loops
+## Nested For Loops
 
 A loop inside a loop. The **outer** loop picks a **row**, and the **inner** loop fills that row with **columns**:
 
@@ -111,7 +106,7 @@ for (int row = 1; row <= 9; row++) {
 
 Be careful: nesting multiplies. Three nested loops of 10,000 each is a **trillion** iterations.
 
-### break and continue
+## break and continue
 
 - `break` - get out of the loop entirely, right now
 - `continue` - skip the **rest** of this pass and go to the next one

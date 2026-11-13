@@ -5,21 +5,17 @@ prerequisites: [basics-of-computers, java-workspace]
 
 # How Java Works
 
-## Objectives
+> **Objectives**
+> - Know what Java is and where it's used
+> - Explain Java's four steps: source file, compiler, class file, runtime
+> - Identify the parts of a Java program: source file, class, method
+> - Know why every program needs a `main` method
+>
+> **Prerequisites**
+> - [Basics of Computers](../../01-getting-started/05-basics-of-computers/lecture.md): files and folders
+> - [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md): opening VS Code and a terminal
 
-- Know what Java is and where it's used
-- Explain Java's four steps: source file, compiler, class file, runtime
-- Identify the parts of a Java program: source file, class, method
-- Know why every program needs a `main` method
-
-## Prerequisites
-
-- [Basics of Computers](../../01-getting-started/05-basics-of-computers/lecture.md): files and folders
-- [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md): opening VS Code and a terminal
-
-## Content
-
-### What is Java?
+## What is Java?
 
 - Java is a programming language created by Sun Microsystems (now Oracle) in 1995
 - It's a popular **high-level** language, meaning it's written for people to read, not just machines
@@ -29,7 +25,7 @@ prerequisites: [basics-of-computers, java-workspace]
 
 Java is also the language we program our robot in!
 
-### Real World Applications
+## Real World Applications
 
 **Android OS** is a mobile operating system that heavily relies on Java for application development.
 
@@ -37,7 +33,7 @@ Java is also the language we program our robot in!
 - The popularity of Java resulted in millions of applications
 - This shows the power of Java in **cross-platform** development
 
-### How Does Java Work?
+## How Does Java Work?
 
 Java has 4 main steps:
 
@@ -50,7 +46,7 @@ Java has 4 main steps:
 
 ![Source File, Compiler, Class File, Run Time](assets/slide-java-steps.png)
 
-### Seeing It in Your Workspace
+## Seeing It in Your Workspace
 
 You can watch every step happen in your terminal:
 
@@ -62,7 +58,7 @@ java HelloWorld          # Runtime: the JVM runs the class file
 
 When you click **Run** in VS Code, it does these same two steps for you: it compiles your source file into a class file, then runs the class file.
 
-### Code Structure
+## Code Structure
 
 - **Source File**
   - Stores one class
@@ -96,7 +92,7 @@ public class Main {
 - `{` and `}` - curly braces open and close the class and the method.
 - Every statement must end with a **semicolon** `;`
 
-### The main() Method
+## The main() Method
 
 - Everything goes in a class inside a source file
 - Running a program tells the JVM on your computer to automatically **execute the main() method**

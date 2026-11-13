@@ -6,13 +6,11 @@ lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/1-4
 
 # Workspace Access
 
-## Content
-
-### Overview
+## Overview
 
 Your Charging Courses workspace provides access to a programming editor and simulator, enabling you to program in Java and test your code. To get started, you first need to create an API key and apply it to your new workspace.
 
-### Create a Workspace
+## Create a Workspace
 
 To get started, first create a Java and Python Developer workspace here:
 
@@ -28,7 +26,7 @@ If you already have a workspace, you can copy its name in the top right corner
 
 ![coder-old.png](assets/coder-old.png)
 
-### Activate your Account
+## Activate your Account
 
 Log into your [account settings](https://auth.chargingcourses.com/if/user/#/settings) to access your API keys. You also can access your account settings from the dashboard of Charging Courses Auth in the top right.  If you have not activated your accounts API key access, you'll be able to do so in the settings page.
 
@@ -36,7 +34,7 @@ Log into your [account settings](https://auth.chargingcourses.com/if/user/#/sett
 
 To activate your account, you will need to accept the terms and guidelines.
 
-#### Generate your First API Key
+### Generate your First API Key
 
 After activating your account, you can now manage your API keys. You'll be able to see the amount of keys you've used and the workspaces they're currently linked to.  To generate your first API key, click "Generate API Key" to get started.
 
@@ -52,13 +50,13 @@ Once your API key is generated, copy it and store it securely. Ideally, paste it
 
 ![gen-get.png](assets/gen-get.png)
 
-### Use your API Key
+## Use your API Key
 
 Now you can paste your API key in the settings or when you create a new workspace. You should delete anything currently in the Workspace API Key input and paste in your new API key. Your workspace can now be started, updated, and deleted.
 
 ![coder-settings.png](assets/coder-settings.png)
 
-### Deleting an API Key
+## Deleting an API Key
 
 At the end of the course, if you no longer want your workspace, you can delete it and delete the API key.
 

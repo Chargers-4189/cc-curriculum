@@ -112,7 +112,7 @@ class Converter:
     def block(self, b: dict) -> str | None:
         t, d = b.get("type"), b.get("data", {})
         if t == "header":
-            level = min(int(d.get("level", 2)) + 2, 6)  # nested under "## Content"
+            level = min(int(d.get("level", 2)) + 1, 6)  # the lesson title is the only H1
             return f"{'#' * level} {inline(d.get('text', ''))}"
         if t == "paragraph":
             return inline(d.get("text", "")) or None
@@ -174,8 +174,6 @@ lms_source: {source}
 ---
 
 # {title}
-
-## Content
 
 {body}
 """

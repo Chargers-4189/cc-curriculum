@@ -5,22 +5,17 @@ prerequisites: [arithmetic-operators]
 
 # Relational and Logical Operators
 
-## Objectives
+> **Objectives**
+> - Compare values with relational operators and get a `boolean` result
+> - Avoid the `=` vs `==` mistake
+> - Compare decimals and Strings correctly
+> - Combine conditions with `&&`, `||`, and `!`
+> - Use short-circuit evaluation to prevent errors
+> - Know the order Java evaluates operators in
+>
+> **Prerequisites:** [Arithmetic Operators](../01-arithmetic-operators/lecture.md)
 
-- Compare values with relational operators and get a `boolean` result
-- Avoid the `=` vs `==` mistake
-- Compare decimals and Strings correctly
-- Combine conditions with `&&`, `||`, and `!`
-- Use short-circuit evaluation to prevent errors
-- Know the order Java evaluates operators in
-
-## Prerequisites
-
-- [Arithmetic Operators](../01-arithmetic-operators/lecture.md)
-
-## Content
-
-### Relational Operators
+## Relational Operators
 
 Relational operators **compare** two values and **return a boolean**: `true` or `false`.
 
@@ -42,14 +37,14 @@ System.out.println("a == b: " + (a == b)); // a == b: false
 
 Notice the parentheses around `(a < b)`. Without them, Java would try to join `"a < b: " + a` as text first.
 
-#### Be Cautious: `=` vs `==`
+### Be Cautious: `=` vs `==`
 
 - `=` is for **assigning** values
 - `==` is for **comparing** values
 
 `x = 5` puts 5 into `x`. `x == 5` asks "is `x` equal to 5?"
 
-### Comparing Different Types
+## Comparing Different Types
 
 When you compare an `int` and a `double`, the `int` is converted to a `double` first:
 
@@ -57,7 +52,7 @@ When you compare an `int` and a `double`, the `int` is converted to a `double` f
 System.out.println(10 == 10.0); // true - 10 becomes 10.0
 ```
 
-### Comparing Decimals
+## Comparing Decimals
 
 Computers can't store most decimals exactly. Watch this:
 
@@ -77,7 +72,7 @@ System.out.println(Math.abs(c - d) < THRESHOLD); // true
 
 `Math.abs` gives the absolute value, so it works no matter which number is bigger.
 
-### Comparing Strings
+## Comparing Strings
 
 To check if two Strings have the same text, use **`.equals()`**, not `==`:
 
@@ -88,7 +83,7 @@ System.out.println(answer.equals("yes")); // true - the one you want
 
 `==` on Strings checks something different (whether they're the exact same object in memory), so it can say `false` even when the text matches. We'll learn why in the Object Oriented course. For now: **Strings use `.equals()`**.
 
-### Logical Operators
+## Logical Operators
 
 Logical operators **combine booleans**. Their input is booleans and their output is a boolean.
 
@@ -110,7 +105,7 @@ x >= 0 && x < 10    // is x between 0 and 9?
 x > 0 || x == -2    // is x positive, or exactly -2?
 ```
 
-### Short-Circuit Evaluation
+## Short-Circuit Evaluation
 
 `&&` and `||` are lazy: they **skip the right side** if the left side already decides the answer.
 
@@ -125,7 +120,7 @@ System.out.println(u < r || 0 == 1 / 0); // true - the divide by zero never runs
 System.out.println(u > r && 0 == 1 / 0); // false - same here
 ```
 
-### Operator Precedence
+## Operator Precedence
 
 Operators have **precedence**, which determines the order of evaluation. It's similar to PEMDAS, from first to last:
 

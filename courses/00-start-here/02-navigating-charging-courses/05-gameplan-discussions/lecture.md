@@ -5,16 +5,14 @@ lms_source: https://chargingcourses.com/lms/courses/start-here-navigating-chargi
 
 # Gameplan (Discussions)
 
-## Content
-
-### Introduction
+## Introduction
 
 Gameplan (or also called discussions) is a place where all students can discuss about programming, problems/issues, and more. This is also where we will announce important information for those without access to Discord.
 
 - **Community** is a place where students can discuss with other classmates.
 - Each community will **channels** that act exactly like discord.
 
-### Navigating Gameplan
+## Navigating Gameplan
 
 You can access Gameplan from Charging Courses on the left sidebar under the more category. Click on Discussions and you will be forwarded to the Gameplan dashboard.
 

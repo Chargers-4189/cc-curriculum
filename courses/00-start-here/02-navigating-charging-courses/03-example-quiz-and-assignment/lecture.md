@@ -5,6 +5,4 @@ lms_source: https://chargingcourses.com/lms/courses/start-here-navigating-chargi
 
 # Example Quiz & Assignment
 
-## Content
-
 <!-- This lesson's content requires an LMS login and was not imported. -->

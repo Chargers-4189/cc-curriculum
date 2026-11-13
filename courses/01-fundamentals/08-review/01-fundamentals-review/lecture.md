@@ -5,19 +5,14 @@ prerequisites: [writing-methods]
 
 # Review
 
-## Objectives
+> **Objectives**
+> - Review everything in Fundamentals: variables, operators, conditionals, loops, arrays, and methods
+> - Recognize the most common traps in each topic
+> - Combine the topics in one program
+>
+> **Prerequisites:** Every lesson in this course! This is where it all comes together.
 
-- Review everything in Fundamentals: variables, operators, conditionals, loops, arrays, and methods
-- Recognize the most common traps in each topic
-- Combine the topics in one program
-
-## Prerequisites
-
-- Every lesson in this course! This is where it all comes together.
-
-## Content
-
-### 1. Variables and Types
+## 1. Variables and Types
 
 ```java
 String firstName;        // declaration - the box exists, nothing in it
@@ -33,7 +28,7 @@ int ratioInt = (int) ratio; // 0 - casting cuts off the decimal
 
 The type is a promise about what can go in the box, and Java holds you to it.
 
-### 2. Arithmetic and the Operator Traps
+## 2. Arithmetic and the Operator Traps
 
 ```java
 System.out.println(17 / 5);    // 3   int / int stays int
@@ -50,7 +45,7 @@ System.out.println(1 + 2 + "3");  // 33
 System.out.println("1" + 2 + 3);  // 123
 ```
 
-### 3. Booleans and Conditions
+## 3. Booleans and Conditions
 
 ```java
 int score = 87;
@@ -77,7 +72,7 @@ Traps to remember:
 - No braces means only the **next line** belongs to the if
 - A switch without `break` falls through into the next case
 
-### 4. Loops
+## 4. Loops
 
 Every loop needs a condition that's true to start with, and something in the body that eventually makes it false.
 
@@ -99,7 +94,7 @@ for (int n = 1; n < 10; n++) {  // the same loop, in one line
 - `break` leaves the loop, `continue` skips to the next pass
 - Off by one: `n <= 10` runs ten times, `n < 10` runs nine
 
-### 5. Arrays
+## 5. Arrays
 
 ```java
 int[] scores = {90, 85, 72, 100, 64};
@@ -110,7 +105,7 @@ for (int j = 0; j < scores.length; j++) {
 
 Indexes start at 0, and the last one is `length - 1`.
 
-### 6. Methods
+## 6. Methods
 
 ```java
 public static int max(int num1, int num2) {
@@ -126,7 +121,7 @@ public static int max(int num1, int num2) {
 - Java is **pass-by-value**: methods get copies, so `swap` can't swap the caller's variables
 - A variable lives until the closing brace of its block
 
-### 7. All of It in One Program
+## 7. All of It in One Program
 
 ```java
 public static boolean isPrime(int number) {

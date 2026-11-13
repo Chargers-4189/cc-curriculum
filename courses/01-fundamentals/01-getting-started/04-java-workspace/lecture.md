@@ -6,20 +6,15 @@ lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/1-5
 
 # Java Workspace
 
-## Objectives
+> **Objectives**
+> - Start your workspace and open VS Code in the browser
+> - Find your way around VS Code: Explorer, Editor, Terminal
+> - Create, rename, and delete files and folders
+> - Open a folder and use the terminal to run a Java program
+>
+> **Prerequisites:** A Charging Courses workspace with your API key added (see [Workspace Access](../03-workspace-access/lecture.md))
 
-- Start your workspace and open VS Code in the browser
-- Find your way around VS Code: Explorer, Editor, Terminal
-- Create, rename, and delete files and folders
-- Open a folder and use the terminal to run a Java program
-
-## Prerequisites
-
-- A Charging Courses workspace with your API key added (see [Workspace Access](../03-workspace-access/lecture.md))
-
-## Content
-
-### Overview
+## Overview
 
 Your workspace is essentially another machine that you can use to program. We provide this workspace so that you can program on a Chromebook, which usually doesn't allow programming editors. This also helps you get accustomed to the software that we use regularly on the robot.
 
@@ -27,7 +22,7 @@ Your workspace runs on **Coder**, and you'll write code in **VS Code**, the same
 
 ![coder-workspace.png](assets/coder-workspace.png)
 
-### Starting Your Workspace
+## Starting Your Workspace
 
 1. Go to [Charging Courses Labs](https://labs.chargingcourses.com/workspaces) and click on your workspace.
 2. If your workspace is stopped, click **Start**. It takes a minute or two to boot up.
@@ -37,7 +32,7 @@ Your workspace runs on **Coder**, and you'll write code in **VS Code**, the same
 
 Your workspace may stop on its own after a while of not being used. That's okay! Your files are saved, just start it again.
 
-### Opening VS Code
+## Opening VS Code
 
 On your workspace page, click the **code-server** (VS Code) button. VS Code will open in a new browser tab.
 
@@ -45,7 +40,7 @@ On your workspace page, click the **code-server** (VS Code) button. VS Code will
 
 There is also a **Terminal** button. It opens a terminal by itself without the editor, which is handy if you only need to type a quick command.
 
-### A Tour of VS Code
+## A Tour of VS Code
 
 <!-- SCREENSHOT: VS Code in the browser with each area labeled -->
 
@@ -56,7 +51,7 @@ There is also a **Terminal** button. It opens a terminal by itself without the e
 - **Status Bar** (very bottom): small details like the line you're on and the language of the file.
 - **Menu** (☰ in the top left): in the browser, the File, Edit, View, and Terminal menus live behind this icon.
 
-### Opening a Folder
+## Opening a Folder
 
 VS Code works with one folder at a time. Everything you see in the Explorer is inside that folder.
 
@@ -66,7 +61,7 @@ VS Code works with one folder at a time. Everything you see in the Explorer is i
 
 <!-- SCREENSHOT: Open Folder dialog -->
 
-### Creating Files and Folders
+## Creating Files and Folders
 
 Hover over the Explorer and you'll see a row of icons at the top:
 
@@ -80,7 +75,7 @@ The new file or folder is created inside whichever folder you have selected. You
 
 Name your files with their format at the end. For Java, that's `.java`, for example `HelloWorld.java`. We'll see why the name matters when we write our first program.
 
-#### Renaming and Deleting
+### Renaming and Deleting
 
 Right-click a file or folder in the Explorer:
 
@@ -89,7 +84,7 @@ Right-click a file or folder in the Explorer:
 
 You can also drag and drop files to move them into a different folder.
 
-### Saving Your Work
+## Saving Your Work
 
 - Press **Ctrl + S** to save.
 - A **dot** on a file's tab means it has unsaved changes.
@@ -97,7 +92,7 @@ You can also drag and drop files to move them into a different folder.
 
 Your program runs whatever was **saved**, not what's on your screen. If your changes aren't showing up when you run, save first!
 
-### The Terminal
+## The Terminal
 
 The terminal lets you type commands to the computer instead of clicking.
 
@@ -119,7 +114,7 @@ A few commands to start with:
 
 Press **Tab** while typing a file or folder name and the terminal will finish it for you.
 
-### Running Java
+## Running Java
 
 Once you've written a program (we'll write our first one soon), run it from the terminal in the same folder as the file:
 
@@ -134,7 +129,7 @@ If your workspace has the Java extension, you'll also see a **Run** button (▷)
 
 <!-- SCREENSHOT: Run button / Run link above main -->
 
-### Getting Course Files
+## Getting Course Files
 
 Lesson files and exercises can be downloaded right into your workspace with `ccm`:
 
@@ -150,7 +145,7 @@ If `ccm` isn't installed yet:
 curl -fsSL https://raw.githubusercontent.com/Chargers-4189/cc-curriculum/main/install.sh | bash
 ```
 
-#### Keep Your Downloads Organized
+### Keep Your Downloads Organized
 
 `ccm get` puts files in whatever folder your terminal is in, so it's easy to end up with a messy home folder. Make a few folders first and download into them. For example, one for the course, one per week, and one for homework:
 
@@ -178,7 +173,7 @@ ccm get day-of-week -o fundamentals/hwk
 
 Any layout works, as long as you can find your work later. `ccm test` finds your exercise wherever you put it.
 
-### Chromebook Tips
+## Chromebook Tips
 
 - Some shortcuts belong to the browser, not VS Code. **Ctrl + W** closes your browser tab instead of a file, so close files with the **x** on their tab.
 - If a shortcut doesn't work, use the **Command Palette** instead: **Ctrl + Shift + P**, then type what you want to do (for example "new terminal").

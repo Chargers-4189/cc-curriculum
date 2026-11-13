@@ -5,21 +5,16 @@ prerequisites: [hello-world]
 
 # Variables and Data Types
 
-## Objectives
+> **Objectives**
+> - Declare and initialize variables
+> - Choose the right data type: `int`, `double`, `char`, `boolean`, `String`
+> - Convert between types with type casting
+> - Name variables, methods, and classes using Java conventions
+> - Read input from the user with `Scanner`
+>
+> **Prerequisites:** [Hello World](../02-hello-world/lecture.md): writing and running a program
 
-- Declare and initialize variables
-- Choose the right data type: `int`, `double`, `char`, `boolean`, `String`
-- Convert between types with type casting
-- Name variables, methods, and classes using Java conventions
-- Read input from the user with `Scanner`
-
-## Prerequisites
-
-- [Hello World](../02-hello-world/lecture.md): writing and running a program
-
-## Content
-
-### Variables
+## Variables
 
 Variables are just **containers**! They hold values.
 
@@ -34,7 +29,7 @@ firstName = "Steve";
 
 Variables are used in nearly every program to **store and manipulate data**: calculations, storing information, controlling program flow, and more.
 
-### Declaration & Initialization
+## Declaration & Initialization
 
 **Declaration** specifies the data type and name. The variable exists, but holds nothing yet.
 
@@ -61,7 +56,7 @@ boolean isJavaFun = false;
 
 Once a variable exists, you can **assign it a new value** any time, but its type stays the same. `age` will always hold an `int`.
 
-### Data Types
+## Data Types
 
 **Primitive data types** are the simplest data types:
 
@@ -81,7 +76,7 @@ There's one more type you'll use constantly: **`String`** holds text, in double 
 
 **Note:** Consider size and memory when choosing data types. `int` is more efficient than `double` due to decimal precision, so use `int` when you only need whole numbers.
 
-### Type Casting
+## Type Casting
 
 Converting a value to another data type is called **type casting**. There are two types:
 
@@ -103,7 +98,7 @@ Converting a value to another data type is called **type casting**. There are tw
   System.out.println(myInt); // 12 - the decimal is cut off, not rounded
   ```
 
-### Naming Conventions
+## Naming Conventions
 
 Use names that make your code readable and help avoid errors.
 
@@ -132,7 +127,7 @@ Use names that make your code readable and help avoid errors.
  */
 ```
 
-### Getting Input from the User
+## Getting Input from the User
 
 So far our programs only output. To take **input**, Java gives us `Scanner`. You don't need to understand everything on these lines yet, just the pattern:
 
@@ -160,7 +155,7 @@ public class Greeting {
 
 The `+` joins text and values together. We'll look at that more in Arithmetic Operators.
 
-### Things to Think About
+## Things to Think About
 
 - What primitive data type would you use for the date of the month?
 - What exactly could `double` be used for? What about `char`?

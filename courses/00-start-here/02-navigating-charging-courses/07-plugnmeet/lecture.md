@@ -5,13 +5,11 @@ lms_source: https://chargingcourses.com/lms/courses/start-here-navigating-chargi
 
 # PlugNMeet
 
-## Content
-
-### Introduction
+## Introduction
 
 PlugNMeet is just like any online meeting program like Zoom or Google Meet. However, it is packed with more features and does not require an account.
 
-#### First Steps: Joining a Meeting
+### First Steps: Joining a Meeting
 
 When you first enter a PlugNmeet room, you will be prompted to choose how you want to join the audio session. This is your most important first step.
 
@@ -22,7 +20,7 @@ When you first enter a PlugNmeet room, you will be prompted to choose how you wa
 
 **Important:** This choice is not permanent. If you decide to **Continue as a listener**, you can easily activate your microphone and camera later from the main control bar (if the moderator allows it).
 
-#### Section 1: The Attendee Control Bar
+### Section 1: The Attendee Control Bar
 
 These are the basic controls you will use during the meeting, located at the bottom of the screen.
 
@@ -32,28 +30,28 @@ These are the basic controls you will use during the meeting, located at the bot
 
 ![attendee-control-bar.webp](https://www.plugnmeet.org/assets/images/attendee-control-bar-2b57b00779ae316414e01aa687f02afc.webp)
 
-#### Section 2: Participating in the Meeting
+### Section 2: Participating in the Meeting
 
 These features allow you to interact with the moderator and other participants.
 
-##### Using the Chat
+#### Using the Chat
 
 - **Public Chat:** Click the **Chat** icon to open the main chat panel where you can send messages to everyone.
 - **Private Chat:** To send a private message, open the **Participants** list, click the three-dot menu next to a user's name, and select **Send private message**.
 
 ![attendee-Chat.webp](https://www.plugnmeet.org/assets/images/attendee-Chat-338bb5cb809bf925812de4972cf4f97f.webp)
 
-##### Viewing the Participant List
+#### Viewing the Participant List
 
 - Click the **Participants** icon to see a list of everyone currently in the meeting.
 
-##### Responding to Polls
+#### Responding to Polls
 
 - If the moderator starts a poll, you will see a notification. You can open the **Polls** tab in the participant panel to cast your vote.
 
 ![attendee-polls.webp](https://www.plugnmeet.org/assets/images/attendee-polls-a268560551bd15cd7d363e330df49fb7.webp)
 
-##### Transcription & Translation
+#### Transcription & Translation
 
 - **Start Transcription & Translation:** Click the **Transcription & Translation** icon in the main footer control bar to start the service (if the moderator has enabled it for you).
 
@@ -65,13 +63,13 @@ These features allow you to interact with the moderator and other participants.
 
 **Important:** You must **Enable Microphone** to use **Transcription & Translation**.
 
-##### Using AI Assistant
+#### Using AI Assistant
 
 - **Enable/Disable:** Click the **AI Assistant** icon in the main footer control bar to start the AI Assistant (if the moderator has enabled it for you).
 
 ![attendee-ai-tools.webp](https://www.plugnmeet.org/assets/images/attendee-ai-tools-6d545867b2c506aa1a79fde292050d6c.webp)
 
-#### Section 3: Viewing Content
+### Section 3: Viewing Content
 
 The moderator can share various types of content during the meeting.
 
@@ -79,7 +77,7 @@ The moderator can share various types of content during the meeting.
 - **Interacting with the Whiteboard:** If the moderator activates the whiteboard, you will be able to see what they are drawing. They may also give you permission to draw on the whiteboard yourself.
 - **Viewing a Shared Video:** If the moderator shares a video, it will appear on your screen with playback controls.
 
-#### Section 4: Breakout Rooms
+### Section 4: Breakout Rooms
 
 The moderator can split the main session into smaller Breakout Rooms for group activities.
 
@@ -88,7 +86,7 @@ The moderator can split the main session into smaller Breakout Rooms for group a
 
 ![attendee-breakout-room.webp](https://www.plugnmeet.org/assets/images/attendee-breakout-room-1164a1ae4c7d149a19dcfbaf7f6512fb.webp)
 
-#### Section 5: Leave Meeting
+### Section 5: Leave Meeting
 
 - **Leave Meeting:** If you select **Leave Meeting** from the top-right menu or the bottom-right button, you will leave the meeting, but the session will remain active for other participants.
 

@@ -5,8 +5,6 @@ lms_source: https://chargingcourses.com/lms/courses/start-here-navigating-chargi
 
 # Welcome!
 
-## Content
-
 ![image](assets/Charging_Courses-Horizont_Inv_Background.png)
 
 Hello! My name is Caleb Vang, I intended computer science major at UGA. I will be teaching this main course over the 15 weeks of this semester to prepare you for the FRC season.

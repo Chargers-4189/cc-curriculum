@@ -5,9 +5,7 @@ lms_source: https://chargingcourses.com/lms/courses/start-here-navigating-chargi
 
 # Courses
 
-## Content
-
-### Introduction
+## Introduction
 
 Charging Courses LMS organizes its curriculum by Courses → Chapters → Lessons.
 
@@ -16,7 +14,7 @@ Charging Courses LMS organizes its curriculum by Courses → Chapters → Lesson
 - A **Chapter** organizes lessons into a more structured flow.
 - A **Lesson** contains actual curriculum content and is where you'll be reading and doing assignments.
 
-### Navigating The Interface
+## Navigating The Interface
 
 Once logged in, you will start on the courses page which shows all available courses to you.
 

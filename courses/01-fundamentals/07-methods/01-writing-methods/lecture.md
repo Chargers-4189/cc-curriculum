@@ -5,22 +5,18 @@ prerequisites: [for-loops]
 
 # Methods
 
-## Objectives
+> **Objectives**
+> - Explain why methods exist
+> - Read and write a method header: modifiers, return type, name, parameters
+> - Choose between `void` and value-returning methods
+> - Explain pass-by-value and why `swap` doesn't work
+> - Know where a variable can be used (scope)
+>
+> **Prerequisites**
+> - [For Loops](../../05-loops/02-for-loops/lecture.md)
+> - [If Statements](../../04-conditionals/01-if-statements/lecture.md)
 
-- Explain why methods exist
-- Read and write a method header: modifiers, return type, name, parameters
-- Choose between `void` and value-returning methods
-- Explain pass-by-value and why `swap` doesn't work
-- Know where a variable can be used (scope)
-
-## Prerequisites
-
-- [For Loops](../../05-loops/02-for-loops/lecture.md)
-- [If Statements](../../04-conditionals/01-if-statements/lecture.md)
-
-## Content
-
-### Why Methods?
+## Why Methods?
 
 Here's code that sums two ranges of numbers:
 
@@ -60,7 +56,7 @@ System.out.println(sumOfRange(55, 101)); // 3666
 
 You've been calling methods since day one: `System.out.println`, `Math.random`, `Math.abs`. Now you get to write your own.
 
-### Anatomy of a Method
+## Anatomy of a Method
 
 ```
 public static int max(int num1, int num2)
@@ -99,7 +95,7 @@ public static int max(int num1, int num2) {
 
 Calling a method **jumps** to it and runs its body. `return` **ends the method immediately** and jumps back with the value in hand.
 
-### void vs Value-Returning
+## void vs Value-Returning
 
 ```java
 public static void printGrade(double grade) {
@@ -120,7 +116,7 @@ If a method promises to return an `int`, **every path** out of it must return an
 
 A method that answers a yes/no question returns a `boolean` and is named like a question: `isPrime`, `isValid`, `isLeapYear`. Then `if (isLeapYear(year))` reads like English.
 
-### Pass-by-Value
+## Pass-by-Value
 
 Predict what this prints:
 
@@ -172,7 +168,7 @@ num2 [ 2 ]  --->  n2 [ 2 ]
 
 The arrow only goes one way, and only at the moment of the call. Methods communicate by **arguments in, return value out**.
 
-### Scope
+## Scope
 
 A variable exists from where it's declared to the **closing brace** of the block it's in. Outside that block, it doesn't exist.
 

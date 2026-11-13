@@ -5,19 +5,14 @@ prerequisites: [if-statements]
 
 # Switch Statements
 
-## Objectives
+> **Objectives**
+> - Write a `switch` statement with `case`, `break`, and `default`
+> - Explain fall-through and why `break` is needed
+> - Decide when a `switch` reads better than an `else if` ladder
+>
+> **Prerequisites:** [If Statements](../01-if-statements/lecture.md)
 
-- Write a `switch` statement with `case`, `break`, and `default`
-- Explain fall-through and why `break` is needed
-- Decide when a `switch` reads better than an `else if` ladder
-
-## Prerequisites
-
-- [If Statements](../01-if-statements/lecture.md)
-
-## Content
-
-### The Problem
+## The Problem
 
 Imagine a tax form application that asks for the user's filing status:
 
@@ -41,7 +36,7 @@ if (status == 0) {
 }
 ```
 
-### The switch Statement
+## The switch Statement
 
 A `switch` does the same job when you're comparing **one value** against a list of **exact matches**:
 
@@ -71,7 +66,7 @@ switch (status) {
 
 A switch works with `int`, `char`, and `String` values (among others), but not `double` or `boolean`.
 
-### Fall-Through
+## Fall-Through
 
 The `break`s prevent **fall-through**. Without a `break`, Java keeps running every case below the one that matched, including `default`:
 
@@ -104,7 +99,7 @@ switch (day) {
 }
 ```
 
-### switch or if?
+## switch or if?
 
 - Use a **switch** when you're checking one variable for **equality** against a list of fixed values (menus, days, status codes).
 - Use **if** statements for **ranges** and complex conditions (`score >= 90`, `age >= 18 && hasID`). A switch can't do those.

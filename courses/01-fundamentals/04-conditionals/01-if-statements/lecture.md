@@ -6,21 +6,16 @@ lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/3-3
 
 # If Statements
 
-## Objectives
+> **Objectives**
+> - Use `if`, `else if`, and `else` to choose which code runs
+> - Order an `else if` ladder correctly
+> - Nest if statements, and simplify them with logical operators
+> - Spot the missing-braces and stray-semicolon traps
+> - Guard against errors like dividing by zero
+>
+> **Prerequisites:** [Relational and Logical Operators](../../03-operators/02-relational-and-logical-operators/lecture.md)
 
-- Use `if`, `else if`, and `else` to choose which code runs
-- Order an `else if` ladder correctly
-- Nest if statements, and simplify them with logical operators
-- Spot the missing-braces and stray-semicolon traps
-- Guard against errors like dividing by zero
-
-## Prerequisites
-
-- [Relational and Logical Operators](../../03-operators/02-relational-and-logical-operators/lecture.md)
-
-## Content
-
-### Conditionals
+## Conditionals
 
 Recall the different errors that can arise in our programs, such as dividing by zero. If we wanted to avoid this, how can we implement this into our program?
 
@@ -33,7 +28,7 @@ Java provides us with **conditionals**. These give us **decision points** in the
 
 ![If statement flowchart](assets/slide-if-flowchart.png)
 
-### The if Statement
+## The if Statement
 
 ```java
 if (condition) {
@@ -51,7 +46,7 @@ if (r <= 0) {
 }
 ```
 
-### if / else
+## if / else
 
 `else` runs **only if** the `if` condition was `false`. Exactly one of the two blocks will run.
 
@@ -64,7 +59,7 @@ if (r <= 0) {
 }
 ```
 
-### else if
+## else if
 
 When there are more than two paths, chain them with `else if`:
 
@@ -97,7 +92,7 @@ if (age >= 21) {
 }
 ```
 
-### Nested if Statements
+## Nested if Statements
 
 You can put an if statement inside another:
 
@@ -129,7 +124,7 @@ if (age >= 18 && hasID) {
 
 Use whichever is easier to read.
 
-### Guarding Against Errors
+## Guarding Against Errors
 
 Remember short-circuiting? `&&` skips the right side when the left is `false`. That makes it perfect for preventing a crash:
 
@@ -152,7 +147,7 @@ if (Math.abs(total - 0.3) < 1e-9) {
 }
 ```
 
-### Common Traps
+## Common Traps
 
 **Missing braces.** Without `{ }`, only the **next line** belongs to the if:
 

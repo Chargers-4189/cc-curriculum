@@ -5,19 +5,14 @@ prerequisites: [how-java-works]
 
 # Hello World
 
-## Objectives
+> **Objectives**
+> - Write, compile, and run your first Java program
+> - Use `System.out.println` to output to the console
+> - Know why the file name and class name must match
+>
+> **Prerequisites:** [How Java Works](../01-how-java-works/lecture.md): source files, classes, and the `main` method
 
-- Write, compile, and run your first Java program
-- Use `System.out.println` to output to the console
-- Know why the file name and class name must match
-
-## Prerequisites
-
-- [How Java Works](../01-how-java-works/lecture.md): source files, classes, and the `main` method
-
-## Content
-
-### Creating Your First Program
+## Creating Your First Program
 
 Let's create a simple Hello World program. It has three parts:
 
@@ -44,7 +39,7 @@ Run it and you should see:
 Hello World
 ```
 
-### Breaking It Down
+## Breaking It Down
 
 - Notice how our **file name and class name are the same**: `HelloWorld.java` holds `class HelloWorld`.
   - This keeps your code **organized** and makes your classes **easier** to find and understand.
@@ -59,7 +54,7 @@ Hello World
 - The **main method** is our only method, and all our code is within it.
 - Every statement ends with a **semicolon** `;`
 
-### Common Mistakes
+## Common Mistakes
 
 Java is very picky. Watch out for:
 
@@ -70,7 +65,7 @@ Java is very picky. Watch out for:
 
 When something goes wrong, read the error! It tells you the file, the line number, and what Java expected.
 
-### Things to Think About
+## Things to Think About
 
 - Why would it be important for your code to be readable?
 - What do you think could be another output form?

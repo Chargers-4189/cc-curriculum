@@ -5,20 +5,15 @@ prerequisites: [if-statements]
 
 # While Loops
 
-## Objectives
+> **Objectives**
+> - Repeat code with a `while` loop
+> - Name the two things every loop needs
+> - Build a loop step by step with the 3-step recipe
+> - Use a sentinel value to stop a loop when you don't know the count
+>
+> **Prerequisites:** [If Statements](../../04-conditionals/01-if-statements/lecture.md): conditions and booleans
 
-- Repeat code with a `while` loop
-- Name the two things every loop needs
-- Build a loop step by step with the 3-step recipe
-- Use a sentinel value to stop a loop when you don't know the count
-
-## Prerequisites
-
-- [If Statements](../../04-conditionals/01-if-statements/lecture.md): conditions and booleans
-
-## Content
-
-### Why Loops?
+## Why Loops?
 
 What if we needed to display "Welcome to Java!" a hundred times? It would be tedious to write the same statement a hundred times:
 
@@ -31,7 +26,7 @@ System.out.println("Welcome to Java!");
 
 Java provides us with a construct called a **loop**. You can use it to tell the computer to repeat a section of code as many times as you need.
 
-### The while Loop
+## The while Loop
 
 Loops run by checking a **condition**. A `while` loop runs everything in its loop block **as long as the condition is true**. The loop block is defined by curly brackets `{ }`.
 
@@ -54,14 +49,14 @@ while (i < 10) {
 System.out.println(sum); // 45
 ```
 
-### The Two Things Every Loop Needs
+## The Two Things Every Loop Needs
 
 1. **Something inside the body that changes**
 2. **A condition that eventually becomes false because of that change**
 
 In the example, `i++` changes `i`, and eventually `i < 10` becomes false. Forget the `i++` and `i` stays 1 forever. That's an **infinite loop**: the program never stops. (Stop it with **Ctrl + C** in the terminal.)
 
-### How to Write a Loop: The 3-Step Recipe
+## How to Write a Loop: The 3-Step Recipe
 
 Don't try to write the finished loop in one go. Instead:
 
@@ -69,7 +64,7 @@ Don't try to write the finished loop in one go. Instead:
 2. Wrap it in `while (true) { ... }`
 3. Replace `true` with a real condition, and add whatever statement makes that condition eventually become false.
 
-### Sentinel-Controlled Loops
+## Sentinel-Controlled Loops
 
 Sometimes you **don't know** how many times to loop. The user decides. A **sentinel** is a special value that means "I'm done", not real data.
 
@@ -92,7 +87,7 @@ Here `0` is the sentinel. There's no counter at all.
 - We read once **before** the loop and again at the **bottom** of the loop
 - If the very first input is 0, the body never runs and the sum stays 0
 
-### Case Study: Guess the Number
+## Case Study: Guess the Number
 
 The computer picks a number from 0 to 100, and the user keeps guessing until they get it:
 

@@ -6,21 +6,16 @@ lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/1-6
 
 # Basics of Computers
 
-## Objectives
+> **Objectives**
+> - Explain what programming is and why it's useful
+> - Tell the difference between hardware and software
+> - Describe the Computer Model: input, storage, processing, output
+> - Compare primary and secondary storage
+> - Understand files, folders, repositories, and IDEs
+>
+> **Prerequisites:** None! This is where we start.
 
-- Explain what programming is and why it's useful
-- Tell the difference between hardware and software
-- Describe the Computer Model: input, storage, processing, output
-- Compare primary and secondary storage
-- Understand files, folders, repositories, and IDEs
-
-## Prerequisites
-
-None! This is where we start.
-
-## Content
-
-### What is Programming
+## What is Programming
 
 Programming is a way of giving computer instructions.
 
@@ -29,7 +24,7 @@ Programming is a way of giving computer instructions.
 - People have been finding the best way to communicate to a computer
 - We continue to develop coding languages to better communicate with computers, like Java, Python, C++, and HTML
 
-### How is Programming Useful
+## How is Programming Useful
 
 - **Automation** of machinery and processes
 - **Controlling** of our robot
@@ -46,7 +41,7 @@ Humans and computers are good at very different things. That's why we program: w
 | Inconsistent (prone to human error) | Consistent (accurate) |
 | Can get bored or distracted | Does not lose focus |
 
-### Computers
+## Computers
 
 - **Hardware** is the physical components: CPU, RAM, etc.
 - **Software** is stored instructions: operating systems, code, etc.
@@ -59,7 +54,7 @@ Computers come in many forms:
 
 Computers process information and give outputs. This simple operation is what makes complex applications possible.
 
-### The Computer Model
+## The Computer Model
 
 The Computer Model shows how a computer works:
 
@@ -70,7 +65,7 @@ The Computer Model shows how a computer works:
 
 Notice the robot fits this model too. Sensors and controllers are inputs, the roboRIO processes, and motors are outputs.
 
-### Memory
+## Memory
 
 Memory comes in two broad categories:
 
@@ -87,7 +82,7 @@ Memory comes in two broad categories:
 
 - Programs and files are stored here when they're not in RAM
 
-### Files
+## Files
 
 There are many types of files:
 
@@ -99,7 +94,7 @@ Files are usually named with their format at the end: `nameOfFile.format`, e.g. 
 
 All programs and data are **written to** or **read from** a file.
 
-### Folders
+## Folders
 
 Folders (or directories) are an organizational tool used to arrange files so you can store them neatly.
 
@@ -126,7 +121,7 @@ Folder_3/
 
 Some folders are specialized to hold code. These are called **repositories**. They help **track code** and **record who changed what and when**. We'll use them with GitHub later on.
 
-### IDE
+## IDE
 
 **Integrated Development Environments** are tools that have most of what is needed to develop code:
 

@@ -5,17 +5,12 @@ prerequisites: []   # lesson names (e.g. variables-and-types) or addresses (e.g.
 
 # <!-- Reading title -->
 
-## Objectives
+> **Objectives**
+> - <!-- objective -->
+>
+> **Prerequisites:** <!-- Lessons or skills needed first, or "None". -->
 
-- <!-- objective -->
-
-## Prerequisites
-
-<!-- Lessons or skills needed first, or "None". -->
-
-## Content
-
-### <!-- Section -->
+## <!-- Section -->
 
 ## Review
 

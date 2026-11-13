@@ -6,21 +6,16 @@ lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/3-2
 
 # Arithmetic Operators
 
-## Objectives
+> **Objectives**
+> - Use Java's arithmetic operators: `+ - * / %`
+> - Predict the difference between integer and floating-point division
+> - Recognize integer overflow
+> - Use increment, decrement, and compound assignment operators
+> - Join text and values with String concatenation
+>
+> **Prerequisites:** [Variables and Data Types](../../02-java-basics/03-variables-and-data-types/lecture.md)
 
-- Use Java's arithmetic operators: `+ - * / %`
-- Predict the difference between integer and floating-point division
-- Recognize integer overflow
-- Use increment, decrement, and compound assignment operators
-- Join text and values with String concatenation
-
-## Prerequisites
-
-- [Variables and Data Types](../../02-java-basics/03-variables-and-data-types/lecture.md)
-
-## Content
-
-### Operators
+## Operators
 
 Java has a few families of operators. We'll start with arithmetic, then cover the rest in the next lesson.
 
@@ -29,7 +24,7 @@ Java has a few families of operators. We'll start with arithmetic, then cover th
 - **Logical operators** are used to combine boolean values to make complex decisions
 - **Order of operations** is similar to PEMDAS, and parentheses override the default order
 
-### Basic Mathematical Operators
+## Basic Mathematical Operators
 
 Java provides basic mathematical operators that can be used on variables and values.
 
@@ -57,7 +52,7 @@ totalProfit = totalRevenue - totalExpense;
 leftOver = totalCookies % totalCustomers;
 ```
 
-#### Modulus
+### Modulus
 
 `%` gives you the **remainder** after division. `17 / 5` is 3 with 2 left over, so `17 % 5` is `2`.
 
@@ -67,7 +62,7 @@ Modulus is more useful than it looks:
 - `n % 10` gives you the **last digit** of a number
 - It "wraps around", which is perfect for things like days of the week
 
-### Integer Division vs Floating-point Division
+## Integer Division vs Floating-point Division
 
 When dividing two values, their data types change what division will be done.
 
@@ -85,7 +80,7 @@ This is one of the most common bugs in Java. If you want a decimal answer, make 
 
 You also can't divide an integer by zero. `10 / 0` crashes the program with an `ArithmeticException`.
 
-### Integer Overflow
+## Integer Overflow
 
 An `int` can only hold up to `2147483647` (`Integer.MAX_VALUE`). Go past it and the value **rolls over** to the most negative number, with no warning:
 
@@ -94,7 +89,7 @@ int max = Integer.MAX_VALUE;
 System.out.println(max + 1); // -2147483648
 ```
 
-### Incrementing and Decrementing
+## Incrementing and Decrementing
 
 Adding or subtracting 1 is so common that Java has shortcuts:
 
@@ -119,7 +114,7 @@ System.out.println(l);      // 7
 
 Tip: use `++` on its own line and you never have to think about this.
 
-### Compound Assignment Operators
+## Compound Assignment Operators
 
 These do the math and the assignment in one step:
 
@@ -131,7 +126,7 @@ These do the math and the assignment in one step:
 | `c /= 5` | `c = c / 5` |
 | `c %= 5` | `c = c % 5` |
 
-### String Concatenation
+## String Concatenation
 
 The `+` operator also **joins** text together. Java reads left to right, and once it hits a String, everything after it is joined as text:
 
@@ -143,7 +138,7 @@ System.out.println("1" + 2 + 3); // 123 - "1" + 2 is "12", then "123"
 
 This is how we print labels with values: `System.out.println("Total: " + total);`
 
-### Order of Operations
+## Order of Operations
 
 Java follows an order similar to PEMDAS: parentheses first, then `* / %`, then `+ -`, left to right.
 

@@ -5,20 +5,15 @@ prerequisites: [for-loops]
 
 # Arrays
 
-## Objectives
+> **Objectives**
+> - Create an array and access its elements by index
+> - Use `.length` to find how many elements an array has
+> - Loop through an array with a `for` loop
+> - Recognize an out-of-bounds error
+>
+> **Prerequisites:** [For Loops](../../05-loops/02-for-loops/lecture.md)
 
-- Create an array and access its elements by index
-- Use `.length` to find how many elements an array has
-- Loop through an array with a `for` loop
-- Recognize an out-of-bounds error
-
-## Prerequisites
-
-- [For Loops](../../05-loops/02-for-loops/lecture.md)
-
-## Content
-
-### What is an Array?
+## What is an Array?
 
 Say you want to store 30 test scores. You could make 30 variables: `score1`, `score2`, `score3`... but that gets out of hand fast.
 
@@ -27,7 +22,7 @@ Say you want to store 30 test scores. You could make 30 variables: `score1`, `sc
 - Every element in an array is just a variable
 - An array has a **fixed size**: once it's created, it can't grow or shrink
 
-### Creating an Array
+## Creating an Array
 
 If you already know the values, list them in curly braces:
 
@@ -45,7 +40,7 @@ double[] temperatures = new double[7]; // 7 slots, all starting at 0.0
 - The `[]` after the type means "array of"
 - Empty arrays start filled with a default value: `0` for numbers, `false` for booleans
 
-### Indexes
+## Indexes
 
 Each element has an **index**, its position in the array. Indexes **start at 0**:
 
@@ -60,7 +55,7 @@ System.out.println(scores[4]); // 64 - the last element
 scores[2] = 75;                // change the third element
 ```
 
-### Length
+## Length
 
 `.length` tells you how many elements an array has:
 
@@ -71,7 +66,7 @@ System.out.println(scores[scores.length - 1]);   // 64 - always the last element
 
 Since indexes start at 0, the last index is always `length - 1`.
 
-### Out of Bounds
+## Out of Bounds
 
 Using an index that doesn't exist crashes the program:
 
@@ -81,7 +76,7 @@ System.out.println(scores[5]); // ArrayIndexOutOfBoundsException
 
 `scores` has 5 elements, so the valid indexes are 0 to 4.
 
-### Looping Through an Array
+## Looping Through an Array
 
 Arrays and for loops go together. Loop from `0` up to (but not including) `length`:
 
@@ -112,7 +107,7 @@ for (int i = 1; i < scores.length; i++) {
 
 Notice `i < scores.length`, not `<=`. Using `<=` would go one past the end.
 
-### Arrays Are Objects
+## Arrays Are Objects
 
 You'll hear that arrays are always **objects**, whether they hold primitives or not. That's why we create them with `new` and why `.length` uses a dot. We'll dig into what that means in the Object Oriented course. For now, you know everything you need to use them.
 

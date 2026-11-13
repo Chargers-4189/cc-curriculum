@@ -5,9 +5,7 @@ lms_source: https://chargingcourses.com/lms/courses/start-here-navigating-chargi
 
 # Batches
 
-## Content
-
-### Introduction
+## Introduction
 
 Batches are essentially cohorts or class lists. They serve as the organizing structure for both classmates and online classes. Here, you can engage in discussions with students and join in online meetings. We occasionally make announcements here as well.
 
@@ -15,7 +13,7 @@ Batches are essentially cohorts or class lists. They serve as the organizing str
 - **Announcements** is where we announce important information about the course or schedule.
 - **Discussions** is where you can discuss or talk with other students. However, we advise against this and use Discord or Gameplan instead.
 
-### Navigating The Interface
+## Navigating The Interface
 
 You can access batches from the left sidebar (people icon). Sometimes your batch won't show up, so you may need to select the "enrolled" tab to see your actual batches.
 
