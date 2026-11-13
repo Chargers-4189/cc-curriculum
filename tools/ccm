@@ -1,0 +1,683 @@
+#!/usr/bin/env bash
+# ccm — Charging Courses curriculum tool.  Run `ccm help` for usage.
+set -euo pipefail
+
+CCM_VERSION="0.1.0"
+CCM_REPO="${CCM_REPO:-Chargers-4189/cc-curriculum}"
+CCM_CACHE="${CCM_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/ccm}"
+MAIN_MAX_AGE_MIN=60   # re-download branch snapshots older than this
+
+JUNIT_VERSION="1.11.4"
+JUNIT_SHA256="b016ef6b1c3454d6d7c2c88ce081dabf289699686af6622d6e4e2e1b54b4a2fc"
+JUNIT_URL="https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/${JUNIT_VERSION}/junit-platform-console-standalone-${JUNIT_VERSION}.jar"
+TEST_TIMEOUT="${CCM_TEST_TIMEOUT:-10s}"   # per test; catches infinite loops
+
+if [ -t 2 ]; then
+  BOLD=$'\033[1m' RED=$'\033[31m' GREEN=$'\033[32m' YELLOW=$'\033[33m' DIM=$'\033[2m' RESET=$'\033[0m'
+else
+  BOLD="" RED="" GREEN="" YELLOW="" DIM="" RESET=""
+fi
+
+die()  { printf '%scc: %s%s\n' "$RED" "$*" "$RESET" >&2; exit 1; }
+warn() { printf '%scc: %s%s\n' "$YELLOW" "$*" "$RESET" >&2; }
+say()  { printf '%s\n' "$*" >&2; }
+
+CCM_TMP=""
+cleanup() { if [ -n "$CCM_TMP" ]; then rm -rf "$CCM_TMP"; fi; }
+trap cleanup EXIT
+tmpdir() { if [ -z "$CCM_TMP" ]; then CCM_TMP=$(mktemp -d "${TMPDIR:-/tmp}/ccm.XXXXXX"); fi; }
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# ---------------------------------------------------------------- sources ---
+
+# Prints a local curriculum checkout to use instead of downloading, if any:
+# $CCM_SOURCE, or the checkout this script lives in (tools/ccm run from the repo).
+local_source() {
+  if [ -n "${CCM_SOURCE:-}" ]; then
+    [ -d "$CCM_SOURCE/courses" ] || die "CCM_SOURCE=$CCM_SOURCE has no courses/ folder"
+    (cd "$CCM_SOURCE" && pwd); return 0
+  fi
+  if [ -d "$SCRIPT_DIR/../courses" ] && [ -d "$SCRIPT_DIR/../shared" ]; then
+    (cd "$SCRIPT_DIR/.." && pwd); return 0
+  fi
+  return 1
+}
+
+# Latest release tag, else main. Uses the web redirect (not the API) to avoid
+# rate limits when a whole classroom shares one IP.
+resolve_ref() {
+  if [ -n "${CCM_REF:-}" ]; then echo "$CCM_REF"; return; fi
+  mkdir -p "$CCM_CACHE"
+  local url tag
+  url=$(curl -fsSIL -o /dev/null -w '%{url_effective}' --max-time 15 \
+        "https://github.com/$CCM_REPO/releases/latest" 2>/dev/null) || url=""
+  case "$url" in
+    */releases/tag/*)
+      tag=${url##*/releases/tag/}
+      echo "$tag" > "$CCM_CACHE/latest-ref"
+      echo "$tag"; return ;;
+    "")
+      if [ -f "$CCM_CACHE/latest-ref" ]; then
+        warn "offline? using last known version $(cat "$CCM_CACHE/latest-ref")"
+        cat "$CCM_CACHE/latest-ref"; return
+      fi ;;
+  esac
+  echo main
+}
+
+is_tag() { [[ $1 =~ ^v[0-9] ]]; }
+
+# Prints the path of an extracted snapshot of the curriculum at <ref>.
+tree_for() {
+  local ref=$1 src dir stamp tgz x
+  if [ "$ref" = local ]; then
+    src=$(local_source) && { echo "$src"; return; }
+    ref=$(resolve_ref)
+  fi
+  dir="$CCM_CACHE/trees/$(printf %s "$ref" | tr '/' '_')"
+  stamp="$dir/.ccm-fetched"
+  if [ -f "$stamp" ] && [ "${CCM_FORCE_FETCH:-0}" != 1 ]; then
+    if is_tag "$ref" || [ -z "$(find "$stamp" -mmin +"$MAIN_MAX_AGE_MIN" 2>/dev/null)" ]; then
+      echo "$dir"; return
+    fi
+  fi
+  command -v curl >/dev/null || die "curl is required"
+  command -v tar  >/dev/null || die "tar is required"
+  mkdir -p "$CCM_CACHE/trees"
+  tmpdir
+  tgz="$CCM_TMP/src-$RANDOM.tgz"
+  say "${DIM}Downloading curriculum ($ref)...${RESET}"
+  if ! curl -fsSL --max-time 120 "https://codeload.github.com/$CCM_REPO/tar.gz/$ref" -o "$tgz"; then
+    if [ -f "$stamp" ]; then warn "download failed; using cached copy of $ref"; echo "$dir"; return; fi
+    die "could not download $CCM_REPO at '$ref' (check your internet connection)"
+  fi
+  x=$(mktemp -d "$CCM_CACHE/trees/.new.XXXXXX")
+  tar -xzf "$tgz" -C "$x" --strip-components=1 || { rm -rf "$x"; die "downloaded archive is corrupt"; }
+  touch "$x/.ccm-fetched"
+  rm -rf "$dir"
+  mv "$x" "$dir"
+  echo "$dir"
+}
+
+# Sets TREE and REF for the curriculum we're working against.
+current_tree() {
+  local src
+  if src=$(local_source); then TREE=$src; REF=local; return; fi
+  REF=$(resolve_ref)
+  TREE=$(tree_for "$REF")
+}
+
+# -------------------------------------------------------------- addresses ---
+
+is_num()  { [[ $1 =~ ^[0-9]+$ ]]; }
+dnum()    { local n=${1%%-*}; n=${n#e}; echo $((10#$n)); }   # 01-foo -> 1, e02-bar -> 2
+dslug()   { echo "${1#*-}"; }                                # 01-foo -> foo
+
+# find_child <dir> <token> [e]  — child folder matching a number or a name
+find_child() {
+  local parent=$1 tok=$2 pre=${3:-} d base
+  [ -d "$parent" ] || return 1
+  if [ "$pre" = e ] && [[ $tok =~ ^e[0-9]+$ ]]; then tok=${tok#e}; fi
+  for d in "$parent"/"$pre"[0-9]*-*/; do
+    [ -d "$d" ] || continue
+    base=$(basename "$d")
+    if is_num "$tok"; then
+      [ "$(dnum "$base")" = "$((10#$tok))" ] && { echo "$base"; return 0; }
+    else
+      [ "$(dslug "$base")" = "$tok" ] && { echo "$base"; return 0; }
+    fi
+  done
+  return 1
+}
+
+# kind_of <repo path> -> course | chapter | lesson | exercise | root
+kind_of() {
+  local p=${1#courses} n
+  p=${p#/}
+  if [ -z "$p" ]; then echo root; return; fi
+  n=$(printf %s "$p" | awk -F/ '{print NF}')
+  case $n in 1) echo course ;; 2) echo chapter ;; 3) echo lesson ;; 5) echo exercise ;; *) echo other ;; esac
+}
+
+# addr_of <repo path> -> 1.2.1.e1
+addr_of() {
+  local p=${1#courses/} out="" seg
+  local IFS=/
+  for seg in $p; do
+    case $seg in
+      exercises) ;;
+      e[0-9]*-*) out="$out.e$(dnum "$seg")" ;;
+      [0-9]*-*)  out="$out.$(dnum "$seg")" ;;
+    esac
+  done
+  echo "${out#.}"
+}
+
+# Find a course/chapter/lesson/exercise by bare name anywhere in the tree.
+search_name() {
+  local name=$1 d rel kind hits=() count
+  while IFS= read -r d; do
+    [ "$(dslug "$(basename "$d")")" = "$name" ] || continue
+    rel=${d#"$TREE"/}
+    kind=$(kind_of "$rel")
+    case $kind in course|chapter|lesson|exercise) hits+=("$rel") ;; esac
+  done < <(find "$TREE/courses" -mindepth 1 -maxdepth 5 -type d -name "*-$name" 2>/dev/null | sort)
+  count=${#hits[@]}
+  if [ "$count" -eq 0 ]; then die "nothing named '$name'. Try: ccm list"; fi
+  if [ "$count" -gt 1 ]; then
+    say "ccm: '$name' is ambiguous; use one of:"
+    for d in "${hits[@]}"; do say "  $(addr_of "$d")  ($(kind_of "$d"))"; done
+    exit 1
+  fi
+  echo "${hits[0]}"
+}
+
+# resolve <address> -> repo-relative path (courses/...)
+# Accepts 1.2.1.e1, 1.2.lesson-name.e1, lesson-name, exercise-name, or a path.
+resolve() {
+  local a=${1%/} parts tok child path=courses i=0
+  [ -n "$a" ] || die "empty address"
+  if [[ $a == */* ]]; then
+    for path in "$a" "courses/$a"; do
+      [ -d "$TREE/$path" ] && { echo "$path"; return; }
+    done
+    die "no such folder: $a"
+  fi
+  IFS=. read -r -a parts <<< "$a"
+  if [ "${#parts[@]}" -eq 1 ] && ! is_num "${parts[0]}"; then search_name "${parts[0]}"; return; fi
+  for tok in "${parts[@]}"; do
+    case $i in
+      0|1|2)
+        local what; what=$(echo "course chapter lesson" | cut -d' ' -f$((i + 1)))
+        if ! child=$(find_child "$TREE/$path" "$tok"); then
+          if [ $i -eq 0 ]; then die "no course '$tok'. Try: ccm list"; fi
+          die "no $what '$tok' in $(addr_of "$path"). Try: ccm list $(addr_of "$path")"
+        fi
+        path="$path/$child" ;;
+      3)
+        child=$(find_child "$TREE/$path/exercises" "$tok" e) ||
+          die "no exercise '$tok' in $(addr_of "$path"). Try: ccm list $(addr_of "$path")"
+        path="$path/exercises/$child" ;;
+      *) die "address '$a' has too many parts (course.chapter.lesson.exercise)" ;;
+    esac
+    i=$((i + 1))
+  done
+  echo "$path"
+}
+
+yaml_scalar() {  # yaml_scalar <file> <key>
+  [ -f "$1" ] || return 0
+  sed -n "s/^$2:[[:space:]]*//p" "$1" | head -1 |
+    sed -e 's/[[:space:]]#.*$//' -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'\$/\1/"
+}
+yaml_list() {    # yaml_list <file> <key>  (simple block lists only)
+  [ -f "$1" ] || return 0
+  awk -v key="$2" '
+    $0 ~ "^" key ":" { inlist = 1; next }
+    inlist && /^[[:space:]]*-[[:space:]]*/ {
+      sub(/^[[:space:]]*-[[:space:]]*/, ""); sub(/[[:space:]]+#.*$/, ""); gsub(/["\047]/, ""); print; next }
+    inlist && /^[^[:space:]#]/ { inlist = 0 }' "$1"
+}
+
+title_of() {  # title_of <abs dir> <kind>
+  case $2 in
+    course)   yaml_scalar "$1/course.yaml" title ;;
+    chapter)  yaml_scalar "$1/chapter.yaml" title ;;
+    lesson)   yaml_scalar "$1/lecture.md" title ;;
+    exercise) yaml_scalar "$1/prompt.md" title ;;
+  esac
+}
+
+# ------------------------------------------------------------------- list ---
+
+list_node() {  # list_node <repo path> <indent> <with exercises 0|1>
+  local p=$1 indent=$2 withex=$3 kind addr title extra="" d
+  kind=$(kind_of "$p")
+  if [ "$kind" != root ]; then
+    addr=$(addr_of "$p")
+    title=$(title_of "$TREE/$p" "$kind")
+    [ "$kind" = exercise ] && [ -d "$TREE/$p/tests" ] && extra=" ${GREEN}[tests]${RESET}"
+    printf '%s%s%-10s%s %s%s%s\n' "$indent" "$BOLD" "$addr" "$RESET" "$(dslug "$(basename "$p")")" \
+      "${title:+  ${DIM}$title${RESET}}" "$extra"
+    indent="$indent  "
+  fi
+  case $kind in
+    root|course|chapter)
+      for d in "$TREE/$p"/[0-9]*-*/; do
+        if [ -d "$d" ]; then list_node "$p/$(basename "$d")" "$indent" "$withex"; fi
+      done ;;
+    lesson)
+      if [ "$withex" = 1 ]; then
+        for d in "$TREE/$p"/exercises/e[0-9]*-*/; do
+          if [ -d "$d" ]; then list_node "$p/exercises/$(basename "$d")" "$indent" "$withex"; fi
+        done
+      fi ;;
+  esac
+}
+
+cmd_list() {
+  current_tree
+  if [ $# -eq 0 ]; then
+    list_node courses "" 0
+  else
+    list_node "$(resolve "$1")" "" 1
+  fi
+}
+
+# -------------------------------------------------------------------- get ---
+
+write_marker() { printf 'path=%s\nref=%s\n' "$2" "$3" > "$1/.ccm"; }
+
+prep_exercise() {  # <staged dir> <repo path>
+  local d=$1
+  rm -rf "$d/solution" "$d/tests"
+  if [ -d "$d/starter" ]; then
+    cp -R "$d/starter/." "$d/"
+    rm -rf "$d/starter"
+  fi
+  write_marker "$d" "$2" "$REF"
+}
+
+prep_lesson() {
+  local d=$1 p=$2 e
+  if [ "$INSTRUCTOR" != 1 ]; then rm -rf "$d/lecture-notes.md" "$d/quiz"; fi
+  for e in "$d"/exercises/e[0-9]*-*/; do
+    if [ -d "$e" ]; then prep_exercise "${e%/}" "$p/exercises/$(basename "$e")"; fi
+  done
+  write_marker "$d" "$p" "$REF"
+}
+
+prep_chapter() {
+  local d=$1 p=$2 l
+  for l in "$d"/[0-9]*-*/; do if [ -d "$l" ]; then prep_lesson "${l%/}" "$p/$(basename "$l")"; fi; done
+  write_marker "$d" "$p" "$REF"
+}
+
+prep_course() {
+  local d=$1 p=$2 c inc
+  for c in "$d"/[0-9]*-*/; do if [ -d "$c" ]; then prep_chapter "${c%/}" "$p/$(basename "$c")"; fi; done
+  while IFS= read -r inc; do
+    [ -n "$inc" ] || continue
+    case $inc in /*|*..*) warn "skipping unsafe include '$inc'"; continue ;; esac
+    if [ -e "$TREE/$inc" ]; then
+      mkdir -p "$d/$(dirname "$inc")"
+      cp -R "$TREE/$inc" "$d/$inc"
+    else
+      warn "include not found: $inc"
+    fi
+  done < <(yaml_list "$TREE/$p/course.yaml" includes)
+  write_marker "$d" "$p" "$REF"
+}
+
+# Copy staged files into dest without overwriting anything the student has.
+merge_into() {
+  local src=$1 dest=$2 f rel added=0 kept=0 existed=0
+  if [ -e "$dest" ] && [ ! -d "$dest" ]; then die "'$dest' exists and is not a folder"; fi
+  [ -d "$dest" ] && existed=1
+  while IFS= read -r f; do
+    rel=${f#"$src"/}
+    if [ -e "$dest/$rel" ] && [ "$(basename "$rel")" != .ccm ]; then kept=$((kept + 1)); continue; fi
+    mkdir -p "$(dirname "$dest/$rel")"
+    cp "$f" "$dest/$rel"
+    [ "$(basename "$rel")" = .ccm ] || added=$((added + 1))
+  done < <(find "$src" -type f | sort)
+  if [ "$existed" = 1 ]; then
+    say "  ${dest} already existed: added $added new file(s), kept $kept existing file(s) unchanged"
+  else
+    say "  ${GREEN}->${RESET} $dest ($added files)"
+  fi
+}
+
+get_one() {
+  local p kind name stage dest
+  p=$(resolve "$1")
+  kind=$(kind_of "$p")
+  case $kind in course|chapter|lesson|exercise) ;; *) die "'$1' is not a course, chapter, lesson or exercise" ;; esac
+  name=$(dslug "$(basename "$p")")
+  tmpdir
+  stage="$CCM_TMP/stage-$RANDOM"
+  mkdir -p "$stage"
+  cp -R "$TREE/$p" "$stage/$name"
+  "prep_$kind" "$stage/$name" "$p"
+  dest="${OUT_DIR%/}/$name"
+  say "${BOLD}$(addr_of "$p")${RESET} $name ($kind)"
+  merge_into "$stage/$name" "$dest"
+  rm -rf "$stage"
+}
+
+cmd_get() {
+  INSTRUCTOR=0 OUT_DIR=.
+  local targets=()
+  while [ $# -gt 0 ]; do
+    case $1 in
+      -i|--instructor) INSTRUCTOR=1 ;;
+      -o|--out) shift; [ $# -gt 0 ] || die "--out needs a folder"; OUT_DIR=$1 ;;
+      -h|--help) usage; exit 0 ;;
+      -*) die "unknown option $1" ;;
+      *) targets+=("$1") ;;
+    esac
+    shift
+  done
+  [ "${#targets[@]}" -gt 0 ] || die "usage: ccm get <address|name>...   (see: ccm list)"
+  current_tree
+  mkdir -p "$OUT_DIR"
+  local t
+  for t in "${targets[@]}"; do get_one "$t"; done
+  [ "$REF" = local ] || say "${DIM}version: $REF${RESET}"
+}
+
+# ------------------------------------------------------------------- test ---
+
+find_java() {
+  if command -v javac >/dev/null 2>&1 && javac -version >/dev/null 2>&1; then return; fi
+  local d
+  while IFS= read -r d; do
+    if [ -x "$d/javac" ]; then PATH="$d:$PATH"; return; fi
+  done < <(find "$HOME/wpilib" -mindepth 3 -maxdepth 3 -type d -path '*/jdk/bin' 2>/dev/null | sort -r)
+  die "Java not found. Install JDK 17+ (or the WPILib suite) and try again."
+}
+
+sha256() { if command -v sha256sum >/dev/null; then sha256sum "$1"; else shasum -a 256 "$1"; fi | cut -d' ' -f1; }
+
+ensure_junit() {
+  JUNIT_JAR="$CCM_CACHE/lib/junit-platform-console-standalone-$JUNIT_VERSION.jar"
+  [ -f "$JUNIT_JAR" ] && return
+  mkdir -p "$CCM_CACHE/lib"
+  tmpdir
+  say "${DIM}Downloading JUnit $JUNIT_VERSION (one time)...${RESET}"
+  curl -fsSL --max-time 120 "$JUNIT_URL" -o "$CCM_TMP/junit.jar" || die "could not download JUnit"
+  [ "$(sha256 "$CCM_TMP/junit.jar")" = "$JUNIT_SHA256" ] || die "JUnit download failed its checksum"
+  mv "$CCM_TMP/junit.jar" "$JUNIT_JAR"
+}
+
+java_sources() { find "$@" -type f -name '*.java' -not -path '*/.ccm-build/*' 2>/dev/null | sort; }
+
+# Trim JUnit console output to the test tree and failure messages (set CCM_VERBOSE=1 for everything).
+junit_filter() {
+  if [ "${CCM_VERBOSE:-0}" = 1 ]; then cat; return; fi
+  awk '
+    /^\[ *[0-9]+ .*\]$/ || /^Test run finished/ || /MethodSource \[/ { next }
+    /JUnit Vintage|JUnit Platform Suite/ { next }
+    /^       [^ ]/ || /^       \[\.\.\.\]/ { next }
+    { print }'
+}
+
+# run_suite <code dir> <tests dir or ""> <helpers dir> <label>
+run_suite() {
+  local code=$1 tests=$2 helpers=$3 label=$4 out
+  tmpdir
+  out="$CCM_TMP/build-$RANDOM"
+  mkdir -p "$out/main" "$out/test"
+  printf '\n%s== %s ==%s\n' "$BOLD" "$label" "$RESET"
+  java_sources "$code" > "$out/main.txt"
+  if [ ! -s "$out/main.txt" ]; then
+    printf '%sFAIL%s no .java files in %s\n' "$RED" "$RESET" "$code"; return 1
+  fi
+  if ! javac -encoding UTF-8 -nowarn -d "$out/main" @"$out/main.txt"; then
+    printf '%sFAIL%s your code does not compile (see errors above)\n' "$RED" "$RESET"; return 1
+  fi
+  if [ -z "$tests" ] || [ ! -d "$tests" ]; then
+    printf '%sOK%s compiles (this exercise has no automatic tests)\n' "$GREEN" "$RESET"; return 0
+  fi
+  java_sources "$tests" "$helpers" > "$out/test.txt"
+  if ! javac -encoding UTF-8 -nowarn -d "$out/test" -cp "$out/main:$JUNIT_JAR" @"$out/test.txt" 2>"$out/test-errors.txt"; then
+    cat "$out/test-errors.txt" >&2
+    printf '%sFAIL%s the tests could not use your code. Check class and method names match the prompt.\n' "$RED" "$RESET"
+    return 1
+  fi
+  local status=0
+  java -jar "$JUNIT_JAR" execute --disable-banner --disable-ansi-colors --details=tree \
+       --config=junit.jupiter.execution.timeout.default="$TEST_TIMEOUT" \
+       --config=junit.jupiter.execution.timeout.thread.mode.default=SEPARATE_THREAD \
+       --class-path "$out/main:$out/test" --scan-class-path < /dev/null 2>&1 | junit_filter || status=$?
+  if [ "$status" -eq 0 ]; then
+    printf '%sPASS%s %s\n' "$GREEN" "$RESET" "$label"; return 0
+  else
+    printf '%sFAIL%s %s\n' "$RED" "$RESET" "$label"; return 1
+  fi
+}
+
+marker_get() { sed -n "s/^$2=//p" "$1/.ccm" | head -1; }
+
+# Nearest folder at or above $1 with a .ccm marker.
+nearest_marker() {
+  local d=$1
+  while [ "$d" != / ] && [ -n "$d" ]; do
+    [ -f "$d/.ccm" ] && { echo "$d"; return 0; }
+    d=$(dirname "$d")
+  done
+  return 1
+}
+# Highest folder above $1 that is still inside downloaded material.
+top_marker() {
+  local d top=""
+  d=$(nearest_marker "$1") || return 1
+  while [ -f "$d/.ccm" ]; do top=$d; d=$(dirname "$d"); [ "$d" = / ] && break; done
+  echo "$top"
+}
+
+exercise_markers_under() {  # prints exercise folders (with .ccm) under each arg
+  local root f d
+  for root in "$@"; do
+    [ -d "$root" ] || continue
+    find "$root" -maxdepth 9 -name .ccm -type f 2>/dev/null | while IFS= read -r f; do
+      d=$(dirname "$f")
+      [ "$(kind_of "$(marker_get "$d" path)")" = exercise ] && (cd "$d" && pwd -P)
+    done
+  done | sort -u
+}
+
+# Does marker path <p> match user target <t>? (address prefix or a name in the path)
+target_matches() {
+  local p=$1 t=$2 addr seg
+  addr=$(addr_of "$p")
+  [ "$addr" = "$t" ] && return 0
+  case $addr in "$t".*) return 0 ;; esac
+  case $t in *.*|*/*) return 1 ;; esac
+  local IFS=/
+  for seg in ${p#courses/}; do
+    [ "$seg" = exercises ] && continue
+    [ "$(dslug "$seg")" = "$t" ] && return 0
+  done
+  return 1
+}
+
+cmd_test() {
+  local target="" here roots=() top found=() d p ex
+  while [ $# -gt 0 ]; do
+    case $1 in
+      -h|--help) usage; exit 0 ;;
+      -*) die "unknown option $1" ;;
+      *) [ -z "$target" ] || die "ccm test takes one target"; target=$1 ;;
+    esac
+    shift
+  done
+  here=$(pwd -P)
+
+  if [ -z "$target" ]; then
+    if d=$(nearest_marker "$here"); then roots=("$d"); else roots=("$here"); fi
+    while IFS= read -r ex; do [ -n "$ex" ] && found+=("$ex"); done < <(exercise_markers_under "${roots[@]}")
+    [ "${#found[@]}" -gt 0 ] || die "no downloaded exercises here. Run 'ccm get <lesson>' first, or cd into a lesson folder."
+  else
+    # Look under the current folder, the downloaded material we're inside, and its siblings.
+    roots=("$here")
+    if top=$(top_marker "$here"); then roots+=("$top" "$(dirname "$top")"); fi
+    local all=() resolved=""
+    while IFS= read -r ex; do [ -n "$ex" ] && all+=("$ex"); done < <(exercise_markers_under "${roots[@]}")
+    for ex in ${all[@]+"${all[@]}"}; do
+      target_matches "$(marker_get "$ex" path)" "$target" && found+=("$ex")
+    done
+    if [ "${#found[@]}" -eq 0 ] && [[ $target == *.* ]]; then
+      # e.g. 1.2.lesson-name.e1 -> resolve against the curriculum, then match by path
+      current_tree
+      resolved=$(resolve "$target")
+      for ex in ${all[@]+"${all[@]}"}; do
+        p=$(marker_get "$ex" path)
+        case $p in "$resolved"|"$resolved"/*) found+=("$ex") ;; esac
+      done
+    fi
+    [ "${#found[@]}" -gt 0 ] || die "couldn't find your copy of '$target' here. Run 'ccm get $target' first, or cd to the folder that contains it."
+    # The same exercise downloaded in two places: ask which one.
+    local dups
+    dups=$(for ex in "${found[@]}"; do marker_get "$ex" path; done | sort | uniq -d)
+    if [ -n "$dups" ]; then
+      say "ccm: found more than one copy of the same exercise:"
+      for ex in "${found[@]}"; do say "  $ex"; done
+      die "cd into the one you want to test and run 'ccm test'"
+    fi
+  fi
+
+  find_java
+  ensure_junit
+  local pass=0 fail=0 skipped=0 ref tree tests helpers
+  for ex in "${found[@]}"; do
+    p=$(marker_get "$ex" path)
+    ref=$(marker_get "$ex" ref)
+    tree=$(tree_for "${ref:-local}")
+    if [ ! -d "$tree/$p" ]; then
+      warn "$(addr_of "$p") is no longer in the curriculum ($ref); skipping"; skipped=$((skipped + 1)); continue
+    fi
+    tests="$tree/$p/tests"
+    helpers="$tree/shared/java-test-helpers"
+    if run_suite "$ex" "$tests" "$helpers" "$(addr_of "$p") $(dslug "$(basename "$p")")"; then
+      pass=$((pass + 1))
+    else
+      fail=$((fail + 1))
+    fi
+  done
+  printf '\n%s%d passed%s, %s%d failed%s%s\n' "$GREEN" "$pass" "$RESET" "$RED" "$fail" "$RESET" \
+    "$([ "$skipped" -gt 0 ] && echo ", $skipped skipped")"
+  [ "$fail" -eq 0 ]
+}
+
+# CI helpers: test or compile an arbitrary folder against the local checkout.
+cmd_test_dir() {
+  [ $# -eq 2 ] || die "usage: ccm _test-dir <code dir> <tests dir>"
+  local src; src=$(local_source) || die "_test-dir must run from a checkout (or set CCM_SOURCE)"
+  find_java; ensure_junit
+  run_suite "$1" "$2" "$src/shared/java-test-helpers" "${1#"$src"/}"
+}
+cmd_compile_dir() {
+  [ $# -eq 1 ] || die "usage: ccm _compile-dir <code dir>"
+  find_java
+  run_suite "$1" "" "" "${1#"${CCM_SOURCE:-$SCRIPT_DIR/..}"/}"
+}
+
+# -------------------------------------------------------------------- new ---
+
+cmd_new() {
+  [ $# -ge 2 ] || die "usage: ccm new course <name> | ccm new chapter|lesson|exercise <parent address> <name>"
+  local kind=$1 parent name want dir pre="" max=0 any=0 d n new tmpl
+  shift
+  TREE=$(local_source) || TREE=$(git rev-parse --show-toplevel 2>/dev/null) || true
+  if [ -z "$TREE" ] || [ ! -d "$TREE/courses" ]; then die "ccm new must be run inside a curriculum checkout"; fi
+  case $kind in
+    course)   [ $# -eq 1 ] || die "usage: ccm new course <name>"; parent=courses; name=$1; want=root ;;
+    chapter)  [ $# -eq 2 ] || die "usage: ccm new chapter <course> <name>"; want=course ;;
+    lesson)   [ $# -eq 2 ] || die "usage: ccm new lesson <chapter> <name>"; want=chapter ;;
+    exercise) [ $# -eq 2 ] || die "usage: ccm new exercise <lesson> <name>"; want=lesson ;;
+    *) die "ccm new: unknown kind '$kind' (course, chapter, lesson, exercise)" ;;
+  esac
+  if [ "$kind" != course ]; then
+    parent=$(resolve "$1"); name=$2
+    [ "$(kind_of "$parent")" = "$want" ] || die "$1 is a $(kind_of "$parent"), expected a $want"
+  fi
+  [[ $name =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || die "name must be lowercase-with-hyphens, e.g. if-statements"
+  if [ "$kind" = lesson ] || [ "$kind" = exercise ]; then
+    local clash
+    clash=$(find "$TREE/courses" -mindepth 3 -maxdepth 5 -type d \( -name "[0-9]*-$name" -o -name "e[0-9]*-$name" \) 2>/dev/null |
+            while IFS= read -r d; do
+              r=${d#"$TREE"/}; k=$(kind_of "$r")
+              [ "$k" = "$kind" ] && [ "$(dslug "$(basename "$d")")" = "$name" ] && addr_of "$r"
+            done)
+    [ -z "$clash" ] || die "$kind names must be unique; '$name' is already used at $clash"
+  fi
+  dir="$TREE/$parent"
+  if [ "$kind" = exercise ]; then dir="$dir/exercises"; pre=e; fi
+  mkdir -p "$dir"
+  for d in "$dir"/"$pre"[0-9]*-*/; do
+    [ -d "$d" ] || continue
+    any=1
+    n=$(dnum "$(basename "$d")"); [ "$n" -gt "$max" ] && max=$n
+    [ "$(dslug "$(basename "$d")")" = "$name" ] && die "'$name' already exists in $(addr_of "$parent")"
+  done
+  # Courses start at 00; chapters, lessons and exercises start at 01.
+  if [ "$kind" = course ] && [ "$any" = 0 ]; then n=0; else n=$((max + 1)); fi
+  new=$(printf '%s%02d-%s' "$pre" "$n" "$name")
+  tmpl="$TREE/shared/templates/$kind"
+  [ -d "$tmpl" ] || die "missing template $tmpl"
+  cp -R "$tmpl" "$dir/$new"
+  if [ "$kind" = lesson ]; then
+    local course=${parent#courses/}; course=${course%%/*}
+    [ "$(yaml_scalar "$TREE/courses/$course/course.yaml" slides)" = true ] || rm -f "$dir/$new/slides.md"
+  fi
+  local rel=${dir#"$TREE"/}/$new
+  say "${GREEN}created${RESET} $rel  ($(addr_of "$rel"))"
+}
+
+# ----------------------------------------------------------------- update ---
+
+cmd_update() {
+  local src self
+  if src=$(local_source); then say "using local checkout $src; nothing to update (git pull instead)"; return; fi
+  CCM_FORCE_FETCH=1
+  REF=$(resolve_ref)
+  TREE=$(tree_for "$REF")
+  say "curriculum cache updated to $REF"
+  self=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")
+  if [ -f "$TREE/tools/ccm" ] && ! cmp -s "$TREE/tools/ccm" "$self"; then
+    bash -n "$TREE/tools/ccm" || die "downloaded ccm has errors; not updating"
+    if [ -w "$self" ]; then
+      cp "$TREE/tools/ccm" "$self.new" && chmod +x "$self.new" && mv "$self.new" "$self"
+      say "ccm updated ($self)"
+    else
+      warn "can't write $self; re-run the installer to update ccm"
+    fi
+  fi
+}
+
+# ------------------------------------------------------------------- main ---
+
+usage() {
+  cat <<EOF
+ccm $CCM_VERSION — Charging Courses curriculum tool
+
+  ccm list [address]          show courses, chapters and lessons (or one subtree)
+  ccm get <address>...        download a course, chapter, lesson or exercise here
+       -i, --instructor        include lecture notes and quizzes
+       -o, --out <dir>         download into <dir> instead of the current folder
+  ccm test [address]          test your exercise code (run from anywhere near it)
+  ccm update                  refresh downloaded curriculum and ccm itself
+  ccm new <kind> ...          (instructors, in a checkout) create from templates:
+       ccm new course <name>
+       ccm new chapter <course> <name>
+       ccm new lesson <chapter> <name>
+       ccm new exercise <lesson> <name>
+  ccm version
+
+Addresses:  1 (course)  1.2 (chapter)  1.2.1 (lesson)  1.2.1.e1 (exercise)
+            names work too: if-statements, 1.2.if-statements.e1, grade-calc
+
+Environment: CCM_REF (version/branch), CCM_SOURCE (local checkout), CCM_CACHE
+EOF
+}
+
+main() {
+  local cmd=${1:-help}
+  [ $# -gt 0 ] && shift
+  case $cmd in
+    list|ls)          cmd_list "$@" ;;
+    get)              cmd_get "$@" ;;
+    test)             cmd_test "$@" ;;
+    update)           cmd_update "$@" ;;
+    new)              cmd_new "$@" ;;
+    version|--version|-v) echo "ccm $CCM_VERSION" ;;
+    help|--help|-h)   usage ;;
+    _test-dir)        cmd_test_dir "$@" ;;
+    _compile-dir)     cmd_compile_dir "$@" ;;
+    *) die "unknown command '$cmd' (see: ccm help)" ;;
+  esac
+}
+
+main "$@"

@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r tools/requirements.txt
+      - name: Validate structure, front matter, quizzes and links
+        run: python tools/validate/validate.py
+      - name: Export quizzes (smoke test)
+        run: python tools/export/quiz.py -o "$RUNNER_TEMP/quizzes"
+
+  scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        run: shellcheck tools/ccm tools/check-exercises.sh install.sh
+      - name: ccm list / get (smoke test)
+        run: |
+          tools/ccm list
+          cd "$RUNNER_TEMP"
+          for course in "$GITHUB_WORKSPACE"/courses/[0-9]*-*/; do
+            n=$(basename "$course"); n=${n%%-*}
+            "$GITHUB_WORKSPACE/tools/ccm" get -i -o out "$((10#$n))"
+          done
+
+  exercises:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ccm/lib
+          key: junit-${{ hashFiles('tools/ccm') }}
+      - name: Test solutions against exercise tests
+        run: tools/check-exercises.sh

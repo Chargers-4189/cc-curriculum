@@ -1,0 +1,19 @@
+title: ""
+questions:
+  - type: mc
+    question: ""
+    answer: ""
+    incorrect:
+      - ""
+      - ""
+      - ""
+
+  - type: tf
+    question: ""
+    answer: true
+
+  - type: flashcard
+    front: ""
+    back: ""
+
+# Also allowed: short, long, code-output (same fields as quiz.yaml)

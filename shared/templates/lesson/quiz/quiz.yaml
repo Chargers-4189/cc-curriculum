@@ -1,0 +1,30 @@
+title: ""
+questions:
+  - type: mc
+    question: ""
+    answer: ""
+    incorrect:
+      - ""
+      - ""
+      - ""
+
+  - type: tf
+    question: ""
+    answer: true
+
+  - type: short
+    question: ""
+    answer: ""            # expected answer
+
+  - type: long
+    question: ""
+    answer: ""            # sample answer or rubric
+
+  - type: code-output
+    question: "What does this code print?"
+    code: |
+      System.out.println("");
+    answer: ""
+    incorrect: []         # optional: add options to make it multiple choice
+
+# Optional on any question: points, explanation, tags

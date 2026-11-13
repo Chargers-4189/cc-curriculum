@@ -1,0 +1,32 @@
+title: "Example Lesson Quiz"
+questions:
+  - type: mc
+    question: "Which method does Java run first in a program?"
+    answer: "main"
+    incorrect:
+      - "start"
+      - "run"
+      - "init"
+    points: 1
+
+  - type: tf
+    question: "Java is case-sensitive."
+    answer: true
+
+  - type: short
+    question: "What keyword makes a method belong to the class instead of an object?"
+    answer: "static"
+
+  - type: long
+    question: "Explain what System.out.println does."
+    answer: "Prints its argument to standard output, followed by a newline."
+
+  - type: code-output
+    question: "What does this code print?"
+    code: |
+      System.out.println(1 + 2 + "3");
+    answer: "33"
+    incorrect:
+      - "123"
+      - "6"
+    explanation: "1 + 2 is evaluated first (3), then concatenated with \"3\"."
