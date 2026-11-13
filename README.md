@@ -46,6 +46,7 @@ cc-curriculum/
 │   ├── ccm                              # download / test / scaffold CLI
 │   ├── validate/validate.py             # structure, front matter, quiz and link checks
 │   ├── export/quiz.py                   # quiz/practice -> Markdown, answer keys, flashcards
+│   ├── import/lms_import.py             # imports a course from the Charging Courses LMS
 │   └── check-exercises.sh               # runs every exercise's tests against its solution
 ├── .github/workflows/                   # CI and release automation
 ├── install.sh                           # one-line installer for ccm
@@ -75,14 +76,14 @@ Names work in place of numbers: `if-statements`, `1.2.if-statements.e1`.
 | File | Required | Purpose |
 |------|----------|---------|
 | `lecture.md` | yes | <!-- --> |
-| `lecture-notes.md` | yes | <!-- --> |
-| `reading.md` | yes | <!-- --> |
+| `lecture-notes.md` | no | <!-- --> |
+| `reading.md` | no | <!-- --> |
 | `slides.md` | Fundamentals only | <!-- --> |
 | `quiz/` | no | <!-- --> |
 | `practice/` | no | <!-- --> |
 | `exercises/` | no | <!-- --> |
 
-`lecture.md` and `reading.md` must contain these sections: **Objectives**, **Prerequisites**, **Review**, and **Readings** (with **Required** and **Further**).
+The templates include **Objectives**, **Prerequisites**, **Review**, and **Readings** (**Required** / **Further**) sections; keep the ones a lesson needs and delete the rest.
 
 ## Getting the Material
 

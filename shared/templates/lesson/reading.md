@@ -13,7 +13,9 @@ prerequisites: []   # lesson names (e.g. variables-and-types) or addresses (e.g.
 
 <!-- Lessons or skills needed first, or "None". -->
 
-## <!-- Section -->
+## Content
+
+### <!-- Section -->
 
 ## Review
 

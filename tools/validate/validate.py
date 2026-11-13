@@ -21,8 +21,8 @@ NUM_DIR = re.compile(rf"^(\d{{2}})-({SLUG})$")
 EX_DIR = re.compile(rf"^e(\d{{2}})-({SLUG})$")
 ADDRESS = re.compile(r"^\d+\.\d+\.\d+$")
 
-REQUIRED_LESSON_FILES = ["lecture.md", "lecture-notes.md", "reading.md"]
-SECTIONED_FILES = ["lecture.md", "reading.md"]  # must contain the required sections
+REQUIRED_LESSON_FILES = ["lecture.md"]  # lecture-notes.md, reading.md, slides.md are optional
+PREREQ_FILES = ["lecture.md", "reading.md"]  # may list prerequisites in front matter
 
 QUESTION_FIELDS = {  # type -> (required fields, optional fields)
     "mc":          ({"question", "answer", "incorrect"}, set()),
@@ -124,24 +124,6 @@ def check_title(path: Path, fm: dict | None, r: Report) -> None:
         r.error(path, "front matter needs a 'title'")
     elif not title.strip():
         r.warn(path, "title is empty")
-
-
-def check_sections(path: Path, body: str, r: Report) -> None:
-    hs = headings(body)
-    h2 = [t for lvl, t in hs if lvl == 2]
-    h3 = [t for lvl, t in hs if lvl == 3]
-    if "objectives" not in h2:
-        r.error(path, "missing '## Objectives' section")
-    if "prerequisites" not in h2:
-        r.error(path, "missing '## Prerequisites' section")
-    if not any("review" in t or "conclusion" in t for t in h2):
-        r.error(path, "missing '## Review' (or '## Conclusion') section")
-    if "readings" not in h2:
-        r.error(path, "missing '## Readings' section")
-    else:
-        for sub in ("required", "further"):
-            if sub not in h3:
-                r.error(path, f"missing '### {sub.title()}' under Readings")
 
 
 LINK = re.compile(r"!?\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+\"[^\"]*\")?\s*\)")
@@ -302,12 +284,9 @@ def validate(r: Report) -> None:
                     if md.name in ("lecture.md", "lecture-notes.md", "reading.md"):
                         fm, body = front_matter(md, r)
                         check_title(md, fm, r)
-                        if md.name in SECTIONED_FILES:
-                            check_sections(md, body, r)
-                            pr = (fm or {}).get("prerequisites", [])
-                            if fm is not None and "prerequisites" not in fm:
-                                r.error(md, "front matter needs 'prerequisites' (use [] for none)")
-                            elif not isinstance(pr, list) or not all(isinstance(x, (str, int, float)) for x in pr):
+                        if md.name in PREREQ_FILES:
+                            pr = (fm or {}).get("prerequisites") or []
+                            if not isinstance(pr, list) or not all(isinstance(x, (str, int, float)) for x in pr):
                                 r.error(md, "'prerequisites' must be a list of lesson names or addresses")
                             else:
                                 prereqs.extend((md, str(x)) for x in pr)
