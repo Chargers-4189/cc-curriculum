@@ -309,6 +309,22 @@ def validate(r: Report) -> None:
                     for ex in numbered_children(ex_root, EX_DIR, "exercise", r, set()):
                         check_exercise(ex, exercise_names, r)
 
+    # ccm finds things by bare name, so one name on two different things is ambiguous.
+    # (lesson/lesson and exercise/exercise clashes are already reported above)
+    named: dict[str, tuple[str, Path]] = {}
+    kinds = [("course", "[0-9]*-*"), ("chapter", "[0-9]*-*/[0-9]*-*"),
+             ("lesson", "[0-9]*-*/[0-9]*-*/[0-9]*-*"), ("exercise", "[0-9]*-*/[0-9]*-*/[0-9]*-*/exercises/e[0-9]*-*")]
+    for kind, pattern in kinds:
+        for item in sorted(p for p in COURSES.glob(pattern) if p.is_dir()):
+            name = slug(item.name)
+            if name in named:
+                other_kind, other = named[name]
+                if not (kind == other_kind and kind in ("lesson", "exercise")):
+                    r.error(item, f"name '{name}' is also used by the {other_kind} {rel(other)}; "
+                                  f"`ccm get {name}` would be ambiguous")
+            else:
+                named[name] = (kind, item)
+
     # prerequisites must point at real lessons
     by_addr = {address(l): l for l in lessons}
     for md, pre in prereqs:

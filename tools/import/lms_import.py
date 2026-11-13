@@ -51,17 +51,23 @@ def yaml_str(s: str) -> str:
 
 # ------------------------------------------------------------ conversion ---
 
+def unescape(text: str) -> str:
+    """Decode only complete HTML entities (&amp; &#39; ...). Plain html.unescape also decodes
+    legacy semicolon-less ones, which turns URLs like "?a=1&param=2" into "?a=1¶m=2"."""
+    return re.sub(r"&(#[0-9]+|#x[0-9a-fA-F]+|[A-Za-z][A-Za-z0-9]*);", lambda m: html.unescape(m.group(0)), text)
+
+
 def inline(text: str) -> str:
     """Editor.js inline HTML -> Markdown."""
     t = re.sub(r"\s+", " ", text or "")   # HTML whitespace/newlines are just spaces
     t = re.sub(r"<br\s*/?>", "  \n", t, flags=re.I)
     t = re.sub(r'<a\s[^>]*href="([^"]*)"[^>]*>(.*?)</a>',
-               lambda m: f"[{m.group(2)}]({html.unescape(m.group(1))})", t, flags=re.I | re.S)
+               lambda m: f"[{m.group(2)}]({unescape(m.group(1))})", t, flags=re.I | re.S)
     t = re.sub(r"</?(b|strong)>", "**", t, flags=re.I)
     t = re.sub(r"</?(i|em)>", "*", t, flags=re.I)
     t = re.sub(r"</?code[^>]*>", "`", t, flags=re.I)
     t = re.sub(r"<[^>]+>", "", t)          # mark, u, span, etc.
-    t = html.unescape(t).replace(" ", " ")
+    t = unescape(t).replace(" ", " ")
     return t.strip()
 
 
@@ -111,7 +117,10 @@ class Converter:
         if t == "paragraph":
             return inline(d.get("text", "")) or None
         if t == "markdown":
-            text = html.unescape(d.get("text") or "").replace("\u00a0", " ")
+            text = re.sub(r'<a\s[^>]*href="([^"]*)"[^>]*>(.*?)</a>',
+                          lambda m: f"[{m.group(2)}]({unescape(m.group(1))})", d.get("text") or "", flags=re.I | re.S)
+            text = re.sub(r"</?(b|strong)>", "**", text, flags=re.I)
+            text = unescape(text).replace("\u00a0", " ")
             return text.strip() or None
         if t == "list":
             return "\n".join(self.list_items(d.get("items", []), d.get("style") == "ordered"))
@@ -126,8 +135,10 @@ class Converter:
             if (d.get("file_type") or "").upper() in {"JPG", "JPEG", "PNG", "GIF", "WEBP", "SVG", "IMAGE"}:
                 return f"![{name}]({path})"
             return f"[{name}]({path})"
-        if t == "code":
-            return f"```\n{d.get('code', '').rstrip()}\n```"
+        if t in ("code", "codeBox"):
+            lang = d.get("language", "")
+            lang = "" if lang in ("plaintext", "text") else lang
+            return f"```{lang}\n{d.get('code', '').rstrip()}\n```"
         if t == "quote":
             return "\n".join(f"> {line}" for line in inline(d.get("text", "")).splitlines())
         if t == "embed":

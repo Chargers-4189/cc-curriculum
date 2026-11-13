@@ -36,7 +36,7 @@ jobs:
             grep -q '^marp: true' "$f" || continue
             lesson=$(dirname "$f")
             name=$(echo "${lesson#courses/}" | tr '/' '_')
-            npx --yes @marp-team/marp-cli@4.1.2 "$f" --pdf --allow-local-files -o "build/slides/$name.pdf"
+            npx --yes @marp-team/marp-cli@4.1.2 "$f" --pdf --allow-local-files -o "build/slides/$name.pdf" < /dev/null
           done
       - name: Package
         run: |

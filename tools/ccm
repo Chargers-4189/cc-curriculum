@@ -18,8 +18,8 @@ else
   BOLD="" RED="" GREEN="" YELLOW="" DIM="" RESET=""
 fi
 
-die()  { printf '%scc: %s%s\n' "$RED" "$*" "$RESET" >&2; exit 1; }
-warn() { printf '%scc: %s%s\n' "$YELLOW" "$*" "$RESET" >&2; }
+die()  { printf '%sccm: %s%s\n' "$RED" "$*" "$RESET" >&2; exit 1; }
+warn() { printf '%sccm: %s%s\n' "$YELLOW" "$*" "$RESET" >&2; }
 say()  { printf '%s\n' "$*" >&2; }
 
 CCM_TMP=""
@@ -461,7 +461,9 @@ exercise_markers_under() {  # prints exercise folders (with .ccm) under each arg
   local root f d
   for root in "$@"; do
     [ -d "$root" ] || continue
-    find "$root" -maxdepth 9 -name .ccm -type f 2>/dev/null | while IFS= read -r f; do
+    # skip hidden folders (.cache, .git, ...) and node_modules so big home folders stay fast
+    find "$root" -maxdepth 9 \( -type d ! -path "$root" \( -name '.?*' -o -name node_modules \) \) -prune \
+         -o -name .ccm -type f -print 2>/dev/null | while IFS= read -r f; do
       d=$(dirname "$f")
       [ "$(kind_of "$(marker_get "$d" path)")" = exercise ] && (cd "$d" && pwd -P)
     done
@@ -515,6 +517,23 @@ cmd_test() {
       for ex in ${all[@]+"${all[@]}"}; do
         p=$(marker_get "$ex" path)
         case $p in "$resolved"|"$resolved"/*) found+=("$ex") ;; esac
+      done
+    fi
+    # Still nothing: widen the search one parent folder at a time (up to your home folder),
+    # so e.g. fundamentals/week2 can find fundamentals/hwk/day-of-week.
+    if [ "${#found[@]}" -eq 0 ]; then
+      local up=$here stop
+      stop=$(cd "$HOME" 2>/dev/null && pwd -P || echo /)
+      case $here in "$stop"|"$stop"/*) ;; *) stop=/ ;; esac
+      while [ "${#found[@]}" -eq 0 ] && [ "$up" != "$stop" ] && [ "$up" != / ]; do
+        up=$(dirname "$up")
+        while IFS= read -r ex; do
+          [ -n "$ex" ] || continue
+          p=$(marker_get "$ex" path)
+          if target_matches "$p" "$target"; then found+=("$ex")
+          elif [ -n "$resolved" ]; then case $p in "$resolved"|"$resolved"/*) found+=("$ex") ;; esac
+          fi
+        done < <(exercise_markers_under "$up")
       done
     fi
     [ "${#found[@]}" -gt 0 ] || die "couldn't find your copy of '$target' here. Run 'ccm get $target' first, or cd to the folder that contains it."

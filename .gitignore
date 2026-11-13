@@ -30,3 +30,6 @@ build/
 # OS / editor
 .DS_Store
 __pycache__/
+
+# Local source material for conversion (not tracked)
+/import/
