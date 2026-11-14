@@ -1,45 +1,40 @@
----
-title: "Courses"
-lms_source: https://chargingcourses.com/lms/courses/start-here-navigating-charging-courses/learn/2-2
----
-
-# Courses
-
 ## Introduction
 
-Charging Courses LMS organizes its curriculum by Courses → Chapters → Lessons.
+Charging Courses organizes its curriculum by Courses → Chapters → Lessons.
 
 - A **Course** will contain most of the material for a topic or several topics.
    - For example, the Fundamentals course will go through the basics of Java and important programming concepts.
 - A **Chapter** organizes lessons into a more structured flow.
-- A **Lesson** contains actual curriculum content and is where you'll be reading and doing assignments.
+- A **Lesson** (also called an activity) contains actual curriculum content and is where you'll be reading and doing assignments.
 
 ## Navigating The Interface
 
-Once logged in, you will start on the courses page which shows all available courses to you.
+Click **Courses** in the top bar to see all courses available to you. You can search for a course by name, and clicking a course will open its overview.
 
-![1.jpg](assets/1.jpg)
+![courses.jpg](assets/courses.jpg)
 
-Here you can see all available courses to you in which you can enroll into. Clicking a course will provide you with an overview, where you can enroll or click specific course content.
+The course overview shows a description, the instructors, and your **Course Progress** on the right. If you haven't joined the course yet, there will be a button to enroll there instead of **Leave Course**. Course updates from instructors will also show up on the right.
 
-![4.jpg](assets/4.jpg)
+![course-overview.jpg](assets/course-overview.jpg)
 
-Once you are enrolled into a course, there will be a sidebar on the right that lists the chapters and individual lessons. Each chapter is a drop down and can hide or show lessons within that chapter. Clicking on a lesson will open up that individual lesson to show its content on the page.
+Scroll down to see what you will learn and the **Course Lessons**. Each chapter is a drop down and can hide or show lessons within that chapter. Under each lesson you'll see what type it is, like a **Page** for reading or an **Assignment**. Clicking on a lesson will open up that individual lesson.
 
-![5.jpg](assets/5.jpg)
+![course-lessons.jpg](assets/course-lessons.jpg)
 
-As you complete lessons, they will fill up your progress bar for the course until completion.
+## Inside a Lesson
 
-![6.jpg](assets/6.jpg)
+At the top of a lesson, you'll see the course, the chapter, and a progress bar. Each numbered dot on the bar is a lesson, so you can jump between them or use the arrows on each side. The expand icon on the right turns on **Focus Mode**, which hides everything except the lesson.
 
-At the bottom of a lesson, you'll have access to your own personal notes and a comment section. Your notes you can write anything and reference them back at the same place. In the community tab, you can ask new questions and your classmates or instructors will be able to help out. This is also a great place to provide feedback to the specific lesson.
+![lesson-header.jpg](assets/lesson-header.jpg)
 
-Notes and community may not be accessible if a quiz or assignment is on the same lesson.
+Click **Chapters** in the top right of a lesson to see the whole course and skip to any lesson.
 
-![7.jpg](assets/7.jpg)
+![chapters-panel.jpg](assets/chapters-panel.jpg)
 
-Highlighting lesson text can allow you to highlight and reference for your notes.
+At the bottom of a lesson, the **Status** button marks the lesson as complete and **Next** takes you to the following lesson. As you scroll, a bar at the top will also show **Previous** and **Next**. You can use the **K** and **J** keys to move between lessons too.
 
-![8.jpg](assets/8.jpg)
+As you complete lessons, they will fill up your progress bar for the course until completion. If you marked a lesson complete by accident, click the checkbox again to unmark it.
 
-Sometimes a lesson will have a quiz or assignment built in. After this lesson, there is a quiz and assignment that you can play with to see how they work. They behave exactly like
+![lesson-footer.jpg](assets/lesson-footer.jpg)
+
+Sometimes a lesson will have a quiz or assignment built in. The next lesson goes over how they work.

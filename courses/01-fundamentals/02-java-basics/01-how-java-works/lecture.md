@@ -1,10 +1,3 @@
----
-title: "How Java Works"
-prerequisites: [basics-of-computers, java-workspace]
----
-
-# How Java Works
-
 > **Objectives**
 > - Know what Java is and where it's used
 > - Explain Java's four steps: source file, compiler, class file, runtime

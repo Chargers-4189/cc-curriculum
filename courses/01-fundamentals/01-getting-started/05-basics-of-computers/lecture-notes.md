@@ -1,9 +1,3 @@
----
-title: "Basics of Computers"
----
-
-# Basics of Computers - Lecture Notes
-
 ## What is Programming
 
 - Programming = giving a computer instructions

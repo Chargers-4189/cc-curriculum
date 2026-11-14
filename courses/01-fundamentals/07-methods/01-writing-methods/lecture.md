@@ -1,10 +1,3 @@
----
-title: "Methods"
-prerequisites: [for-loops]
----
-
-# Methods
-
 > **Objectives**
 > - Explain why methods exist
 > - Read and write a method header: modifiers, return type, name, parameters
@@ -232,7 +225,8 @@ ccm get credit-card-validator   # Credit Card Validator (Homework)
 
 Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get writing-methods`.
 
-Tip: keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+> [!TIP]
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
 
 To check homework, run `ccm test` from inside its folder:
 

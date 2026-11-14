@@ -1,11 +1,3 @@
----
-title: "Workspace Access"
-prerequisites: [software-signup]
-lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/1-4
----
-
-# Workspace Access
-
 ## Overview
 
 Your Charging Courses workspace provides access to a programming editor and simulator, enabling you to program in Java and test your code. To get started, you first need to create an API key and apply it to your new workspace.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check curriculum structure, front matter, quizzes, practice sets and links.
+"""Check curriculum structure, exercise front matter, quizzes, practice sets and links.
 
     python tools/validate/validate.py            # errors fail, warnings don't
     python tools/validate/validate.py --strict   # warnings fail too (used for releases)
@@ -19,10 +19,9 @@ COURSES = ROOT / "courses"
 SLUG = r"[a-z0-9]+(?:-[a-z0-9]+)*"
 NUM_DIR = re.compile(rf"^(\d{{2}})-({SLUG})$")
 EX_DIR = re.compile(rf"^e(\d{{2}})-({SLUG})$")
-ADDRESS = re.compile(r"^\d+\.\d+\.\d+$")
 
 REQUIRED_LESSON_FILES = ["lecture.md"]  # lecture-notes.md, reading.md, slides.md are optional
-PREREQ_FILES = ["lecture.md", "reading.md"]  # may list prerequisites in front matter
+LESSON_MD = {"lecture.md", "lecture-notes.md", "reading.md"}  # pasted into the LMS: no front matter, no # title
 
 QUESTION_FIELDS = {  # type -> (required fields, optional fields)
     "mc":          ({"question", "answer", "incorrect"}, set()),
@@ -36,6 +35,11 @@ COMMON_OPTIONAL = {"type", "points", "explanation", "tags"}
 QUIZ_TYPES = set(QUESTION_FIELDS) - {"flashcard"}
 PRACTICE_TYPES = set(QUESTION_FIELDS)
 SET_KEYS = ({"title", "questions"}, {"description"})
+
+# LearnHouse callout blocks, written as GitHub-style alerts: "> [!TIP]" on its own line
+CALLOUT_TYPES = {"INFO", "TIP", "WARNING", "SUCCESS", "ERROR"}
+CALLOUT_ALIASES = {"NOTE": "INFO", "IMPORTANT": "WARNING", "CAUTION": "ERROR"}
+CALLOUT = re.compile(r"^(>?)\s*\[!(\w+)\](.*)$", re.M)
 
 
 class Report:
@@ -137,6 +141,18 @@ def check_links(path: Path, body: str, r: Report) -> None:
         target = target.split("#", 1)[0].split("?", 1)[0]
         if target and not (path.parent / target).exists():
             r.error(path, f"broken link: {target}")
+
+
+def check_callouts(path: Path, body: str, r: Report) -> None:
+    for m in CALLOUT.finditer(strip_code(body)):
+        quote, kind, rest = m.group(1), m.group(2), m.group(3).strip()
+        if kind not in CALLOUT_TYPES:
+            hint = f"; use [!{CALLOUT_ALIASES[kind]}]" if kind in CALLOUT_ALIASES else ""
+            r.error(path, f"unknown callout [!{kind}] (LearnHouse has {', '.join(sorted(CALLOUT_TYPES))}){hint}")
+        elif not quote:
+            r.error(path, f"callout [!{kind}] must start a blockquote: '> [!{kind}]'")
+        elif rest:
+            r.error(path, f"put the callout text on the next line ('> ...'), not after [!{kind}]")
 
 
 # ---------------------------------------------------------- question sets ---
@@ -246,8 +262,6 @@ def check_meta_yaml(path: Path, allowed: set[str], r: Report) -> dict:
 def validate(r: Report) -> None:
     lesson_names: dict[str, Path] = {}
     exercise_names: dict[str, Path] = {}
-    prereqs: list[tuple[Path, str]] = []
-    lessons: list[Path] = []
 
     if not COURSES.is_dir():
         r.error(COURSES, "missing courses/ folder")
@@ -266,7 +280,6 @@ def validate(r: Report) -> None:
             check_meta_yaml(chapter / "chapter.yaml", {"title", "description"}, r)
 
             for lesson in numbered_children(chapter, NUM_DIR, "lesson", r, {"chapter.yaml"}):
-                lessons.append(lesson)
                 name = slug(lesson.name)
                 if name in lesson_names:
                     r.error(lesson, f"lesson name '{name}' is also used by {rel(lesson_names[name])}")
@@ -281,18 +294,13 @@ def validate(r: Report) -> None:
                 for md in sorted(lesson.rglob("*.md")):
                     if "exercises" in md.relative_to(lesson).parts:
                         continue
-                    if md.name in ("lecture.md", "lecture-notes.md", "reading.md"):
-                        fm, body = front_matter(md, r)
-                        check_title(md, fm, r)
-                        if md.name in PREREQ_FILES:
-                            pr = (fm or {}).get("prerequisites") or []
-                            if not isinstance(pr, list) or not all(isinstance(x, (str, int, float)) for x in pr):
-                                r.error(md, "'prerequisites' must be a list of lesson names or addresses")
-                            else:
-                                prereqs.extend((md, str(x)) for x in pr)
-                    else:
-                        body = md.read_text(encoding="utf-8")
+                    body = md.read_text(encoding="utf-8")
+                    if md.name in LESSON_MD and body.startswith("---\n"):
+                        r.error(md, "lesson files have no front matter (the LMS shows the title)")
+                    elif md.name in LESSON_MD and re.match(r"#\s", body):
+                        r.warn(md, "lesson files start with content, not a # title (the LMS shows the title)")
                     check_links(md, body, r)
+                    check_callouts(md, body, r)
 
                 if (lesson / "quiz").is_dir():
                     quiz_files = sorted((lesson / "quiz").glob("*.y*ml"))
@@ -325,15 +333,6 @@ def validate(r: Report) -> None:
             else:
                 named[name] = (kind, item)
 
-    # prerequisites must point at real lessons
-    by_addr = {address(l): l for l in lessons}
-    for md, pre in prereqs:
-        if ADDRESS.match(pre):
-            normalized = ".".join(str(int(p)) for p in pre.split("."))
-            if normalized not in by_addr:
-                r.error(md, f"prerequisite {pre} is not a lesson")
-        elif pre not in lesson_names:
-            r.error(md, f"prerequisite '{pre}' is not a lesson name")
 
 
 def check_exercise(ex: Path, names: dict[str, Path], r: Report) -> None:
@@ -348,6 +347,7 @@ def check_exercise(ex: Path, names: dict[str, Path], r: Report) -> None:
         fm, body = front_matter(prompt, r)
         check_title(prompt, fm, r)
         check_links(prompt, body, r)
+        check_callouts(prompt, body, r)
     for p in ex.iterdir():
         if p.name.startswith(".") or p.name == "prompt.md":
             continue

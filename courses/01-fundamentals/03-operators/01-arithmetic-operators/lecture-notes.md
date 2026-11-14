@@ -1,9 +1,3 @@
----
-title: "Arithmetic Operators"
----
-
-# Arithmetic Operators - Lecture Notes
-
 ## Week 1 Review
 
 - Run through the review slide quickly; call on people for each bullet

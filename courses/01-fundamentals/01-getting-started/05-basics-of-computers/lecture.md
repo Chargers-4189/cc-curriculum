@@ -1,11 +1,3 @@
----
-title: "Basics of Computers"
-prerequisites: [fundamentals-introduction]
-lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/1-6
----
-
-# Basics of Computers
-
 > **Objectives**
 > - Explain what programming is and why it's useful
 > - Tell the difference between hardware and software

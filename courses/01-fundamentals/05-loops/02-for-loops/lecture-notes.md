@@ -1,9 +1,3 @@
----
-title: "For Loops"
----
-
-# For Loops - Lecture Notes
-
 ## From while to for
 
 - Show the counting while loop; point at the three scattered parts

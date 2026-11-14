@@ -1,9 +1,3 @@
----
-title: "Introduction"
----
-
-# Introduction - Lecture Notes
-
 ## Introductions
 
 - Introduce yourself and the assistants

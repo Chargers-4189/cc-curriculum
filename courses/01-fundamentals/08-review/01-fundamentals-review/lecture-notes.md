@@ -1,9 +1,3 @@
----
-title: "Review"
----
-
-# Review - Lecture Notes
-
 About 40 minutes. Every code example is a stop-and-ask: get an answer from the room before running it.
 
 ## Suggested Pacing

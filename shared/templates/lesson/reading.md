@@ -1,10 +1,3 @@
----
-title: ""
-prerequisites: []   # lesson names (e.g. variables-and-types) or addresses (e.g. 1.2.1)
----
-
-# <!-- Reading title -->
-
 > **Objectives**
 > - <!-- objective -->
 >

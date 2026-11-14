@@ -1,10 +1,3 @@
----
-title: "Switch Statements"
-prerequisites: [if-statements]
----
-
-# Switch Statements
-
 > **Objectives**
 > - Write a `switch` statement with `case`, `break`, and `default`
 > - Explain fall-through and why `break` is needed
@@ -138,7 +131,8 @@ ccm get day-of-week             # Day of the Week (Homework)
 
 Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get switch-statements`.
 
-Tip: keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+> [!TIP]
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
 
 To check homework, run `ccm test` from inside its folder:
 

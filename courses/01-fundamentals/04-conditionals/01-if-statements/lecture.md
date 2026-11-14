@@ -1,11 +1,3 @@
----
-title: "If Statements"
-prerequisites: [relational-and-logical-operators]
-lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/3-3
----
-
-# If Statements
-
 > **Objectives**
 > - Use `if`, `else if`, and `else` to choose which code runs
 > - Order an `else if` ladder correctly
@@ -206,4 +198,5 @@ ccm get subtraction-quiz        # Subtraction Quiz
 
 Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get if-statements`.
 
-Tip: keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+> [!TIP]
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.

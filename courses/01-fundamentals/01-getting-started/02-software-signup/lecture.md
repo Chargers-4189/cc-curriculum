@@ -1,11 +1,3 @@
----
-title: "Software Signup"
-prerequisites: [fundamentals-introduction]
-lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/1-3
----
-
-# Software Signup
-
 ## Overview
 
 The main software you will be using through this course is Charging Courses. This website and its other software will allow you to program, learn, and interact with other students. Charging Courses Accounts (or Charging Courses Auth) is the only account you need to use the platform and laboratory. You should have received an email to sign up and gone through the process to create your account.
@@ -23,7 +15,7 @@ The main software you will be using through this course is Charging Courses. Thi
 
 - Charging Courses -> [https://chargingcourses.com](https://chargingcourses.com)
   - This is the virtual classroom where all materials, lectures, and meetings will be held.
-- Charging Courses Discussions -> [https://chargingcourses.com/g/community/charging-courses/discussions](https://chargingcourses.com/g/community/charging-courses/discussions)
+- Charging Courses Communities -> [https://chargingcourses.com/communities](https://chargingcourses.com/communities)
   - This is a virtual discussion space for those that don't have access to Discord, we may occasionally post updates/announcements here.
 - Charging Courses Labs -> [https://labs.chargingcourses.com/workspaces](https://labs.chargingcourses.com/workspaces)
   - This is the workspace where you'll be programming for most of the time.

@@ -1,9 +1,3 @@
----
-title: "Methods"
----
-
-# Methods - Lecture Notes
-
 ## Why
 
 - Start with the two copy-pasted loops (commented out in the follow-along)

@@ -1,9 +1,3 @@
----
-title: "Switch Statements"
----
-
-# Switch Statements - Lecture Notes
-
 ## Setup
 
 - Tax filing status example; write the if ladder first so they feel the repetition

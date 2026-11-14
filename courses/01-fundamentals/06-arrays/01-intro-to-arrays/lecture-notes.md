@@ -1,9 +1,3 @@
----
-title: "Arrays"
----
-
-# Arrays - Lecture Notes
-
 Keep this one surface level: what arrays are and how to use them. Save objects/references for Object Oriented.
 
 ## Why Arrays

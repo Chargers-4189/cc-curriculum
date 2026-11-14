@@ -1,10 +1,3 @@
----
-title: "Hello World"
-prerequisites: [how-java-works]
----
-
-# Hello World
-
 > **Objectives**
 > - Write, compile, and run your first Java program
 > - Use `System.out.println` to output to the console
@@ -92,4 +85,5 @@ ccm get hello-demo              # Hello World (Follow Along)
 
 Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get hello-world`.
 
-Tip: keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+> [!TIP]
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.

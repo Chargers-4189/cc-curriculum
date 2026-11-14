@@ -1,10 +1,3 @@
----
-title: "PlugNMeet"
-lms_source: https://chargingcourses.com/lms/courses/start-here-navigating-charging-courses/learn/2-7
----
-
-# PlugNMeet
-
 ## Introduction
 
 PlugNMeet is just like any online meeting program like Zoom or Google Meet. However, it is packed with more features and does not require an account.
@@ -18,7 +11,8 @@ When you first enter a PlugNmeet room, you will be prompted to choose how you wa
 - **Enable Microphone and Camera:** Choose this option to speak and share your video in the meeting. Your browser will ask for permission to access your microphone and camera.
 - **Continue as a listener:** Choose this option to join without a microphone or camera. You will be able to hear everything but will not be able to speak or share video.
 
-**Important:** This choice is not permanent. If you decide to **Continue as a listener**, you can easily activate your microphone and camera later from the main control bar (if the moderator allows it).
+> [!INFO]
+> This choice is not permanent. If you decide to **Continue as a listener**, you can easily activate your microphone and camera later from the main control bar (if the moderator allows it).
 
 ### Section 1: The Attendee Control Bar
 
@@ -61,7 +55,8 @@ These features allow you to interact with the moderator and other participants.
 
 ![attendee-transcriptions-history.webp](https://www.plugnmeet.org/assets/images/attendee-transcriptions-history-c3d7ff882cc1f33b6643a016c9565642.webp)
 
-**Important:** You must **Enable Microphone** to use **Transcription & Translation**.
+> [!WARNING]
+> You must **Enable Microphone** to use **Transcription & Translation**.
 
 #### Using AI Assistant
 

@@ -1,10 +1,3 @@
----
-title: "While Loops"
-prerequisites: [if-statements]
----
-
-# While Loops
-
 > **Objectives**
 > - Repeat code with a `while` loop
 > - Name the two things every loop needs
@@ -149,4 +142,5 @@ ccm get guess-game              # Guess the Number
 
 Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get while-loops`.
 
-Tip: keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+> [!TIP]
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.

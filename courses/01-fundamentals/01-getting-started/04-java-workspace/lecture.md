@@ -1,11 +1,3 @@
----
-title: "Java Workspace"
-prerequisites: [workspace-access]
-lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/1-5
----
-
-# Java Workspace
-
 > **Objectives**
 > - Start your workspace and open VS Code in the browser
 > - Find your way around VS Code: Explorer, Editor, Terminal
@@ -24,52 +16,77 @@ Your workspace runs on **Coder**, and you'll write code in **VS Code**, the same
 
 ## Starting Your Workspace
 
-1. Go to [Charging Courses Labs](https://labs.chargingcourses.com/workspaces) and click on your workspace.
-2. If your workspace is stopped, click **Start**. It takes a minute or two to boot up.
-3. Once it shows **Running**, the buttons to open your apps will become available.
+1. Go to [Charging Courses Labs](https://labs.chargingcourses.com/workspaces) (or click **Labs** at the top of Charging Courses). If you're asked to sign in, click **Sign in with Charging Courses Auth**.
 
-<!-- SCREENSHOT: workspace page with the Start button and the Running status -->
+![coder-login.jpg](assets/coder-login.jpg)
 
-Your workspace may stop on its own after a while of not being used. That's okay! Your files are saved, just start it again.
+2. You'll see a list of your workspaces. Click on your workspace to open it. If it says **Stopped**, you can also click the ▷ button on the right to start it.
+
+![workspaces.jpg](assets/workspaces.jpg)
+
+3. If your workspace is stopped, click **Start**. It takes a minute or two to boot up.
+4. Once it shows **Running**, the buttons to open your apps will become available.
+
+![workspace-running.jpg](assets/workspace-running.jpg)
+
+Your workspace will stop on its own after a while (the timer next to **Running** shows when, and **+** gives you more time). That's okay! Your files are saved, just start it again.
 
 ## Opening VS Code
 
-On your workspace page, click the **code-server** (VS Code) button. VS Code will open in a new browser tab.
+On your workspace page, click **VS Code Web**. VS Code will open in a new browser tab.
 
-<!-- SCREENSHOT: workspace page apps row, code-server button highlighted -->
+The other buttons on your workspace page:
 
-There is also a **Terminal** button. It opens a terminal by itself without the editor, which is handy if you only need to type a quick command.
+- **VS Code Desktop** opens your workspace in the VS Code app, if you have it installed on your own computer.
+- **4189 GitHub** takes you to our team's code on GitHub.
+- **WPILib Simulator** opens the robot simulator. We'll use this later in the season.
+- **Terminal** opens a terminal by itself without the editor, which is handy if you only need to type a quick command.
 
 ## A Tour of VS Code
 
-<!-- SCREENSHOT: VS Code in the browser with each area labeled -->
+![vscode-tour.jpg](assets/vscode-tour.jpg)
 
+- **Menu Bar** (top): the **File**, **Edit**, **View**, **Run**, and **Terminal** menus. If your window is small, they hide behind a **☰** icon in the top left.
 - **Activity Bar** (far left): icons to switch views. The top one, the two pages, is the **Explorer**.
 - **Side Bar**: shows the current view. The Explorer lists the files and folders you have open.
 - **Editor** (middle): where you write code. Each open file gets its own tab.
-- **Panel** (bottom): holds the **Terminal**, plus output and error messages.
-- **Status Bar** (very bottom): small details like the line you're on and the language of the file.
-- **Menu** (☰ in the top left): in the browser, the File, Edit, View, and Terminal menus live behind this icon.
+- **Panel** (bottom): holds the **Terminal**, plus problems and output messages.
+- **Status Bar** (very bottom): small details like the line you're on and the language of the file. **Java: Ready** means Java has finished loading.
+- **Chat** (right): an AI assistant. You can close it with the **X** in its top right corner to get more room.
 
 ## Opening a Folder
 
 VS Code works with one folder at a time. Everything you see in the Explorer is inside that folder.
 
-1. Click **☰ > File > Open Folder...**
-2. Pick the folder you want (your home folder is `/home/coder`) and click **OK**.
-3. If VS Code asks whether you trust the authors of the files, click **Yes**. It's your own folder.
+When you first open VS Code Web, it opens your **projects** folder (`/home/coder/projects`). This is a good place to keep all of your work.
 
-<!-- SCREENSHOT: Open Folder dialog -->
+To open a different folder:
+
+1. Click **File > Open Folder...**
+
+![file-menu.jpg](assets/file-menu.jpg)
+
+2. Type or pick the folder you want (your home folder is `/home/coder`) and click **OK**.
+
+![open-folder.jpg](assets/open-folder.jpg)
+
+### Restricted Mode
+
+The first time you open a folder, you may see a bar at the top that says **Restricted Mode**. In restricted mode, VS Code turns off features like running and debugging your code.
+
+Click **Manage** on that bar, then click **Trust**. It's your own folder, so it's safe to trust.
+
+![workspace-trust.jpg](assets/workspace-trust.jpg)
 
 ## Creating Files and Folders
 
-Hover over the Explorer and you'll see a row of icons at the top:
+Hover over the Explorer and you'll see a row of icons next to the folder name:
 
 - **New File...** creates a file
 - **New Folder...** creates a folder
 - **Refresh Explorer** and **Collapse Folders in Explorer** tidy up the view
 
-<!-- SCREENSHOT: Explorer header icons -->
+![vscode-explorer.jpg](assets/vscode-explorer.jpg)
 
 The new file or folder is created inside whichever folder you have selected. You can also **right-click** a folder and choose **New File...** or **New Folder...**
 
@@ -86,9 +103,9 @@ You can also drag and drop files to move them into a different folder.
 
 ## Saving Your Work
 
-- Press **Ctrl + S** to save.
+- Your workspace has **Auto Save** turned on, so your files save as you type. You can check by opening the **File** menu and looking for a check mark next to **Auto Save**.
+- You can still press **Ctrl + S** to save right away.
 - A **dot** on a file's tab means it has unsaved changes.
-- To never worry about it again, turn on **☰ > File > Auto Save**.
 
 Your program runs whatever was **saved**, not what's on your screen. If your changes aren't showing up when you run, save first!
 
@@ -96,10 +113,12 @@ Your program runs whatever was **saved**, not what's on your screen. If your cha
 
 The terminal lets you type commands to the computer instead of clicking.
 
-- Open one with **☰ > Terminal > New Terminal**, or press **Ctrl + `** (the backtick key, left of 1)
+- Open one with **Terminal > New Terminal**, or press **Ctrl + `** (the backtick key, left of 1)
 - It opens at the bottom, in the folder you have open
 
-<!-- SCREENSHOT: terminal panel open below the editor -->
+![terminal-menu.jpg](assets/terminal-menu.jpg)
+
+The text before the `$` tells you which folder you're in. `~` is short for your home folder, so `~/projects` means `/home/coder/projects`.
 
 A few commands to start with:
 
@@ -125,9 +144,9 @@ java HelloWorld         # runs it
 
 You can also do both in one step with `java HelloWorld.java`.
 
-If your workspace has the Java extension, you'll also see a **Run** button (▷) at the top right of the editor, or a **Run** link above `main`.
+Once **Java: Ready** shows in the status bar, you can also click the **Run** button (▷) at the top right of the editor, or the small **Run** link right above your class. The output shows up in the terminal.
 
-<!-- SCREENSHOT: Run button / Run link above main -->
+![vscode-tour.jpg](assets/vscode-tour.jpg)
 
 ## Getting Course Files
 

@@ -1,9 +1,3 @@
----
-title: "Relational and Logical Operators"
----
-
-# Relational and Logical Operators - Lecture Notes
-
 ## Relational Operators
 
 - Follow-along: `a = 10, b = 20`; print all six comparisons, predict each first

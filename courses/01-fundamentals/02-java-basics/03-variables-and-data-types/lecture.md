@@ -1,10 +1,3 @@
----
-title: "Variables and Data Types"
-prerequisites: [hello-world]
----
-
-# Variables and Data Types
-
 > **Objectives**
 > - Declare and initialize variables
 > - Choose the right data type: `int`, `double`, `char`, `boolean`, `String`
@@ -74,7 +67,8 @@ Once a variable exists, you can **assign it a new value** any time, but its type
 
 There's one more type you'll use constantly: **`String`** holds text, in double quotes, like `"Hello World"`. It's not a primitive (we'll learn why in the Object Oriented course), but you can use it just like the others.
 
-**Note:** Consider size and memory when choosing data types. `int` is more efficient than `double` due to decimal precision, so use `int` when you only need whole numbers.
+> [!INFO]
+> Consider size and memory when choosing data types. `int` is more efficient than `double` due to decimal precision, so use `int` when you only need whole numbers.
 
 ## Type Casting
 
@@ -182,4 +176,5 @@ ccm get variables-demo          # Variables (Follow Along)
 
 Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get variables-and-data-types`.
 
-Tip: keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+> [!TIP]
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.

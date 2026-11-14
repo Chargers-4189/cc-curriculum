@@ -1,9 +1,3 @@
----
-title: "Variables and Data Types"
----
-
-# Variables and Data Types - Lecture Notes
-
 ## Variables
 
 - Containers with a type, a name, and a value

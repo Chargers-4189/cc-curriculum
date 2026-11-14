@@ -1,10 +1,3 @@
----
-title: "Introduction"
-lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/1-2
----
-
-# Introduction
-
 > **Objectives**
 > - Meet the instructors and know how to contact them
 > - Understand how this curriculum is organized

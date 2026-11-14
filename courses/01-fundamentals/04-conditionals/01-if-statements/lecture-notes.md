@@ -1,9 +1,3 @@
----
-title: "If Statements"
----
-
-# If Statements - Lecture Notes
-
 ## Motivation
 
 - "Last time `1 / 0` crashed the program. How could we stop that?" → decision points

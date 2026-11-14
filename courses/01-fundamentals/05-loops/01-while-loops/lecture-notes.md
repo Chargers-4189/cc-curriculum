@@ -1,9 +1,3 @@
----
-title: "While Loops"
----
-
-# While Loops - Lecture Notes
-
 ## Motivation
 
 - "Print Welcome to Java 100 times": copy-paste is tedious and error-prone

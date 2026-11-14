@@ -224,7 +224,8 @@ title_of() {  # title_of <abs dir> <kind>
   case $2 in
     course)   yaml_scalar "$1/course.yaml" title ;;
     chapter)  yaml_scalar "$1/chapter.yaml" title ;;
-    lesson)   yaml_scalar "$1/lecture.md" title ;;
+    lesson)   # lesson files have no front matter: "02-for-loops" -> "For Loops"
+              basename "$1" | sed 's/^[0-9]*-//' | awk -F- '{ for (i = 1; i <= NF; i++) $i = toupper(substr($i, 1, 1)) substr($i, 2); print }' ;;
     exercise) yaml_scalar "$1/prompt.md" title ;;
   esac
 }

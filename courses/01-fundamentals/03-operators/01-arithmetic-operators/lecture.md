@@ -1,11 +1,3 @@
----
-title: "Arithmetic Operators"
-prerequisites: [variables-and-data-types]
-lms_source: https://chargingcourses.com/lms/courses/1-fundamentals/learn/3-2
----
-
-# Arithmetic Operators
-
 > **Objectives**
 > - Use Java's arithmetic operators: `+ - * / %`
 > - Predict the difference between integer and floating-point division
@@ -112,7 +104,8 @@ System.out.println(result); // 12
 System.out.println(l);      // 7
 ```
 
-Tip: use `++` on its own line and you never have to think about this.
+> [!TIP]
+> Use `++` on its own line and you never have to think about this.
 
 ## Compound Assignment Operators
 
@@ -171,4 +164,5 @@ ccm get arithmetic-demo         # Arithmetic (Follow Along)
 
 Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get arithmetic-operators`.
 
-Tip: keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+> [!TIP]
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.

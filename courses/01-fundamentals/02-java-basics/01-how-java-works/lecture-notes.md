@@ -1,9 +1,3 @@
----
-title: "How Java Works"
----
-
-# How Java Works - Lecture Notes
-
 ## What is Java
 
 - Created 1995 by Sun Microsystems, now Oracle

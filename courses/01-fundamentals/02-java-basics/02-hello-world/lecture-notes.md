@@ -1,9 +1,3 @@
----
-title: "Hello World"
----
-
-# Hello World - Lecture Notes
-
 ## Live Coding
 
 - Everyone creates `Hello.java` in their workspace and types along; don't paste

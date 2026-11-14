@@ -24,7 +24,6 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-TEMPLATES = ROOT / "shared" / "templates"
 DEFAULT_BASE = "https://chargingcourses.com"
 UA = {"User-Agent": "cc-curriculum-importer"}
 
@@ -168,20 +167,8 @@ class Converter:
 
 def lecture_md(title: str, source: str, body: str) -> str:
     body = body.strip() or "<!-- This lesson's content requires an LMS login and was not imported. -->"
-    return f"""---
-title: {yaml_str(title)}
-lms_source: {source}
----
-
-# {title}
-
-{body}
-"""
-
-
-def from_template(name: str, title: str) -> str:
-    text = (TEMPLATES / "lesson" / name).read_text(encoding="utf-8")
-    return text.replace('title: ""', f"title: {yaml_str(title)}", 1)
+    # no front matter or # title: the LMS shows the lesson title itself
+    return f"<!-- Imported from {source} -->\n\n{body}\n"
 
 
 def main() -> int:
@@ -223,8 +210,7 @@ def main() -> int:
             (l_dir / "lecture.md").write_text(lecture_md(title, source, body), encoding="utf-8")
             notes = conv.blocks(data.get("instructor_content")) or (data.get("instructor_notes") or "").strip()
             if notes:
-                notes_md = from_template("lecture-notes.md", title).split("\n## ", 1)[0].rstrip()
-                (l_dir / "lecture-notes.md").write_text(notes_md + "\n\n" + notes + "\n", encoding="utf-8")
+                (l_dir / "lecture-notes.md").write_text(notes + "\n", encoding="utf-8")
             status = "imported" if body.strip() else "PLACEHOLDER (needs login)"
             if data.get("no_preview") or not body.strip():
                 problems.append(f"{l_dir}: content not public; placeholder created")
