@@ -1,0 +1,98 @@
+title: "Week 1 Review"
+description: "Covers Basics of Computers, How Java Works, and variables (= vs ==)."
+questions:
+  - type: mc
+    question: "What is an IDE used for?"
+    answer: "Writing, storing, running, and deploying code"
+    incorrect:
+      - "Browsing the internet"
+      - "Storing photos and music"
+      - "Cooling the CPU"
+
+  - type: mc
+    question: "What is the main drawback of RAM?"
+    answer: "Erased when the computer turns off"
+    incorrect:
+      - "It can't hold programs"
+      - "It's permanent and can't be changed"
+      - "It's the slowest type of memory"
+
+  - type: mc
+    question: "What do folders contain?"
+    answer: "Files and other folders"
+    incorrect:
+      - "Only one file at a time"
+      - "Only images"
+      - "RAM"
+
+  - type: mc
+    question: "What does Java's \"WORA\" principle mean?"
+    answer: "Write Once, Run Anywhere"
+    incorrect:
+      - "Work On Reliable Applications"
+      - "Write Only, Read Always"
+      - "Write Often, Repeat Always"
+
+  - type: mc
+    question: "What is programming?"
+    answer: "Giving a computer instructions"
+    incorrect:
+      - "Fixing broken hardware"
+      - "Designing how a website looks"
+      - "Typing quickly on a keyboard"
+
+  - type: mc
+    question: "What are the four steps of how Java works, in order?"
+    answer: "Source File → Compiler → Class File → Runtime"
+    incorrect:
+      - "Class File → Compiler → Source File → Runtime"
+      - "Compiler → Source File → Runtime → Class File"
+      - "Source File → Runtime → Compiler → Class File"
+
+  - type: mc
+    question: "What's the difference between = and ==?"
+    answer: "= assigns a value, == checks equality"
+    incorrect:
+      - "They do exactly the same thing"
+      - "= checks equality, == assigns a value"
+      - "== is only used with text"
+
+  - type: mc
+    question: "What is a repository?"
+    answer: "A special folder that tracks code changes"
+    incorrect:
+      - "A type of memory chip"
+      - "A program that runs Java code"
+      - "A file format for images"
+
+  - type: mc
+    question: "In the Computer Model, which is an input device?"
+    answer: "A keyboard"
+    incorrect:
+      - "A CPU"
+      - "A printer"
+      - "A flash drive"
+
+  - type: mc
+    question: "Which of these is hardware?"
+    answer: "RAM"
+    incorrect:
+      - "A saved .txt file"
+      - "Windows"
+      - "A Java program"
+
+  - type: mc
+    question: "A file named movie.mp4 is what kind of file?"
+    answer: "A media file"
+    incorrect:
+      - "A folder"
+      - "A program file"
+      - "A document file"
+
+  - type: mc
+    question: "Which is an example of secondary storage?"
+    answer: "An SSD"
+    incorrect:
+      - "RAM"
+      - "A monitor"
+      - "A mouse"
