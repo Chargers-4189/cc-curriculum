@@ -1,0 +1,9 @@
+label,input,output,hidden
+10 / 3,"10
+3",Enter the dividend: Enter the divisor: 10 / 3 = 3,
+Divide by zero,"10
+0",Enter the dividend: Enter the divisor: Cannot divide by zero,
+Negative,"-9
+2",Enter the dividend: Enter the divisor: -9 / 2 = -4,
+Zero on top,"0
+5",Enter the dividend: Enter the divisor: 0 / 5 = 0,

@@ -1,0 +1,5 @@
+label,input,output,hidden
+932,932,Enter a number between 0 and 999: The sum of the digits is 14,
+Single digit,7,Enter a number between 0 and 999: The sum of the digits is 7,
+999,999,Enter a number between 0 and 999: The sum of the digits is 27,
+Zero in the middle,405,Enter a number between 0 and 999: The sum of the digits is 9,

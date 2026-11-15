@@ -1,0 +1,7 @@
+label,input,output,hidden
+85 is a B,85,Enter your score: Grade: B,
+Exactly 90,90,Enter your score: Grade: A,
+100,100,Enter your score: Grade: A,
+72,72,Enter your score: Grade: C,
+Exactly 60,60,Enter your score: Grade: D,
+59,59,Enter your score: Grade: F,

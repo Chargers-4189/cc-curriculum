@@ -5,7 +5,7 @@
 > - Compare primary and secondary storage
 > - Understand files, folders, repositories, and IDEs
 >
-> **Prerequisites:** None! This is where we start.
+> **Prerequisites:** none
 
 ## What is Programming
 
@@ -23,7 +23,7 @@ Programming is a way of giving computer instructions.
 - **Communication** between controls, motors, and other components
 - Programming allows us to give **detailed instructions** on what to do
 
-Humans and computers are good at very different things. That's why we program: we bring the creativity, the computer brings the speed and consistency.
+Humans and computers are good at different things:
 
 | Human | Computer |
 |---|---|
@@ -55,7 +55,7 @@ The Computer Model shows how a computer works:
 - **Processing Devices** process information: the CPU in laptops and desktops
 - **Output Devices** output information: motors, speakers, printers
 
-Notice the robot fits this model too. Sensors and controllers are inputs, the roboRIO processes, and motors are outputs.
+The robot fits this model too: sensors and controllers are inputs, the roboRIO processes, and motors are outputs.
 
 ## Memory
 
@@ -124,11 +124,6 @@ Some folders are specialized to hold code. These are called **repositories**. Th
 
 Examples are VS Code, Eclipse, and Repl.it. We use VS Code, both in your workspace and on the robot.
 
-## Review
+## Review Quiz
 
-- Why is programming important?
-- What is RAM and what is its drawback?
-- What is an example of secondary storage and what does it do?
-- What do folders contain? What do those contain?
-- What are repositories?
-- What is an IDE used for?
+[Basics of Computers Quiz](quiz/review.csv)

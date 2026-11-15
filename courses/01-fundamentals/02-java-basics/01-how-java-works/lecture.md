@@ -11,7 +11,7 @@
 ## What is Java?
 
 - Java is a programming language created by Sun Microsystems (now Oracle) in 1995
-- It's a popular **high-level** language, meaning it's written for people to read, not just machines
+- It's a popular **high-level** language, meaning it's written for people to read
 - Java is used by over 3 billion devices
 - Java follows the **WORA** principle: "Write Once, Run Anywhere"
   - Your code runs on any machine with a **Java Virtual Machine (JVM)**
@@ -49,7 +49,7 @@ ls                       # ...and creates HelloWorld.class next to it
 java HelloWorld          # Runtime: the JVM runs the class file
 ```
 
-When you click **Run** in VS Code, it does these same two steps for you: it compiles your source file into a class file, then runs the class file.
+Clicking **Run** in VS Code does the same two steps: compile, then run.
 
 ## Code Structure
 
@@ -63,7 +63,7 @@ When you click **Run** in VS Code, it does these same two steps for you: it comp
   - Where you write your instructions (statements)
   - Methods are similar to functions
 
-Think of it as boxes inside boxes: a source file holds a class, a class holds methods, and methods hold your statements.
+A source file holds a class, a class holds methods, and methods hold statements.
 
 ![Source File holds a Class, which holds a Method, which holds Statements](assets/slide-code-structure.png)
 
@@ -92,10 +92,6 @@ public class Main {
 - The `main()` method is where the program **starts**
 - All programs **need** a `main()` to start, no matter the size of the program
 
-## Review
+## Review Quiz
 
-- What does WORA stand for, and what makes it possible?
-- What are Java's four steps? What does each one produce?
-- What file does the compiler create from `Main.java`?
-- What holds what: source file, class, method?
-- Where does every Java program start?
+[How Java Works Quiz](quiz/review.csv)

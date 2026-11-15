@@ -1,0 +1,11 @@
+label,input,output,hidden
+Friday + 50,"5
+50",Enter today's day (1 = Monday ... 7 = Sunday): Enter the number of days: In 50 days it will be day 6,
+Sunday + 1 wraps to Monday,"7
+1",Enter today's day (1 = Monday ... 7 = Sunday): Enter the number of days: In 1 days it will be day 1,
+Monday + 0,"1
+0",Enter today's day (1 = Monday ... 7 = Sunday): Enter the number of days: In 0 days it will be day 1,yes
+Wednesday + 365,"3
+365",Enter today's day (1 = Monday ... 7 = Sunday): Enter the number of days: In 365 days it will be day 4,yes
+Saturday + 8,"6
+8",Enter today's day (1 = Monday ... 7 = Sunday): Enter the number of days: In 8 days it will be day 7,yes

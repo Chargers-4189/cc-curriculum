@@ -1,24 +1,19 @@
 ---
 title: "Variables (Follow Along)"
+type: follow-along
 ---
 
-# Variables (Follow Along)
+Follow along with the lesson in `Variables.java`. Each section of the lesson has a matching `// --- Section ---` comment in the file.
 
-## Getting the Files
+1. **Declare** a `String` named `firstName`, then **initialize** it and print it.
+2. Declare and initialize one variable of each type: `int`, `double`, `char`, `boolean`. Print them all on one line.
+3. Try giving `age` a String. Read the error, then comment that line out.
+4. Cast an `int` to a `double`, and a `double` to an `int`. What happens to the decimal?
+5. Use a `Scanner` to ask for a name and an age, then greet the user.
 
-Open a terminal in your workspace and run:
+## In Labs
 
 ```bash
 ccm get variables-demo
 cd variables-demo
 ```
-
-## Task
-
-Follow along with the lecture in `Variables.java`.
-
-1. **Declare** a `String` named `firstName`. Is that a declaration or an initialization?
-2. **Initialize** it with your name and print it.
-3. Declare and initialize an `int` named `myNum` in one line.
-4. Create one variable of each primitive type we covered: `int`, `double`, `char`, `boolean`. Print them all on one line.
-5. Cast a `double` to an `int`. What happens to the decimal?

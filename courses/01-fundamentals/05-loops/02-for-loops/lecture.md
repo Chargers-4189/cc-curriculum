@@ -7,19 +7,23 @@
 >
 > **Prerequisites:** [While Loops](../01-while-loops/lecture.md)
 
+## Follow Along
+
+Get the starter file in Charging Courses Labs with `ccm get for-demo` and open `ForLoops.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one.
+
 ## Same Loop, One Line
 
-Every counting while loop has the same three parts, scattered across three different places:
+A counting while loop has three parts in three places:
 
 ```java
 int k = 0;          // initialization (above the loop)
 while (k < 10) {    // condition
     // ...
-    k++;            // update (buried at the bottom, easy to forget)
+    k++;            // update
 }
 ```
 
-A `for` loop puts all three in the header where you can see them:
+A `for` loop puts all three in the header:
 
 ```java
 for (int k = 0; k < 10; k++) {
@@ -51,6 +55,9 @@ for ([1]; [2]; [4]) {
 
 A variable declared in the header **only exists inside the loop**. After the loop ends, `k` is gone.
 
+> [!WARNING]
+> **Try it:** under `// --- Order of Execution ---`, write a loop from 0 to 2 that prints `"k is " + k`. Then add `System.out.println(k);` **after** the loop. It won't compile, because `k` only exists in the loop. Comment it out.
+
 ## Counting Different Ways
 
 ```java
@@ -70,7 +77,7 @@ Watch out for **off-by-one** errors: `n <= 10` runs ten times starting at 1, `n 
 - **for** → I know how many times ("print 10 rows", "1 to 100")
 - **while** → I don't ("until the user types 0", "until they guess it")
 
-Any loop can be written either way. Pick the one that makes the code readable.
+Either one works. Pick the one that reads better.
 
 ## Nested For Loops
 
@@ -94,14 +101,14 @@ for (int row = 1; row <= 9; row++) {
 ```
 
 - The inner loop runs start to finish for **every** pass of the outer loop: 9 × 9 = 81 numbers
-- The `println()` at the end of the outer loop is what ends each row
-- `printf("%4d", value)` prints a number in a space 4 characters wide, which lines the columns up
+- The `println()` at the end of the outer loop ends each row
+- `printf("%4d", value)` prints a number 4 characters wide so the columns line up
 
-Be careful: nesting multiplies. Three nested loops of 10,000 each is a **trillion** iterations.
+Nesting multiplies: three nested loops of 10,000 each is a **trillion** iterations.
 
 ## break and continue
 
-- `break` - get out of the loop entirely, right now
+- `break` - exit the loop
 - `continue` - skip the **rest** of this pass and go to the next one
 
 ```java
@@ -126,39 +133,34 @@ for (int n = 1; n <= 20; n++) {
 System.out.println("Sum of odds = " + cSum); // 100
 ```
 
-Both are conveniences; you could use a boolean flag instead. Be wary of using lots of `break`s, since multiple exits make a loop hard to follow. In a nested loop, `break` only exits the **inner** loop.
+Lots of `break`s make a loop hard to follow, so use them sparingly. In a nested loop, `break` only exits the **inner** loop.
 
-## Review
+## Review Quiz
 
-- In what order do the three parts of a for loop's header run?
-- What does `for (int k = 10; k > 0; k -= 2)` print?
-- In a nested loop, how many times does the inner body run if the outer loop runs 5 times and the inner loop runs 3 times?
-- What's the difference between `break` and `continue`?
+[For Loops Quiz](quiz/review.csv)
 
-## Exercises
+## Practice
 
-- [Loops (Follow Along)](exercises/e01-loops-demo/prompt.md)
-- [Number Pyramid (Homework)](exercises/e02-number-pyramid/prompt.md)
-- [Leap Years (Homework)](exercises/e03-leap-years/prompt.md)
+Write your code in each editor and click **Test Run** until every test passes.
 
-### Getting the Files
+### 1. Multiples
 
-Open a terminal in your workspace and run:
+[Multiples](exercises/e02-multiples/prompt.md)
 
-```bash
-ccm get loops-demo              # Loops (Follow Along)
-ccm get number-pyramid          # Number Pyramid (Homework)
-ccm get leap-years              # Leap Years (Homework)
-```
+### 2. Factorial
 
-Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get for-loops`.
+[Factorial](exercises/e03-factorial/prompt.md)
 
-> [!TIP]
-> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+### 3. Star Triangle
 
-To check homework, run `ccm test` from inside its folder:
+[Star Triangle](exercises/e04-star-triangle/prompt.md)
 
-```bash
-cd number-pyramid
-ccm test
-```
+## Homework
+
+### Number Pyramid
+
+[Number Pyramid](exercises/e05-number-pyramid/prompt.md)
+
+### Leap Years
+
+[Leap Years](exercises/e06-leap-years/prompt.md)

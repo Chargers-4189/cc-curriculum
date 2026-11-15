@@ -1,0 +1,7 @@
+label,input,output,hidden
+Same,"robot
+robot",Enter the first word: Enter the second word: Same word: true,
+Different,"robot
+motor",Enter the first word: Enter the second word: Same word: false,
+Capitals count,"Robot
+robot",Enter the first word: Enter the second word: Same word: false,

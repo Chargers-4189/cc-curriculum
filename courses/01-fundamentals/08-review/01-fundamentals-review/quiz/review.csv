@@ -1,0 +1,13 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+double avg = (90 + 85 + 80) / 3; Why is this risky?,"It's integer division, so the decimal is lost",,,double can't hold an average,You can't divide by 3,"Nothing, it's always right"
+"if (name == ""steve"") { ... } What's wrong?","Strings should use .equals(), not ==",,,== needs three equal signs,Nothing,name must be a char
+"if (score > 60); System.out.println(""pass""); What happens when score is 10?","It prints pass, the semicolon ended the if",,,It prints nothing,It won't compile,It prints 10
+"What does System.out.println(""1"" + 2 + 3); print?",123,,,6,15,33
+What does 17 / 5 + 17 % 5 equal?,5,,,3,2,5.4
+Which loop runs exactly 10 times?,for (int n = 0; n < 10; n++),,,for (int n = 0; n <= 10; n++),for (int n = 1; n < 10; n++),for (int n = 10; n > 1; n--)
+int[] a = new int[4]; What is the last valid index?,3,,,4,5,0
+"After swap(num1, num2) with a swap method that swaps its parameters, what happened to num1 and num2?","Nothing, the method swapped copies",,,They're swapped,They're both 0,It won't compile
+A switch is missing its breaks. What happens?,It falls through and runs the cases below the match,,,It won't compile,Only the default runs,Nothing runs
+Where can a variable declared inside an if block be used?,Only inside that block,,,Anywhere in the method,Anywhere in the class,Only after the block
+Which of these print a decimal? (select all that apply),System.out.println(7 / 2.0);,System.out.println((double) 7 / 2);,,System.out.println(7 / 2);,System.out.println(7 % 2);,
+Which of these would crash or not compile? (select all that apply),System.out.println(10 / 0);,int[] a = new int[3]; a[3] = 1;,"int x = ""five"";",System.out.println(10.0 / 4);,int[] a = new int[3]; a[2] = 1;,

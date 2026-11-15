@@ -3,14 +3,14 @@
 > - Recognize the most common traps in each topic
 > - Combine the topics in one program
 >
-> **Prerequisites:** Every lesson in this course! This is where it all comes together.
+> **Prerequisites:** every lesson in this course
 
 ## 1. Variables and Types
 
 ```java
-String firstName;        // declaration - the box exists, nothing in it
-firstName = "bob";       // initialization - now something is in it
-int myNum = 20;          // both at once, which is what you'll normally do
+String firstName;        // declaration
+firstName = "bob";       // initialization
+int myNum = 20;          // both at once
 
 double ratio = 0.8;
 char grade = 'A';        // single quotes = char, double quotes = String
@@ -19,8 +19,6 @@ boolean ready = true;
 int ratioInt = (int) ratio; // 0 - casting cuts off the decimal
 ```
 
-The type is a promise about what can go in the box, and Java holds you to it.
-
 ## 2. Arithmetic and the Operator Traps
 
 ```java
@@ -28,7 +26,7 @@ System.out.println(17 / 5);    // 3   int / int stays int
 System.out.println(17.0 / 5);  // 3.4 one double makes it all decimal
 System.out.println(17 % 5);    // 2   remainder
 
-System.out.println(Integer.MAX_VALUE + 1); // -2147483648 - overflow wraps around silently
+System.out.println(Integer.MAX_VALUE + 1); // -2147483648 - overflow
 
 int k = 5;
 int result = k++ + ++k;        // 5 + 7
@@ -67,13 +65,13 @@ Traps to remember:
 
 ## 4. Loops
 
-Every loop needs a condition that's true to start with, and something in the body that eventually makes it false.
+Every loop needs a condition and something in the body that eventually makes it false.
 
 ```java
 int i = 1, sum = 0;
 while (i < 10) {      // condition
     sum += i;         // body
-    i++;              // the thing that makes it stop
+    i++;              // makes it stop
 }
 
 sum = 0;
@@ -109,7 +107,6 @@ public static int max(int num1, int num2) {
 }
 ```
 
-- The header is a contract: give me these things, I give you back that type
 - `void` methods do something; value-returning methods produce something
 - Java is **pass-by-value**: methods get copies, so `swap` can't swap the caller's variables
 - A variable lives until the closing brace of its block
@@ -123,7 +120,7 @@ public static boolean isPrime(int number) {
     }
     for (int divisor = 2; divisor <= number / 2; divisor++) {
         if (number % divisor == 0) {
-            return false; // one divisor is enough - leave immediately
+            return false; // one divisor is enough
         }
     }
     return true;
@@ -140,34 +137,34 @@ public static int countPrimesBelow(int limit) {
 }
 ```
 
-`countPrimesBelow` uses a method that uses a loop that uses a condition that uses the `%` operator. That's the whole course so far, stacked. Notice how `main` can stay short and read like a summary: `System.out.println(countPrimesBelow(50));`
+`countPrimesBelow` uses a method, a loop, a condition, and `%`. `main` stays short: `System.out.println(countPrimesBelow(50));`
+
+## Review Quiz
+
+[Fundamentals Review Quiz](quiz/review.csv)
 
 ## Practice
 
-Pick two:
+Write your code in each editor and click **Test Run** until every test passes.
 
-1. **Fix the traps.** Each of these compiles or runs but is wrong. Say why, then fix it.
-   - `double avg = (90 + 85 + 80) / 3;` (it prints 85.0, is that luck?)
-   - `if (name == "steve") { ... }`
-   - `if (score > 60);  System.out.println("pass");`
-   - `if (grade >= 70) letter = 'C'; else if (grade >= 90) letter = 'A';`
-2. **Temperature table.** Write `printTable(int startF, int endF, int step)` that prints a Fahrenheit to Celsius table. `C = (F - 32) * 5 / 9`, and that formula has an integer division bug in it. Find it.
-3. **Digit workout.** Write `countDigits(4520)` → 4, `sumOfDigits(4520)` → 11, `reverse(456)` → 654, and `isPalindrome(121)` → true. Write `reverse` first, then `isPalindrome` in one line using it.
-4. **Pyramid, again.** The Number Pyramid homework, but as a method `printPyramid(int lines)` called from `main` for 3, 5, and 7 lines.
+### 1. Temperature Table
 
-## Exercises
+[Temperature Table](exercises/e01-temperature-table/prompt.md)
 
-- [Review Problems](exercises/e01-review-problems/prompt.md)
+### 2. Palindrome Number
 
-### Getting the Files
+[Palindrome Number](exercises/e02-palindrome-number/prompt.md)
 
-Open a terminal in your workspace and run:
+### 3. Grade Report
 
-```bash
-ccm get review-problems         # Review Problems
-```
+[Grade Report](exercises/e03-grade-report/prompt.md)
 
-Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get fundamentals-review`.
+## Homework
 
-> [!TIP]
-> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+### Days From Today
+
+[Days From Today](exercises/e04-days-from-today/prompt.md)
+
+### Quadratic Roots
+
+[Quadratic Roots](exercises/e05-quadratic-roots/prompt.md)

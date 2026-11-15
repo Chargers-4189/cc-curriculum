@@ -35,3 +35,5 @@ Give it a title and add any details. You can format your text, add code, and pas
 ![new-discussion.jpg](assets/new-discussion.jpg)
 
 When asking for help with code, include what you're trying to do, what you expected to happen, and the error you got. It makes it much easier for classmates and instructors to help out.
+
+Discussions and questions are always welcomed! Start a conversation in [General](community:community_24465b4e-cd33-4f8e-b503-5f431c6ce1b7), {{user.first_name}}.

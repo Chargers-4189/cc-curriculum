@@ -1,0 +1,5 @@
+label,input,output,hidden
+7.89,7.89,Enter a decimal: Whole part: 7,
+3.0,3.0,Enter a decimal: Whole part: 3,
+Negative,-2.5,Enter a decimal: Whole part: -2,
+Just under 1,0.99,Enter a decimal: Whole part: 0,

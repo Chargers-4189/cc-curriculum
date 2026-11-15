@@ -1,59 +1,57 @@
 public class Arithmetic {
     public static void main(String[] args) {
+        // --- Basic Mathematical Operators ---
         int a = 17, b = 5;
-        // --- Basic Math Operators ---
         System.out.println(a + b); // 22
         System.out.println(a - b); // 12
         System.out.println(a * b); // 85
         System.out.println(a / b); // 3
-        System.out.println(a % b); // 2 = This gives us the remainder after a / b
+        System.out.println(a % b); // 2
 
-        // --- Integer Division vs Floating-point division
-        // Integer: whole numbers
-        // Double: decimal numbers
-        System.out.println(a / b); // Integers: 3
-        double c = 17.0, d = 5.0;
-        System.out.println(c / d); // Double: 3.4
-        // Floating division: If EITHER value is a double/float in a division
-        // then the whole expression is calculated as a floating-point (decimal)
-        // If both are integers: it is calculated as integer division
+        // --- Modulus ---
+        // % gives the remainder: 17 / 5 is 3 with 2 left over
+        System.out.println(10 % 2);   // 0, so 10 is even
+        System.out.println(4520 % 10); // 0, the last digit
 
-        System.out.println(a / d); // 3.4
+        // --- Integer Division vs Floating-point Division ---
+        System.out.println(17 / 5);   // 3    int / int stays int
+        System.out.println(17.0 / 5); // 3.4  one double makes it all decimal
+        System.out.println(3 / 4);    // 0    0.75 with the decimal cut off
+        System.out.println(3 / 4.0);  // 0.75
+        // System.out.println(10 / 0); // crashes: ArithmeticException (try it, then comment it back out)
 
         // --- Integer Overflow ---
         int max = Integer.MAX_VALUE;
-        System.out.println(max + 1);
-        // When adding to integer max, it will roll over to negative minimum: -2147483648
+        System.out.println(max);      // 2147483647
+        System.out.println(max + 1);  // -2147483648, it rolls over with no warning
 
-        // Incrementing and decrementing
+        // --- Incrementing and Decrementing ---
         int j = 5;
-        // ++ is equivalent j = j + 1
-        // -- is equivalent j = j - 1
-        System.out.println(j++); // Uses j first, then add 1: prints 5
-        System.out.println(++j); // Adds 1, then uses j: prints 7
-        int k = 5;
-        System.out.println(++k); // 6
-        System.out.println(k);   // 6
+        System.out.println(j++);      // 5: uses j, then adds 1
+        System.out.println(++j);      // 7: adds 1, then uses j
 
         int l = 5;
-        int result = l++ + ++l; // 5 + 7
-        System.out.println(result); // 12
-        System.out.println(l);      // 7
+        int result = l++ + ++l;       // 5 + 7
+        System.out.println(result);   // 12
+        System.out.println(l);        // 7
 
-        // --- Compound assignment operators ---
+        // --- Compound Assignment Operators ---
         int count = 10;
-        count = count + 1; // 11
-        count++;           // 12
-        count += 1;        // 13
-        System.out.println(count); // 13
-        count *= 10;
-        System.out.println(count); // 130
-        count /= 10;
-        System.out.println(count); // 13
+        count += 5;                   // count = count + 5
+        System.out.println(count);    // 15
+        count *= 2;
+        System.out.println(count);    // 30
+        count %= 7;
+        System.out.println(count);    // 2
 
-        // --- String concatenation ---
+        // --- String Concatenation ---
         System.out.println(1 + 2);       // 3
-        System.out.println(1 + 2 + "3"); // 33  (1 + 2 = 3, then "3" is joined on)
+        System.out.println(1 + 2 + "3"); // 33  (1 + 2 is 3, then "3" is joined on)
         System.out.println("1" + 2 + 3); // 123 (once it's a String, everything after is joined)
+        System.out.println("Total: " + count);
+
+        // --- Order of Operations ---
+        System.out.println(2 * 3 + 1);   // 7
+        System.out.println(2 * (3 + 1)); // 8
     }
 }

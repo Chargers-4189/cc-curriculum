@@ -6,6 +6,10 @@
 >
 > **Prerequisites:** [If Statements](../../04-conditionals/01-if-statements/lecture.md): conditions and booleans
 
+## Follow Along
+
+Get the starter file in Charging Courses Labs with `ccm get while-demo` and open `While.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one.
+
 ## Why Loops?
 
 What if we needed to display "Welcome to Java!" a hundred times? It would be tedious to write the same statement a hundred times:
@@ -47,11 +51,14 @@ System.out.println(sum); // 45
 1. **Something inside the body that changes**
 2. **A condition that eventually becomes false because of that change**
 
-In the example, `i++` changes `i`, and eventually `i < 10` becomes false. Forget the `i++` and `i` stays 1 forever. That's an **infinite loop**: the program never stops. (Stop it with **Ctrl + C** in the terminal.)
+In the example, `i++` changes `i`, and eventually `i < 10` becomes false. Without `i++`, `i` stays 1 forever. That's an **infinite loop**.
+
+> [!WARNING]
+> **Try it:** delete the `i++` from your loop and run it. It never ends. Press **Ctrl + C** in the terminal to stop it, then put the `i++` back.
 
 ## How to Write a Loop: The 3-Step Recipe
 
-Don't try to write the finished loop in one go. Instead:
+Write a loop in three steps:
 
 1. Write the code to do the thing **once**. Get it working.
 2. Wrap it in `while (true) { ... }`
@@ -59,7 +66,7 @@ Don't try to write the finished loop in one go. Instead:
 
 ## Sentinel-Controlled Loops
 
-Sometimes you **don't know** how many times to loop. The user decides. A **sentinel** is a special value that means "I'm done", not real data.
+When you **don't know** how many times to loop, use a **sentinel**: a special value that means "I'm done".
 
 ```java
 Scanner input = new Scanner(System.in);
@@ -75,7 +82,7 @@ while (data != 0) {
 System.out.println("Sum is " + total);
 ```
 
-Here `0` is the sentinel. There's no counter at all.
+Here `0` is the sentinel.
 
 - We read once **before** the loop and again at the **bottom** of the loop
 - If the very first input is 0, the body never runs and the sum stays 0
@@ -102,7 +109,7 @@ while (guess != number) {
 System.out.println("You win!");
 ```
 
-Why does `guess` start at `-1` and not `0`? Because `0` is a legal answer! If `guess` started at 0 and the secret number happened to be 0, the loop would never run. Pick a starting value that **can't be a real value**.
+`guess` starts at `-1` because `0` could be the answer, and then the loop would never run. Start with a value that **can't be a real guess**.
 
 ## Further
 
@@ -119,28 +126,30 @@ do {
 System.out.println("Sum is " + total);
 ```
 
-This is the sentinel program again, but the read appears only once. Use do-while for menus and prompts, anything that has to happen at least once. Don't forget the **semicolon** after `while (...)`.
+This is the sentinel program with only one read. Use do-while when something has to happen at least once, like a menu. Note the **semicolon** after `while (...)`.
 
-## Review
+## Review Quiz
 
-- What two things does every loop need?
-- What happens if a loop's condition never becomes false?
-- What is a sentinel value? Give an example.
-- In the guessing game, why does `guess` start at `-1`?
+[While Loops Quiz](quiz/review.csv)
 
-## Exercises
+## Practice
 
-- [Guess the Number](exercises/e01-guess-game/prompt.md)
+Write your code in each editor and click **Test Run** until every test passes.
 
-### Getting the Files
+### 1. Countdown
 
-Open a terminal in your workspace and run:
+[Countdown](exercises/e02-countdown/prompt.md)
 
-```bash
-ccm get guess-game              # Guess the Number
-```
+### 2. Count the Digits
 
-Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get while-loops`.
+[Count the Digits](exercises/e03-count-the-digits/prompt.md)
 
-> [!TIP]
-> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+### 3. Average Until -1
+
+[Average Until -1](exercises/e04-average-until-sentinel/prompt.md)
+
+## Homework
+
+### Guess the Number
+
+[Guess the Number](exercises/e05-guess-game/prompt.md)

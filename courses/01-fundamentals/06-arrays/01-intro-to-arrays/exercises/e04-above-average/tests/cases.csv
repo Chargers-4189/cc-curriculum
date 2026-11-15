@@ -1,0 +1,10 @@
+label,input,output,hidden
+Four scores,"4
+70 80 90 100","How many scores? Enter the scores: Average: 85.0
+Above average: 2",
+Uneven average,"3
+90 85 72","How many scores? Enter the scores: Average: 82.33333333333333
+Above average: 2",
+All equal,"3
+50 50 50","How many scores? Enter the scores: Average: 50.0
+Above average: 0",

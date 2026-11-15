@@ -1,0 +1,6 @@
+label,input,output,hidden
+5!,5,Enter n (0-20): 5! = 120,
+0!,0,Enter n (0-20): 0! = 1,
+1!,1,Enter n (0-20): 1! = 1,
+13! needs a long,13,Enter n (0-20): 13! = 6227020800,
+20!,20,Enter n (0-20): 20! = 2432902008176640000,

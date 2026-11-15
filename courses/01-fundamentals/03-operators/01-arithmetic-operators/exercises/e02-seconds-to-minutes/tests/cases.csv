@@ -1,0 +1,5 @@
+label,input,output,hidden
+500,500,Enter seconds: 500 seconds is 8 minutes and 20 seconds,
+Exactly 2 minutes,120,Enter seconds: 120 seconds is 2 minutes and 0 seconds,
+Under a minute,45,Enter seconds: 45 seconds is 0 minutes and 45 seconds,
+1000,1000,Enter seconds: 1000 seconds is 16 minutes and 40 seconds,

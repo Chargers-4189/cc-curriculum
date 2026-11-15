@@ -14,6 +14,8 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools"))
+from cases import read_cases, render_junit  # noqa: E402
 COURSES = ROOT / "courses"
 
 SLUG = r"[a-z0-9]+(?:-[a-z0-9]+)*"
@@ -21,7 +23,7 @@ NUM_DIR = re.compile(rf"^(\d{{2}})-({SLUG})$")
 EX_DIR = re.compile(rf"^e(\d{{2}})-({SLUG})$")
 
 REQUIRED_LESSON_FILES = ["lecture.md"]  # lecture-notes.md, reading.md, slides.md are optional
-LESSON_MD = {"lecture.md", "lecture-notes.md", "reading.md"}  # pasted into the LMS: no front matter, no # title
+LESSON_MD = {"lecture.md", "lecture-notes.md", "reading.md"}  # published to the LMS: no front matter
 
 QUESTION_FIELDS = {  # type -> (required fields, optional fields)
     "mc":          ({"question", "answer", "incorrect"}, set()),
@@ -40,6 +42,9 @@ SET_KEYS = ({"title", "questions"}, {"description"})
 CALLOUT_TYPES = {"INFO", "TIP", "WARNING", "SUCCESS", "ERROR"}
 CALLOUT_ALIASES = {"NOTE": "INFO", "IMPORTANT": "WARNING", "CAUTION": "ERROR"}
 CALLOUT = re.compile(r"^(>?)\s*\[!(\w+)\](.*)$", re.M)
+
+EXERCISE_TYPES = {"follow-along", "practice", "homework"}  # practice = code playground, homework = assignment
+DIFFICULTIES = {"easy", "medium", "hard"}
 
 
 class Report:
@@ -222,6 +227,97 @@ def check_question_set(path: Path, allowed: set[str], r: Report) -> None:
                     r.error(path, f"{where}: duplicate incorrect answers")
 
 
+def check_csv_quiz(path: Path, r: Report) -> None:
+    """quiz/*.csv: question,answer[,answer_2,...],incorrect_1,... (becomes an Interactive Quiz on the LMS)."""
+    import csv
+    import io
+    rows = list(csv.reader(io.StringIO(path.read_text(encoding="utf-8"))))
+    head = [c.strip() for c in rows[0]] if rows else []
+    extra = [c for c in head[2:] if c.startswith("answer_")]
+    if head[:2] != ["question", "answer"] or head[2:2 + len(extra)] != extra or \
+            not all(c.startswith("incorrect") for c in head[2 + len(extra):]) or len(head) < 3 + len(extra):
+        r.error(path, "header must be: question,answer[,answer_2,...],incorrect_1,incorrect_2,...")
+        return
+    n_right = 2 + len(extra)
+    if len(rows) < 2:
+        r.error(path, "no questions")
+    seen = set()
+    for i, row in enumerate(rows[1:], 2):
+        where = f"line {i}"
+        if len(row) != len(rows[0]):
+            r.error(path, f"{where}: has {len(row)} columns, the header has {len(rows[0])}")
+            continue
+        q, a = row[0].strip(), row[1].strip()
+        right = [a] + [x.strip() for x in row[2:n_right] if x.strip()]
+        wrong = [x.strip() for x in row[n_right:] if x.strip()]
+        if not q or not a:
+            r.error(path, f"{where}: question and answer can't be empty")
+        if "\n" in row[0]:
+            r.error(path, f"{where}: the LMS shows questions on one line; remove the line breaks")
+        if not wrong:
+            r.error(path, f"{where}: needs at least one incorrect answer")
+        if set(right) & set(wrong):
+            r.error(path, f"{where}: a correct answer is also listed as incorrect")
+        if len(set(right)) != len(right):
+            r.error(path, f"{where}: duplicate correct answers")
+        if len(set(wrong)) != len(wrong):
+            r.error(path, f"{where}: duplicate incorrect answers")
+        if q in seen:
+            r.error(path, f"{where}: duplicate question")
+        seen.add(q)
+
+
+CHECKIN_TASKS = {
+    "quiz": ({"type", "questions"}, {"title", "points", "description", "hint"}),
+    "number": ({"type", "prompt", "answer"}, {"title", "points", "tolerance", "unit", "explanation", "description", "hint"}),
+    "short": ({"type", "prompt", "answers"}, {"title", "points", "match", "explanation", "description", "hint"}),
+    "fill-in": ({"type", "questions"}, {"title", "points", "description", "hint"}),
+}
+
+
+def check_checkin(path: Path, course: Path, r: Report) -> None:
+    """courses/<course>/check-ins/*.yaml: a graded assignment with several tasks."""
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as e:
+        r.error(path, f"invalid YAML: {e}")
+        return
+    for k in ("title", "after", "tasks"):
+        if not data.get(k):
+            r.error(path, f"needs '{k}'")
+    for k in data.keys() - {"title", "after", "description", "tasks"}:
+        r.error(path, f"unknown key '{k}'")
+    after = data.get("after")
+    if isinstance(after, str) and not (course / after / "lecture.md").exists():
+        r.error(path, f"after: no lesson at {course.name}/{after}")
+    for i, t in enumerate(data.get("tasks") or [], 1):
+        where = f"task {i}"
+        kind = t.get("type") if isinstance(t, dict) else None
+        if kind not in CHECKIN_TASKS:
+            r.error(path, f"{where}: type must be one of {', '.join(CHECKIN_TASKS)}")
+            continue
+        need, opt = CHECKIN_TASKS[kind]
+        for k in need - t.keys():
+            r.error(path, f"{where}: needs '{k}'")
+        for k in t.keys() - need - opt:
+            r.error(path, f"{where}: unknown key '{k}'")
+        if kind == "number" and not isinstance(t.get("answer"), (int, float)):
+            r.error(path, f"{where}: answer must be a number")
+        if kind == "short" and not t.get("answers"):
+            r.error(path, f"{where}: needs at least one accepted answer")
+        for j, q in enumerate(t.get("questions") or [], 1):
+            qw = f"{where}, question {j}"
+            if kind == "quiz":
+                right = q.get("answers") or ([q["answer"]] if "answer" in q else [])
+                wrong = q.get("incorrect") or []
+                if not q.get("question") or not right or not wrong:
+                    r.error(path, f"{qw}: needs question, answer (or answers), and incorrect")
+                if set(map(str, right)) & set(map(str, wrong)):
+                    r.error(path, f"{qw}: a correct answer is also listed as incorrect")
+            elif not q.get("text") or not q.get("blanks") or not all("answer" in b for b in q["blanks"]):
+                r.error(path, f"{qw}: needs text and blanks, each with an answer")
+
+
 # -------------------------------------------------------------- structure ---
 
 def numbered_children(parent: Path, pattern: re.Pattern, kind: str, r: Report,
@@ -276,7 +372,13 @@ def validate(r: Report) -> None:
                 r.error(course / "course.yaml", f"include not found: {inc}")
         has_slides = meta.get("slides") is True
 
-        for chapter in numbered_children(course, NUM_DIR, "chapter", r, {"course.yaml"}):
+        for f in sorted((course / "check-ins").glob("*")) if (course / "check-ins").is_dir() else []:
+            if f.suffix == ".yaml":
+                check_checkin(f, course, r)
+            else:
+                r.error(f, "check-ins/ only holds .yaml files")
+
+        for chapter in numbered_children(course, NUM_DIR, "chapter", r, {"course.yaml", "check-ins"}):
             check_meta_yaml(chapter / "chapter.yaml", {"title", "description"}, r)
 
             for lesson in numbered_children(chapter, NUM_DIR, "lesson", r, {"chapter.yaml"}):
@@ -297,17 +399,18 @@ def validate(r: Report) -> None:
                     body = md.read_text(encoding="utf-8")
                     if md.name in LESSON_MD and body.startswith("---\n"):
                         r.error(md, "lesson files have no front matter (the LMS shows the title)")
-                    elif md.name in LESSON_MD and re.match(r"#\s", body):
-                        r.warn(md, "lesson files start with content, not a # title (the LMS shows the title)")
                     check_links(md, body, r)
                     check_callouts(md, body, r)
 
                 if (lesson / "quiz").is_dir():
                     quiz_files = sorted((lesson / "quiz").glob("*.y*ml"))
-                    if not quiz_files:
-                        r.warn(lesson / "quiz", "no quiz .yaml files")
+                    csv_files = sorted((lesson / "quiz").glob("*.csv"))
+                    if not quiz_files and not csv_files:
+                        r.warn(lesson / "quiz", "no quiz .csv or .yaml files")
                     for qf in quiz_files:
                         check_question_set(qf, QUIZ_TYPES, r)
+                    for qf in csv_files:
+                        check_csv_quiz(qf, r)
                 if (lesson / "practice").is_dir():
                     for pf in sorted((lesson / "practice").glob("*.y*ml")):
                         check_question_set(pf, PRACTICE_TYPES, r)
@@ -348,6 +451,8 @@ def check_exercise(ex: Path, names: dict[str, Path], r: Report) -> None:
         check_title(prompt, fm, r)
         check_links(prompt, body, r)
         check_callouts(prompt, body, r)
+        if fm is not None:
+            check_exercise_type(ex, prompt, fm, r)
     for p in ex.iterdir():
         if p.name.startswith(".") or p.name == "prompt.md":
             continue
@@ -359,6 +464,36 @@ def check_exercise(ex: Path, names: dict[str, Path], r: Report) -> None:
             r.error(tests, "no .java test files")
         if not (ex / "solution").is_dir():
             r.warn(ex, "has tests/ but no solution/ (CI can't check the tests)")
+
+
+def check_exercise_type(ex: Path, prompt: Path, fm: dict, r: Report) -> None:
+    kind = fm.get("type")
+    if kind is None:
+        return
+    if kind not in EXERCISE_TYPES:
+        r.error(prompt, f"type must be one of {', '.join(sorted(EXERCISE_TYPES))} (got {kind!r})")
+        return
+    if kind == "follow-along":
+        return
+    # practice and homework run on the LMS, which always runs Main.java
+    for d in ("starter", "solution"):
+        if not (ex / d / "Main.java").is_file():
+            r.error(ex / d, f"{kind} exercises need {d}/Main.java (the LMS code editor runs Main.java)")
+    if fm.get("difficulty") not in DIFFICULTIES:
+        r.error(prompt, f"difficulty must be one of {', '.join(sorted(DIFFICULTIES))}")
+    cases = ex / "tests" / "cases.csv"
+    if not cases.is_file():
+        if kind == "practice":
+            r.error(ex, "practice exercises need tests/cases.csv")
+        return
+    try:
+        read_cases(cases)
+    except ValueError as e:
+        r.error(cases, str(e))
+        return
+    test = ex / "tests" / "MainTest.java"
+    if not test.is_file() or test.read_text(encoding="utf-8") != render_junit(cases):
+        r.error(test, "out of date with cases.csv; run python3 tools/cases.py")
 
 
 def main() -> int:

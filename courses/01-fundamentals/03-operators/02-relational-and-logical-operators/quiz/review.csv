@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What type of value does a relational operator like < give back?,boolean,,,int,String,double
+What does (0.1 + 0.2) == 0.3 evaluate to?,false,,,true,0.3,It won't compile
+How should you check if two Strings have the same text?,first.equals(second),,,first == second,first = second,first.same(second)
+int x = 10; What is x > 0 && x < 5?,false,,,true,10,It won't compile
+int x = 10; What is x > 0 || x < 5?,true,,,false,5,It won't compile
+What is !(5 > 3)?,false,,,true,5,3
+Why doesn't this crash? int d = 0; boolean ok = d != 0 && 10 / d > 1;,&& skips the right side when the left side is false,,,Java ignores division by zero,10 / 0 is 0 in Java,It does crash
+"Which runs first: *, +, <, or &&?",*,,,+,<,&&
+int x = 10; Which of these are true? (select all that apply),x >= 10,x != 5,!(x < 0),x > 10,x == 5 || x < 0,
+Which of these are logical operators? (select all that apply),&&,||,!,==,<=,

@@ -1,6 +1,6 @@
 ## Live Coding
 
-- Everyone creates `Hello.java` in their workspace and types along; don't paste
+- Everyone runs `ccm get hello-demo` and types along in `HelloWorld.java`; don't paste
 - Build it in order: class → main → println, running at each step to show what errors look like
 - Run with the Run button, then again with `javac` / `java` in the terminal
 

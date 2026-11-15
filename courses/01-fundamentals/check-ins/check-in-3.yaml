@@ -1,0 +1,70 @@
+# Graded assignment on Charging Courses, placed after the lesson in `after`.
+title: "Check-in 3"
+after: 08-review/01-fundamentals-review
+description: |
+  Covers Arrays and Methods, plus the rest of the course.
+  Answer every task, then click Hand in my work.
+
+tasks:
+  - title: "Multiple choice"
+    type: quiz
+    questions:
+      - question: "int[] a = new int[5]; What is a[2]?"
+        answer: "0"
+        incorrect: ["null", "2", "It crashes"]
+      - question: "What is the index of the first element in an array?"
+        answer: "0"
+        incorrect: ["1", "-1", "It depends on the array"]
+      - question: "int[] a = {2, 4, 6}; a[1] = a[0] + a[2]; What is a[1]?"
+        answer: "8"
+        incorrect: ["4", "6", "2"]
+      - question: "What is the difference between a parameter and an argument?"
+        answer: "A parameter is the name in the header, an argument is the value passed in"
+        incorrect: ["They are the same thing", "An argument is the name in the header, a parameter is the value passed in", "Parameters are only for void methods"]
+      - question: "What does return do?"
+        answer: "Ends the method and sends a value back"
+        incorrect: ["Prints a value", "Restarts the method", "Ends the whole program"]
+      - question: "A swap method swaps its two int parameters. Why don't the caller's variables change?"
+        answer: "The method got copies of the values"
+        incorrect: ["ints can't be swapped", "It needs a return statement", "They do change"]
+      - question: "Which method headers are valid? (select all that apply)"
+        answers: ["public static int add(int a, int b)", "public static void greet(String name)"]
+        incorrect: ["public static add(int a, int b)", "public static int add(int a, b)"]
+      - question: "Which are true about arrays? (select all that apply)"
+        answers: ["They have a fixed size", "Every element has the same type", "The last index is length - 1"]
+        incorrect: ["They start at index 1", "They grow when you add to them"]
+
+  - title: "Indexes"
+    type: number
+    prompt: "int[] a = {3, 6, 9, 12}; What is a[a.length - 1] - a[1]?"
+    answer: 6
+
+  - title: "Calling a method twice"
+    type: number
+    prompt: "public static int f(int n) { return n * 2 + 1; } What is f(f(2))?"
+    answer: 11
+
+  - title: "Counting in an array"
+    type: number
+    prompt: "int[] a = {5, 2, 8, 1}; int count = 0; for (int i = 0; i < a.length; i++) { if (a[i] > 3) { count++; } } What is count?"
+    answer: 2
+
+  - title: "Return types"
+    type: short
+    prompt: "What is the return type of a method that returns nothing?"
+    answers: ["void"]
+
+  - title: "Out of bounds"
+    type: short
+    prompt: "What exception do you get when you use an index that doesn't exist? Type just its name."
+    answers: ["ArrayIndexOutOfBoundsException", "ArrayIndexOutOfBounds"]
+
+  - title: "Fill in the blanks"
+    type: fill-in
+    questions:
+      - text: "Create an array of 10 ints:  int[] nums = ___ int[10];"
+        blanks: [{answer: "new", hint: "keyword"}]
+      - text: "Loop through every element:  for (int i = 0; i < nums.___; i++)"
+        blanks: [{answer: "length", hint: "property"}]
+      - text: "public static ___ isEven(int n) { return n % 2 == 0; }"
+        blanks: [{answer: "boolean", hint: "type"}]

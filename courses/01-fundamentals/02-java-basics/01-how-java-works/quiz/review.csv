@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What does Java's WORA principle mean?,"Write Once, Run Anywhere",,,Work On Reliable Applications,"Write Only, Read Always","Write Often, Repeat Always"
+What lets Java code run on any machine?,The Java Virtual Machine (JVM),,,The compiler,The source file,VS Code
+"What are Java's four steps, in order?",Source File → Compiler → Class File → Runtime,,,Class File → Compiler → Source File → Runtime,Compiler → Source File → Runtime → Class File,Source File → Runtime → Compiler → Class File
+What file does the compiler create from Main.java?,Main.class,,,Main.exe,Main.txt,Main.jvm
+What language is a class file written in?,Bytecode,,,English,Python,HTML
+Which command compiles HelloWorld.java?,javac HelloWorld.java,,,java HelloWorld.java,run HelloWorld,compile HelloWorld
+What holds what?,"A source file holds a class, a class holds methods, methods hold statements",,,"A method holds classes, classes hold source files","A class holds source files, source files hold methods","Statements hold methods, methods hold classes"
+Where does every Java program start?,The main() method,,,The first line of the file,The last method in the class,Wherever the cursor is
+Which of these are true about Java? (select all that apply),It is a high-level language,Our robot is programmed in it,It runs on the JVM,It only runs on Windows,Its class files are written in Python,
+Which file extensions are part of running a Java program? (select all that apply),.java,.class,,.exe,.jvm,

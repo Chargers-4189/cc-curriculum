@@ -6,9 +6,13 @@
 >
 > **Prerequisites:** [For Loops](../../05-loops/02-for-loops/lecture.md)
 
+## Follow Along
+
+Get the starter file in Charging Courses Labs with `ccm get arrays-demo` and open `ArraysDemo.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one.
+
 ## What is an Array?
 
-Say you want to store 30 test scores. You could make 30 variables: `score1`, `score2`, `score3`... but that gets out of hand fast.
+Say you want to store 30 test scores. Making 30 variables (`score1`, `score2`, ...) gets out of hand fast.
 
 **Arrays** are just a tray of containers. They hold **many values of the same type** under one name, and you use an **index position** to get to any element in the array.
 
@@ -54,10 +58,10 @@ scores[2] = 75;                // change the third element
 
 ```java
 System.out.println(scores.length);                // 5
-System.out.println(scores[scores.length - 1]);   // 64 - always the last element
+System.out.println(scores[scores.length - 1]);   // 64 - the last element
 ```
 
-Since indexes start at 0, the last index is always `length - 1`.
+The last index is always `length - 1`.
 
 ## Out of Bounds
 
@@ -69,9 +73,12 @@ System.out.println(scores[5]); // ArrayIndexOutOfBoundsException
 
 `scores` has 5 elements, so the valid indexes are 0 to 4.
 
+> [!WARNING]
+> **Try it:** under `// --- Out of Bounds ---`, add `System.out.println(scores[5]);` and run it. Read the crash, then comment it out.
+
 ## Looping Through an Array
 
-Arrays and for loops go together. Loop from `0` up to (but not including) `length`:
+Loop from `0` up to (but not including) `length`:
 
 ```java
 for (int i = 0; i < scores.length; i++) {
@@ -79,7 +86,7 @@ for (int i = 0; i < scores.length; i++) {
 }
 ```
 
-This works for any size array. Two common patterns:
+Two common patterns:
 
 ```java
 // Sum and average
@@ -98,32 +105,28 @@ for (int i = 1; i < scores.length; i++) {
 }
 ```
 
-Notice `i < scores.length`, not `<=`. Using `<=` would go one past the end.
+Use `i < scores.length`. `<=` goes one past the end.
 
 ## Arrays Are Objects
 
-You'll hear that arrays are always **objects**, whether they hold primitives or not. That's why we create them with `new` and why `.length` uses a dot. We'll dig into what that means in the Object Oriented course. For now, you know everything you need to use them.
+Arrays are **objects**, even when they hold primitives. That's why you create them with `new` and why `.length` uses a dot. More on this in the Object Oriented course.
 
-## Review
+## Review Quiz
 
-- What is the index of the first element of an array? The last?
-- What does `new int[4]` create?
-- What happens if you access `scores[scores.length]`?
-- Write a loop that prints every element of an array named `names`.
+[Arrays Quiz](quiz/review.csv)
 
-## Exercises
+## Practice
 
-- [Arrays (Follow Along)](exercises/e01-arrays-demo/prompt.md)
+Write your code in each editor and click **Test Run** until every test passes.
 
-### Getting the Files
+### 1. Reverse the List
 
-Open a terminal in your workspace and run:
+[Reverse the List](exercises/e02-reverse-the-list/prompt.md)
 
-```bash
-ccm get arrays-demo             # Arrays (Follow Along)
-```
+### 2. Min and Max
 
-Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get intro-to-arrays`.
+[Min and Max](exercises/e03-min-and-max/prompt.md)
 
-> [!TIP]
-> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+### 3. Above Average
+
+[Above Average](exercises/e04-above-average/prompt.md)

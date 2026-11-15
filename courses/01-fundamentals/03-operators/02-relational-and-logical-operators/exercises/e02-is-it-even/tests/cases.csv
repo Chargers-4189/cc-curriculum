@@ -1,0 +1,5 @@
+label,input,output,hidden
+10,10,Enter a number: Is even: true,
+7,7,Enter a number: Is even: false,
+Zero,0,Enter a number: Is even: true,
+Negative even,-4,Enter a number: Is even: true,

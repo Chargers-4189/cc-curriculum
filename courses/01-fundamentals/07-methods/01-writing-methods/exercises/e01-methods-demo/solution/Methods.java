@@ -1,101 +1,93 @@
 public class Methods {
     public static void main(String[] args) {
-        /*
-            int sum = 0;
-            for (int i = 1; i <=10; i++) {
-                sum += i;
-            }
-            System.out.println(sum);
+        // --- Why Methods? ---
+        System.out.println(sumOfRange(1, 10));   // 55
+        System.out.println(sumOfRange(20, 37));  // 513
+        System.out.println(sumOfRange(55, 101)); // 3666
 
-            int sum = 0;
-            for (int i = 20; i <= 37; i++) {
-                sum += i;
-            }
-            System.out.println(sum);
-        */
-       System.out.println();
-       sumOfRange(0, 0);
-       System.out.println(sumOfRange(55,101));
-       System.out.println(sumOfRange(67,72));
-       System.out.println(sumOfRange(68,102));
-       //Math.abs(1);
-       System.out.println(absolute(-1));
+        // --- Anatomy of a Method ---
+        System.out.println(max(5, 2));           // 5
 
-       /*
-       public static int max (int num1, int num2)
-       -------------|---|---|--------------------
-       modifers | return type | name of method | parameters
+        // --- void vs Value-Returning ---
+        printGrade(90.2);                        // a void method goes on its own line
+        System.out.println(getGrade(99.3));      // a returned value can go anywhere a value fits
+        double stored = getGrade(87.5) + 2;      // stored, used in math...
+        System.out.println(stored);
+        // double grade = printGrade(20.3);      // won't compile: printGrade gives nothing back
 
-        What is the above method called? max
-        What does it need? It needs an input of int num1, num2
-        What datatype does it give back? integer
-        What does this method do? Returns the max number 
-       */
-      // Which is better?
-      // printGrade: 2
-      // getGrade: 1
-      printGrade(90.2);
-      System.out.println(getGrade(99.3));
-      //double grade = printGrade(20.3);
-
-      /*
-      getGrade: A method that RETURNS the grade can be printed,
-      stored, compared, or fed into something.
-      */
+        // --- Pass-by-Value ---
         int x = 1;
-        System.out.println("Before: "+x);
+        System.out.println("Before: " + x);
         increment(x);
-        System.out.println("After: "+x);
+        System.out.println("After: " + x);       // still 1: increment got a copy
 
         int num1 = 1;
         int num2 = 2;
-        System.out.println("Before: " + num1 + " " + num2);
         swap(num1, num2);
-        System.out.println("After: " + num1 + " " + num2);
+        System.out.println("After: " + num1 + " " + num2); // After: 1 2
 
-        /*
-            Java passes a copy of the value. n1 and n2 are brand new
-            variables that happen to start with the same values as num1
-            and num2. Swapping the copies does nothing to the originals.
-            When the methods ends, the copies are gone. This called scope
-            a variable that is initilized and declared in a block/method
-            does not exist outside the method.
+        // --- Scope ---
+        for (int n = 0; n < 3; n++) {
+            int doubled = n * 2;
+            System.out.println(doubled);
+        }
+        // System.out.println(n);       // won't compile: n only existed in the loop
+        // System.out.println(doubled); // same
 
-            Declaring a variable in the header only exists within the method
-            Parameters are just local variables that got their starting
-            value from the caller.
-        */
+        // --- Further ---
+        System.out.println(max(1.5, 2.5));       // 2.5, Java picks the double version
+        System.out.println(max(3.0, 9.0, 4.0));  // 9.0
     }
+
+    // Why Methods?: write the loop once, call it as many times as you want
+    public static int sumOfRange(int min, int max) {
+        int sum = 0;
+        for (int i = min; i <= max; i++) {
+            sum += i;
+        }
+        return sum;
+    }
+
+    // Anatomy of a Method: modifiers, return type, name, parameters
+    public static int max(int num1, int num2) {
+        if (num1 > num2) {
+            return num1;
+        } else {
+            return num2;
+        }
+    }
+
+    // void vs Value-Returning
+    public static void printGrade(double grade) {
+        System.out.println(grade);
+    }
+
+    public static double getGrade(double grade) {
+        return grade;
+    }
+
+    // Pass-by-Value: n, n1, and n2 are copies
+    public static void increment(int n) {
+        n++;
+        System.out.println("n inside the method is " + n);
+    }
+
     public static void swap(int n1, int n2) {
         int temp = n1;
         n1 = n2;
         n2 = temp;
         System.out.println("  inside swap: n1 = " + n1 + ", n2 = " + n2);
     }
-    public static void increment(int n) {
-        n++;
-        System.out.println("n inside the method is " + n);
+
+    // Further: overloading, same name with different parameters
+    public static double max(double num1, double num2) {
+        if (num1 > num2) {
+            return num1;
+        }
+        return num2;
     }
 
-    public static void printGrade(double grade) {
-        System.out.println(grade);
-    }
-    public static double getGrade(double grade) {
-        return grade;
-    }
-    public static int sumOfRange(int min, int max) {
-        int sum = 0;
-        // for (initialization; condition; increment)
-        for (; min <= max; min++){
-            sum += min;
-        }
-        return sum;
-    }
-
-    public static int absolute(int a) {
-        if (a <= 0) {
-            a = a * -1;
-        }
-        return a;
+    public static double max(double num1, double num2, double num3) {
+        return max(max(num1, num2), num3); // methods calling methods
     }
 }

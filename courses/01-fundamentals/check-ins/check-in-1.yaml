@@ -1,0 +1,70 @@
+# Graded assignment on Charging Courses, placed after the lesson in `after`.
+title: "Check-in 1"
+after: 03-operators/02-relational-and-logical-operators
+description: |
+  Covers Basics of Computers through Relational and Logical Operators.
+  Answer every task, then click Hand in my work.
+
+tasks:
+  - title: "Multiple choice"
+    type: quiz
+    questions:
+      - question: "Which part of the Computer Model is the CPU?"
+        answer: "Processing"
+        incorrect: ["Input", "Output", "Storage"]
+      - question: "What does the Java compiler create?"
+        answer: "A class file (bytecode)"
+        incorrect: ["A source file", "An .exe file", "A folder"]
+      - question: "double result = 10 / 4; What is result?"
+        answer: "2.0"
+        incorrect: ["2.5", "2", "3.0"]
+      - question: 'What does System.out.println("Total: " + 2 + 3); print?'
+        answer: "Total: 23"
+        incorrect: ["Total: 5", "Total: 2 + 3", "It won't compile"]
+      - question: "int k = 3; int r = k++ * 2; What are r and k?"
+        answer: "r is 6, k is 4"
+        incorrect: ["r is 8, k is 4", "r is 6, k is 3", "r is 8, k is 3"]
+      - question: "Why is (0.1 + 0.2) == 0.3 false?"
+        answer: "Computers can't store most decimals exactly"
+        incorrect: ["== can't compare doubles", "0.1 + 0.2 is 0.4", "It's true"]
+      - question: "Which variable names follow Java conventions? (select all that apply)"
+        answers: ["totalScore", "isReady"]
+        incorrect: ["Total_Score", "TOTALSCORE"]
+      - question: "int a = 4, b = 9; Which are true? (select all that apply)"
+        answers: ["a < b && b < 10", "a == 4 || b == 0", "!(a > b)"]
+        incorrect: ["a > b", "a + b == 12"]
+
+  - title: "Integer math"
+    type: number
+    prompt: "What does System.out.println(17 / 5 + 17 % 5); print?"
+    answer: 5
+
+  - title: "Compound assignment"
+    type: number
+    prompt: "int a = 7; a += 3; a *= 2; What is a?"
+    answer: 20
+
+  - title: "Casting"
+    type: number
+    prompt: "double d = 9.99; int n = (int) d; What is n?"
+    answer: 9
+
+  - title: "Compiling"
+    type: short
+    prompt: "What command compiles HelloWorld.java?"
+    answers: ["javac HelloWorld.java"]
+
+  - title: "Comparing Strings"
+    type: short
+    prompt: "What method checks if two Strings have the same text? Type just its name."
+    answers: ["equals", ".equals", "equals()", ".equals()"]
+
+  - title: "Fill in the blanks"
+    type: fill-in
+    questions:
+      - text: "Declare an int named age with the value 16:  ___ age = 16;"
+        blanks: [{answer: "int", hint: "type"}]
+      - text: 'Print, then move to a new line:  System.out.___("Hi");'
+        blanks: [{answer: "println", hint: "method"}]
+      - text: "Check that x is from 1 to 9:  x >= 1 ___ x <= 9"
+        blanks: [{answer: "&&", hint: "operator"}]

@@ -1,24 +1,20 @@
 ---
 title: "Methods (Follow Along)"
+type: follow-along
 ---
 
-# Methods (Follow Along)
+Follow along with the lesson in `Methods.java`. Each section of the lesson has a matching `// --- Section ---` comment in the file.
 
-## Getting the Files
+1. Write `sumOfRange` once and call it three times.
+2. Write `max` and label each part of its header.
+3. Write `printGrade` (void) and `getGrade` (returns). Try storing the result of each one.
+4. Write `increment` and `swap`. Predict what prints before you run it.
+5. Use a loop variable after the loop to see a scope error, then comment it out.
+6. Overload `max` for `double`s and for three numbers.
 
-Open a terminal in your workspace and run:
+## In Labs
 
 ```bash
 ccm get methods-demo
 cd methods-demo
 ```
-
-## Task
-
-Follow along with the lecture in `Methods.java`.
-
-1. The commented-out code sums two ranges with copy-pasted loops. Write a method `sumOfRange(int min, int max)` that returns the sum, and call it for a few different ranges.
-2. Write `absolute(int a)` that returns the absolute value of `a`.
-3. Write `printGrade(double grade)` (void) and `getGrade(double grade)` (returns a value). Which one is more useful, and why?
-4. Write `increment(int n)` that adds 1 to `n`. Print `x` before and after calling `increment(x)`. Did it change?
-5. Write `swap(int n1, int n2)`. Print `num1` and `num2` before and after calling it. Did they swap? Why not?

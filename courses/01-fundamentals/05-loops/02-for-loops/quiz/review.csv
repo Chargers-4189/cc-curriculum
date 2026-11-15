@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+In what order do the parts of a for loop run?,"Initialize once, then check, body, update, check, body, update...",,,"Check, initialize, body, update","Body, check, update, initialize","Update, check, body, initialize"
+"What does this print? for (int k = 10; k > 0; k -= 2) { System.out.print(k + "" ""); }",10 8 6 4 2,,,10 8 6 4 2 0,8 6 4 2 0,10 9 8 7 6 5 4 3 2 1
+How many times does for (int n = 1; n < 10; n++) run?,9,,,10,11,1
+The outer loop runs 5 times and the inner loop runs 3 times. How many times does the inner body run?,15,,,8,5,3
+What's the difference between break and continue?,"break leaves the loop, continue skips to the next pass",,,"continue leaves the loop, break skips to the next pass",They do the same thing,break only works in while loops
+Can you use k after for (int k = 0; k < 5; k++) { ... } ends?,"No, k only exists inside the loop",,,"Yes, k is 5","Yes, k is 4","Yes, k is 0"
+"Which loop fits ""keep asking until the user types 0""?",while,,,for,"Either, but for reads better",Neither
+"In a nested loop, what does break exit?",Only the inner loop it's in,,,Both loops,The whole program,Only the outer loop
+Which loops print 1 2 3? (select all that apply),"for (int k = 1; k <= 3; k++) { System.out.print(k + "" ""); }","for (int k = 0; k < 3; k++) { System.out.print((k + 1) + "" ""); }",,"for (int k = 1; k < 3; k++) { System.out.print(k + "" ""); }","for (int k = 3; k >= 1; k--) { System.out.print(k + "" ""); }",
+Which are parts of a for loop header? (select all that apply),Initialization,Condition,Update,Return type,Sentinel,

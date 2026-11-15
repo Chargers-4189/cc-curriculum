@@ -2,7 +2,7 @@
 
 Some lessons are **assignments** or **quizzes** instead of reading. These are how you'll turn in homework and check what you've learned.
 
-- An **Assignment** is made up of **tasks**. A task can be a written answer, a number, or a coding problem.
+- An **Assignment** is made up of **tasks**. A task can be a written answer, a number, a coding problem, or more.
 - A **Quiz** is a set of questions you answer right on the page.
 - Your answers **save automatically**, so you can leave and come back later.
 

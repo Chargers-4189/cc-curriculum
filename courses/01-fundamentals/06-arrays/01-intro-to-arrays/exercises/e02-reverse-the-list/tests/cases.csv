@@ -1,0 +1,7 @@
+label,input,output,hidden
+1 to 5,"5
+1 2 3 4 5",How many numbers? Enter the numbers: 5 4 3 2 1,
+One number,"1
+42",How many numbers? Enter the numbers: 42,
+Mixed,"4
+10 -3 7 0",How many numbers? Enter the numbers: 0 7 -3 10,

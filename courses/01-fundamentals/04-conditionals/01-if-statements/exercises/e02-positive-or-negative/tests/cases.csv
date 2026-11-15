@@ -1,0 +1,4 @@
+label,input,output,hidden
+Positive,12,Enter a number: Positive,
+Negative,-8,Enter a number: Negative,
+Zero,0,Enter a number: Zero,

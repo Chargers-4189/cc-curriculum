@@ -1,0 +1,6 @@
+label,input,output,hidden
+Saturday,6,Enter a day (1-7): Weekend,
+Sunday,7,Enter a day (1-7): Weekend,
+Monday,1,Enter a day (1-7): Weekday,
+Friday,5,Enter a day (1-7): Weekday,
+8 is invalid,8,Enter a day (1-7): Invalid day,

@@ -1,0 +1,9 @@
+label,input,output,hidden
+Mixed,7 2 9 4 6,"Enter 5 numbers: Min: 2
+Max: 9",
+All negative,-5 -2 -9 -1 -7,"Enter 5 numbers: Min: -9
+Max: -1",
+All the same,3 3 3 3 3,"Enter 5 numbers: Min: 3
+Max: 3",
+Sorted,1 2 3 4 5,"Enter 5 numbers: Min: 1
+Max: 5",

@@ -9,6 +9,10 @@
 > - [For Loops](../../05-loops/02-for-loops/lecture.md)
 > - [If Statements](../../04-conditionals/01-if-statements/lecture.md)
 
+## Follow Along
+
+Get the starter file in Charging Courses Labs with `ccm get methods-demo` and open `Methods.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one. Method calls go in `main`; the methods go below `main`, inside the class.
+
 ## Why Methods?
 
 Here's code that sums two ranges of numbers:
@@ -27,9 +31,9 @@ for (int i = 20; i <= 37; i++) {
 System.out.println(sum);
 ```
 
-What is actually **different** between those two blocks? Only two numbers. Everything else is copy-paste. And if the logic has a bug, you now have two bugs to fix.
+Only two numbers are different. Everything else is copied, so a bug would need fixing twice.
 
-Instead, write the loop **once** in a **method**, give the two numbers names, and **call** it as many times as you want:
+Instead, write the loop **once** in a **method** and **call** it as many times as you want:
 
 ```java
 public static int sumOfRange(int min, int max) {
@@ -47,7 +51,7 @@ System.out.println(sumOfRange(20, 37));  // 513
 System.out.println(sumOfRange(55, 101)); // 3666
 ```
 
-You've been calling methods since day one: `System.out.println`, `Math.random`, `Math.abs`. Now you get to write your own.
+You've already called methods like `System.out.println`, `Math.random`, and `Math.abs`. Now you'll write your own.
 
 ## Anatomy of a Method
 
@@ -69,7 +73,7 @@ Four questions to ask about any method:
 - What's it called? → `max`
 - What does it need? → two `int`s
 - What does it give back? → one `int`
-- How does it do it? → the body (and the caller doesn't need to care)
+- How does it do it? → the body
 
 ```java
 public static int max(int num1, int num2) {
@@ -103,11 +107,14 @@ public static double getGrade(double grade) {
 - A **void** method **does** something. You call it on its own line: `printGrade(90.2);`
 - A **value-returning** method **produces** something. You use it anywhere a value fits: `System.out.println(getGrade(99.3));`
 
-Which is better? Usually the one that **returns**. A method that returns the grade can be printed, stored, compared, or fed into something else. A method that prints the grade can only ever print it.
+Returning is usually better: a returned value can be printed, stored, or compared.
+
+> [!WARNING]
+> **Try it:** add `double grade = printGrade(20.3);` to `main`. It won't compile, because `printGrade` returns nothing. Comment it out.
 
 If a method promises to return an `int`, **every path** out of it must return an `int`. The compiler checks this.
 
-A method that answers a yes/no question returns a `boolean` and is named like a question: `isPrime`, `isValid`, `isLeapYear`. Then `if (isLeapYear(year))` reads like English.
+A method that answers a yes/no question returns a `boolean` and is named like one: `isPrime`, `isValid`, `isLeapYear`.
 
 ## Pass-by-Value
 
@@ -133,7 +140,7 @@ n inside the method is 2
 After: 1
 ```
 
-`x` didn't change! Same with swap:
+`x` didn't change. Same with swap:
 
 ```java
 public static void swap(int n1, int n2) {
@@ -151,7 +158,7 @@ swap(num1, num2);
 System.out.println("After: " + num1 + " " + num2); // After: 1 2
 ```
 
-Java **passes a copy of the value**. `n1` and `n2` are brand new variables that happen to start with the same values as `num1` and `num2`. Swapping the copies does nothing to the originals, and when the method ends, the copies are gone.
+Java **passes a copy of the value**. `n1` and `n2` are new variables, so swapping them doesn't change `num1` and `num2`.
 
 ```
   main               swap
@@ -159,11 +166,11 @@ num1 [ 1 ]  --->  n1 [ 1 ]
 num2 [ 2 ]  --->  n2 [ 2 ]
 ```
 
-The arrow only goes one way, and only at the moment of the call. Methods communicate by **arguments in, return value out**.
+Values go in as arguments and come out with `return`.
 
 ## Scope
 
-A variable exists from where it's declared to the **closing brace** of the block it's in. Outside that block, it doesn't exist.
+A variable exists from where it's declared to the **closing brace** of its block.
 
 ```java
 for (int n = 0; n < 3; n++) {
@@ -173,9 +180,12 @@ for (int n = 0; n < 3; n++) {
 // System.out.println(doubled); // same
 ```
 
-- A variable declared in a for loop's header can't be used after the loop. If you need it later, declare it before the loop.
-- Variables declared inside a method only exist in that method. Two different methods can each have a variable named `count` with no conflict.
-- **Parameters are just local variables** that got their starting value from the caller. That's exactly why `swap` couldn't work.
+> [!WARNING]
+> **Try it:** under `// --- Scope ---`, type the loop, then add the two prints after it **without** the `//`. They won't compile. Comment them back out.
+
+- A variable declared in a for loop's header can't be used after the loop. Declare it before the loop if you need it later.
+- Variables declared in a method only exist in that method, so two methods can both have a `count`.
+- **Parameters are local variables** that start with the caller's values. That's why `swap` didn't work.
 
 ## Further
 
@@ -189,9 +199,9 @@ public static double max(double num1, double num2, double num3) {
 }
 ```
 
-Java picks which one to run based on the arguments. You've been using this already: `System.out.println` accepts an `int`, a `double`, a `String`... Changing only the return type isn't enough.
+Java picks one based on the arguments, like `System.out.println` does for `int`, `double`, and `String`. Changing only the return type isn't enough.
 
-**Stepwise refinement.** When a program is too big to picture, break it into methods you **can** write, and start each one as a **stub** that returns a dummy value:
+**Stepwise refinement.** Break a big program into methods, and start each one as a **stub** that returns a dummy value:
 
 ```java
 public static boolean isLeapYear(int year) {
@@ -199,38 +209,30 @@ public static boolean isLeapYear(int year) {
 }
 ```
 
-Write `main`, stub everything it calls, and run it. Then fill in one stub at a time, running as you go. You always have a working program, and when something breaks, you know it's in the method you just touched. This is how the Credit Card Validator homework is meant to be done.
+Write `main`, stub everything it calls, and run it. Then fill in one stub at a time, running as you go. Use this for the Credit Card Validator homework.
 
-## Review
+## Review Quiz
 
-- What are the four parts of a method header?
-- What's the difference between a parameter and an argument?
-- When would you use `void` instead of returning a value?
-- Why doesn't `swap(num1, num2)` swap `num1` and `num2`?
-- Can you use a for loop's counter variable after the loop ends?
+[Methods Quiz](quiz/review.csv)
 
-## Exercises
+## Practice
 
-- [Methods (Follow Along)](exercises/e01-methods-demo/prompt.md)
-- [Credit Card Validator (Homework)](exercises/e02-credit-card-validator/prompt.md)
+Write your code in each editor and click **Test Run** until every test passes.
 
-### Getting the Files
+### 1. Max of Three
 
-Open a terminal in your workspace and run:
+[Max of Three](exercises/e02-max-of-three/prompt.md)
 
-```bash
-ccm get methods-demo            # Methods (Follow Along)
-ccm get credit-card-validator   # Credit Card Validator (Homework)
-```
+### 2. Prime Checker
 
-Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get writing-methods`.
+[Prime Checker](exercises/e03-prime-checker/prompt.md)
 
-> [!TIP]
-> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+### 3. Sum the Digits
 
-To check homework, run `ccm test` from inside its folder:
+[Sum the Digits](exercises/e04-digit-sum-method/prompt.md)
 
-```bash
-cd credit-card-validator
-ccm test
-```
+## Homework
+
+### Credit Card Validator
+
+[Credit Card Validator](exercises/e05-credit-card-validator/prompt.md)

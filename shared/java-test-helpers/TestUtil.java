@@ -46,6 +46,31 @@ public final class TestUtil {
         });
     }
 
+    /**
+     * Runs {@code cls.main} with {@code input} and checks it printed {@code expected}, the way the
+     * Charging Courses code playground does: spaces at the end of a line and blank lines at the end
+     * are ignored, everything else must match exactly.
+     */
+    public static void assertOutput(Class<?> cls, String input, String expected) {
+        String actual = runMain(cls, input);
+        String want = normalize(expected), got = normalize(actual);
+        if (!want.equals(got)) {
+            String shownInput = input.isEmpty() ? "(none)" : input.strip().replace("\n", " ⏎ ");
+            throw new org.opentest4j.AssertionFailedError(
+                    "Input: " + shownInput
+                            + "\n--- expected output ---\n" + want
+                            + "\n--- your output ---\n" + got, want, got);
+        }
+    }
+
+    /** Removes spaces at the end of each line and blank lines at the end of the output. */
+    public static String normalize(String text) {
+        String[] lines = text.replace("\r\n", "\n").split("\n", -1);
+        StringBuilder out = new StringBuilder();
+        for (String line : lines) out.append(line.stripTrailing()).append('\n');
+        return out.toString().stripTrailing();
+    }
+
     /** Runs {@code body} with {@code input} as System.in and returns everything printed to System.out. */
     public static String capture(String input, Runnable body) {
         PrintStream oldOut = System.out;
