@@ -7,7 +7,7 @@
 
 ## Follow Along
 
-Get the starter file in Charging Courses Labs with `ccm get switch-demo` and open `Switch.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one.
+Write `Switch.java` along with this lesson. Get the starter file in Charging Courses Labs with `ccm get switch-demo` and open `Switch.java`. It has a `// --- Section ---` comment for each heading in this lesson. As you go, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one.
 
 ## The Problem
 
@@ -18,7 +18,7 @@ Imagine a tax form application that asks for the user's filing status:
 - 2: Married filing separately
 - 3: Head of household
 
-With if statements, you check the same variable over and over:
+With if statements, that's a long ladder that checks the same variable over and over:
 
 ```java
 int status = 0;
@@ -83,7 +83,7 @@ switch (status) {
 
 This prints `Married`, `Married separately`, and `Error`. Forgetting a `break` is the most common switch bug.
 
-Fall-through is useful when several cases share the same code:
+Sometimes fall-through is useful, when several cases share the same code:
 
 ```java
 switch (day) {
@@ -99,11 +99,11 @@ switch (day) {
 ## switch or if?
 
 - Use a **switch** when you're checking one variable for **equality** against a list of fixed values (menus, days, status codes).
-- Use **if** statements for **ranges** and complex conditions (`score >= 90`, `age >= 18 && hasID`).
+- Use **if** statements for **ranges** and complex conditions (`score >= 90`, `age >= 18 && hasID`). A switch can't do those.
 
 ## Further
 
-Newer versions of Java (14+) have a shorter **arrow** form that doesn't need `break`:
+Newer versions of Java (14+) have a shorter **arrow** form that never falls through, so it doesn't need `break`:
 
 ```java
 switch (status) {
@@ -113,13 +113,15 @@ switch (status) {
 }
 ```
 
+You'll see both forms in other people's code.
+
 ## Review Quiz
 
 [Switch Statements Quiz](quiz/review.csv)
 
 ## Practice
 
-Write your code in each editor and click **Test Run** until every test passes.
+Write your code in each editor and click **Test Run** until every test passes. (Or `ccm get` it and work in Labs.)
 
 ### 1. Month Name
 

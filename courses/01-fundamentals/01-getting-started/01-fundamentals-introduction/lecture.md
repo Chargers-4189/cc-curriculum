@@ -5,14 +5,14 @@
 
 ## Welcome!
 
-Welcome to the first course of many! The Fundamentals course will give you a comprehensive guide to Java, programming, and program design. I won't take up too much of your time here, just a brief overview. As always let us know if you have any questions or concerns!
+Welcome to the first course of many! The Fundamentals course will give you a comprehensive guide to Java, variables and data types, operators, conditional statements, loops, methods, and arrays. I won't take up too much of your time here, just a brief overview. As always let us know if you have any questions or concerns!
 
 - Caleb Vang: [caleb.vang@uga.edu](mailto:caleb.vang@uga.edu)
 - Quinn David: [futureawesomescientist@gmail.com](mailto:futureawesomescientist@gmail.com)
 
 ## Curriculum Overview
 
-This course is designed for a 15-week course, with 2 lessons per week. These lessons or sessions are labeled A and B. Session A is conducted in person on Mondays, while session B is held online at 5:00 PM on Fridays. Both sessions are recorded.
+This course is designed for a 15 week semester, with 2 lessons per week. These lessons are labeled A and B. Session A is conducted in person on Mondays, while session B is held online at 5:00 PM on Thursdays.
 
 We try to include as much as possible in knowledge, material, and experience to prepare you for the FRC season. This is a **zero-to-robot** outline:
 

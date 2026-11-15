@@ -29,7 +29,7 @@ Your workspace runs on **Coder**, and you'll write code in **VS Code**, the same
 
 ![workspace-running.jpg](assets/workspace-running.jpg)
 
-Your workspace stops on its own after a while (the timer next to **Running** shows when, and **+** adds time). Your files are saved, so just start it again.
+Your workspace will stop on its own after a while (the timer next to **Running** shows when, and **+** gives you more time). That's okay! Your files are saved, just start it again.
 
 ## Opening VS Code
 
@@ -74,7 +74,7 @@ To open a different folder:
 
 The first time you open a folder, you may see a bar at the top that says **Restricted Mode**. In restricted mode, VS Code turns off features like running and debugging your code.
 
-Click **Manage** on that bar, then click **Trust**.
+Click **Manage** on that bar, then click **Trust**. It's your own folder, so it's safe to trust.
 
 ![workspace-trust.jpg](assets/workspace-trust.jpg)
 
@@ -90,7 +90,7 @@ Hover over the Explorer and you'll see a row of icons next to the folder name:
 
 The new file or folder is created inside whichever folder you have selected. You can also **right-click** a folder and choose **New File...** or **New Folder...**
 
-Name your files with their format at the end. For Java, that's `.java`, for example `HelloWorld.java`.
+Name your files with their format at the end. For Java, that's `.java`, for example `HelloWorld.java`. We'll see why the name matters when we write our first program.
 
 ### Renaming and Deleting
 
@@ -107,7 +107,7 @@ You can also drag and drop files to move them into a different folder.
 - You can still press **Ctrl + S** to save right away.
 - A **dot** on a file's tab means it has unsaved changes.
 
-Your program runs the **saved** file. If your changes don't show up when you run, save first.
+Your program runs whatever was **saved**, not what's on your screen. If your changes aren't showing up when you run, save first!
 
 ## The Terminal
 
@@ -131,7 +131,7 @@ A few commands to start with:
 | `mkdir folderName` | Creates a folder |
 | `clear` | Clears the terminal screen |
 
-Press **Tab** while typing a file or folder name to finish it.
+Press **Tab** while typing a file or folder name and the terminal will finish it for you.
 
 ## Running Java
 
@@ -172,7 +172,7 @@ curl -fsSL https://raw.githubusercontent.com/Chargers-4189/cc-curriculum/main/in
 
 ### Keep Your Downloads Organized
 
-`ccm get` downloads into the folder your terminal is in. Make a few folders and download into them, for example one per week and one for homework:
+`ccm get` puts files in whatever folder your terminal is in, so it's easy to end up with a messy home folder. Make a few folders first and download into them. For example, one for the course, one per week, and one for homework:
 
 ```
 fundamentals/
@@ -196,7 +196,7 @@ You can also download straight into a folder without moving there first, using `
 ccm get day-of-week -o fundamentals/hwk
 ```
 
-`ccm test` works wherever you put the exercise.
+Any layout works, as long as you can find your work later. `ccm test` finds your exercise wherever you put it.
 
 ## Chromebook Tips
 

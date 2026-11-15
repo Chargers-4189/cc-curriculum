@@ -36,8 +36,12 @@ import sys
 import uuid
 from pathlib import Path
 
-import yaml
-from markdown_it import MarkdownIt
+try:
+    import yaml
+    from markdown_it import MarkdownIt
+except ModuleNotFoundError as e:
+    sys.exit(f"Missing Python package: {e.name}. Install the tools' requirements first:\n"
+             "    python3 -m pip install -r tools/requirements.txt")
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))

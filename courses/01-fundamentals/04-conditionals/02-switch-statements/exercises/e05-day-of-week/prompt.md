@@ -35,7 +35,7 @@ Day of the week is Sunday
 **Hints:**
 - Handle January and February first: if the month is 1 or 2, add 12 to the month and subtract 1 from the year. Then calculate `j` and `k`.
 - `26(m + 1)` means `26 * (m + 1)`. Java needs the `*`.
-- Check it with today's date.
+- Check your program with today's date!
 
 ## In Labs
 
@@ -47,4 +47,4 @@ cd day-of-week
 ccm test
 ```
 
-Then paste all of `Main.java` into the assignment.
+When it works, copy **all** of `Main.java` into the assignment on Charging Courses and hand it in.

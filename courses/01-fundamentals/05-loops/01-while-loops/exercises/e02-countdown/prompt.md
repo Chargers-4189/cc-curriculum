@@ -16,9 +16,11 @@ Liftoff!
 
 If the number is 0 or less, just print `Liftoff!`.
 
+Remember the two things every loop needs: something that **changes**, and a **condition** that eventually becomes false because of it.
+
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get countdown

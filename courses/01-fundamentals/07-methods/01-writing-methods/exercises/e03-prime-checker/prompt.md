@@ -29,7 +29,7 @@ Enter a number: 8
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get prime-checker

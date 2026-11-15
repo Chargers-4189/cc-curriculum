@@ -27,7 +27,7 @@ The starter's formula has the classic **integer division** bug in it. Run the te
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get temperature-table

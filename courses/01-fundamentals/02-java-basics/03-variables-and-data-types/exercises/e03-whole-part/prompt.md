@@ -11,11 +11,11 @@ Enter a decimal: 7.89
 Whole part: 7
 ```
 
-Casting cuts off the decimal, so `7.89` becomes `7`.
+Notice that `7.89` becomes `7`, not `8`. Casting cuts off the decimal instead of rounding.
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get whole-part

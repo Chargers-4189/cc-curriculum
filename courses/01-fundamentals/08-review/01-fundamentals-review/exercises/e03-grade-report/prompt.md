@@ -4,7 +4,7 @@ type: practice
 difficulty: hard
 ---
 
-Read how many students there are and their scores, then print a report with each score's letter grade, the class average, and the highest score.
+Put it all together. Read how many students there are and their scores, then print a report with each score's letter grade, the class average, and the highest score.
 
 ```
 How many students? 3
@@ -30,7 +30,7 @@ public static char letterGrade(int score)
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get grade-report

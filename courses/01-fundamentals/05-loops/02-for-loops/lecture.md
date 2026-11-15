@@ -9,21 +9,21 @@
 
 ## Follow Along
 
-Get the starter file in Charging Courses Labs with `ccm get for-demo` and open `ForLoops.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one.
+Write `ForLoops.java` along with this lesson. Get the starter file in Charging Courses Labs with `ccm get for-demo` and open `ForLoops.java`. It has a `// --- Section ---` comment for each heading in this lesson. As you go, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one.
 
 ## Same Loop, One Line
 
-A counting while loop has three parts in three places:
+Every counting while loop has the same three parts, scattered across three different places:
 
 ```java
 int k = 0;          // initialization (above the loop)
 while (k < 10) {    // condition
     // ...
-    k++;            // update
+    k++;            // update (buried at the bottom, easy to forget)
 }
 ```
 
-A `for` loop puts all three in the header:
+A `for` loop puts all three in the header where you can see them:
 
 ```java
 for (int k = 0; k < 10; k++) {
@@ -56,7 +56,7 @@ for ([1]; [2]; [4]) {
 A variable declared in the header **only exists inside the loop**. After the loop ends, `k` is gone.
 
 > [!WARNING]
-> **Try it:** under `// --- Order of Execution ---`, write a loop from 0 to 2 that prints `"k is " + k`. Then add `System.out.println(k);` **after** the loop. It won't compile, because `k` only exists in the loop. Comment it out.
+> **Try it:** under `// --- Order of Execution ---`, write a loop from 0 to 2 that prints `"k is " + k`. Then add `System.out.println(k);` **after** the loop. It won't compile, because `k` is gone. Read the error, then comment that line out.
 
 ## Counting Different Ways
 
@@ -77,7 +77,7 @@ Watch out for **off-by-one** errors: `n <= 10` runs ten times starting at 1, `n 
 - **for** → I know how many times ("print 10 rows", "1 to 100")
 - **while** → I don't ("until the user types 0", "until they guess it")
 
-Either one works. Pick the one that reads better.
+Any loop can be written either way. Pick the one that makes the code readable.
 
 ## Nested For Loops
 
@@ -101,14 +101,14 @@ for (int row = 1; row <= 9; row++) {
 ```
 
 - The inner loop runs start to finish for **every** pass of the outer loop: 9 × 9 = 81 numbers
-- The `println()` at the end of the outer loop ends each row
-- `printf("%4d", value)` prints a number 4 characters wide so the columns line up
+- The `println()` at the end of the outer loop is what ends each row
+- `printf("%4d", value)` prints a number in a space 4 characters wide, which lines the columns up
 
-Nesting multiplies: three nested loops of 10,000 each is a **trillion** iterations.
+Be careful: nesting multiplies. Three nested loops of 10,000 each is a **trillion** iterations.
 
 ## break and continue
 
-- `break` - exit the loop
+- `break` - get out of the loop entirely, right now
 - `continue` - skip the **rest** of this pass and go to the next one
 
 ```java
@@ -133,7 +133,7 @@ for (int n = 1; n <= 20; n++) {
 System.out.println("Sum of odds = " + cSum); // 100
 ```
 
-Lots of `break`s make a loop hard to follow, so use them sparingly. In a nested loop, `break` only exits the **inner** loop.
+Both are conveniences; you could use a boolean flag instead. Be wary of using lots of `break`s, since multiple exits make a loop hard to follow. In a nested loop, `break` only exits the **inner** loop.
 
 ## Review Quiz
 
@@ -141,7 +141,7 @@ Lots of `break`s make a loop hard to follow, so use them sparingly. In a nested 
 
 ## Practice
 
-Write your code in each editor and click **Test Run** until every test passes.
+Write your code in each editor and click **Test Run** until every test passes. (Or `ccm get` it and work in Labs.)
 
 ### 1. Multiples
 

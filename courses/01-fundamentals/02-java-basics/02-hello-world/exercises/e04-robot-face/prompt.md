@@ -15,11 +15,11 @@ Print this robot face, exactly as shown (spaces included):
 
 **Hints:**
 - Spaces inside the quotes count. `" _____"` starts with a space.
-- Try `print` instead of `println` on the first line to see what changes.
+- Try using `System.out.print` for the first line and see what happens. Why does the face break? Then switch back to `println`.
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get robot-face

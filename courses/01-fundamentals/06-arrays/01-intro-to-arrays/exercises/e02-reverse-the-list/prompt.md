@@ -18,7 +18,7 @@ Enter the numbers: 1 2 3 4 5
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get reverse-the-list

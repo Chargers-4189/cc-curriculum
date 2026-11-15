@@ -11,7 +11,7 @@
 ## What is Java?
 
 - Java is a programming language created by Sun Microsystems (now Oracle) in 1995
-- It's a popular **high-level** language, meaning it's written for people to read
+- It's a popular **high-level** language, meaning it's written for people to read, not just machines
 - Java is used by over 3 billion devices
 - Java follows the **WORA** principle: "Write Once, Run Anywhere"
   - Your code runs on any machine with a **Java Virtual Machine (JVM)**
@@ -49,7 +49,7 @@ ls                       # ...and creates HelloWorld.class next to it
 java HelloWorld          # Runtime: the JVM runs the class file
 ```
 
-Clicking **Run** in VS Code does the same two steps: compile, then run.
+When you click **Run** in VS Code, it does these same two steps for you: it compiles your source file into a class file, then runs the class file.
 
 ## Code Structure
 
@@ -63,7 +63,7 @@ Clicking **Run** in VS Code does the same two steps: compile, then run.
   - Where you write your instructions (statements)
   - Methods are similar to functions
 
-A source file holds a class, a class holds methods, and methods hold statements.
+Think of it as boxes inside boxes: a source file holds a class, a class holds methods, and methods hold your statements.
 
 ![Source File holds a Class, which holds a Method, which holds Statements](assets/slide-code-structure.png)
 

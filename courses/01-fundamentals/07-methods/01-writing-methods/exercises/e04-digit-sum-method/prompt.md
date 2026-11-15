@@ -19,11 +19,11 @@ Sum of digits: 11
 
 **Hints:**
 - `n % 10` is the last digit and `n / 10` removes it.
-- Loop while `n > 0`. Changing `n` doesn't affect `main`, since it's a copy.
+- Loop while `n > 0`. Since `n` is a parameter (a copy!), changing it inside the method doesn't change anything in `main`.
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get digit-sum-method

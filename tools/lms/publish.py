@@ -26,6 +26,11 @@ rights for courses, chapters, activities and assignments. Put it in .env at the 
 as CC_API_TOKEN=lh_... (.env is in .gitignore, so it never gets committed), or in the
 CC_API_TOKEN environment variable.
 
+Edits made on the site: after every upload, the page's content is saved (as a fingerprint) in
+tools/lms/published.json. If a page has changed on the site since then, it's skipped and the
+changes are shown, so nothing done on the site gets overwritten. Copy those changes into the repo
+(then it's "up to date" again), or pass --force to replace them with the repo version.
+
 Safety checks (a page is skipped with a message, unless you pass --force):
   - the page's images are kept, so the number of images must match the markdown
   - a page that has a kind of block the markdown can't make (a video, an embed...) is left alone,
@@ -34,6 +39,8 @@ Safety checks (a page is skipped with a message, unless you pass --force):
 from __future__ import annotations
 
 import argparse
+import difflib
+import hashlib
 import json
 import mimetypes
 import os
@@ -56,6 +63,98 @@ COURSES = ROOT / "courses"
 IDS = build.IDS
 NUM = re.compile(r"^\d{2}-")
 SMALL_WORDS = {"a", "an", "and", "as", "at", "by", "for", "in", "of", "on", "or", "the", "to", "vs"}
+
+
+# ------------------------------------------------------------------ colors ---
+
+COLOR = sys.stdout.isatty() and not os.environ.get("NO_COLOR")
+
+
+def paint(code: str, text: str) -> str:
+    return f"\033[{code}m{text}\033[0m" if COLOR else text
+
+
+def status_color(result: str) -> str:
+    """Green = changed, yellow = would change, dim = nothing to do, red = needs you."""
+    if result.startswith(("SKIPPED", "WARNING")):
+        return "1;31"
+    if result.startswith(("would", "filled")):
+        return "33"
+    if result.startswith(("updated", "created", "linked", "put ")):
+        return "32"
+    return "2"
+
+
+COUNTS: dict[str, int] = {}
+
+
+def show(kind: str, name: str, result: str) -> None:
+    first, _, rest = result.partition("\n")
+    COUNTS[status_color(first)] = COUNTS.get(status_color(first), 0) + 1
+    label = f"{name}: " if name else ""
+    print(f"{paint('36', f'{kind:8}')}  {label}{paint(status_color(first), first)}" + ("\n" + rest if rest else ""))
+
+
+# ------------------------------------------------------------------- state ---
+# A fingerprint of what each page looked like right after we last uploaded it.
+
+STATE_FILE = Path(__file__).parent / "published.json"
+
+
+def load_state() -> dict:
+    try:
+        return json.loads(STATE_FILE.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+STATE = load_state()
+
+
+def fingerprint(obj) -> str:
+    return hashlib.sha256(json.dumps(obj, sort_keys=True).encode()).hexdigest()[:16]
+
+
+def remember(act: str, live) -> None:
+    STATE[act] = fingerprint(live)
+    STATE_FILE.write_text(json.dumps(dict(sorted(STATE.items())), indent=2) + "\n", encoding="utf-8")
+
+
+CREATED: set[str] = set()  # pages made by this run
+
+
+def edited_on_site(act: str, live) -> bool:
+    """True if the page changed on the site since we last uploaded it (or we never uploaded it)."""
+    return act not in CREATED and STATE.get(act) != fingerprint(live)
+
+
+def page_text(doc) -> list[str]:
+    """One line of plain text per block, for showing what changed."""
+    lines = []
+    for block in (doc or {}).get("content") or []:
+        parts: list[str] = []
+        walk(block, lambda n: parts.append(n.get("text", "") if n.get("type") == "text"
+                                           else " " if n.get("type") in ("paragraph", "heading") else ""))
+        if block.get("type") == "blockImage":
+            parts = ["[image]"]
+        elif block.get("type") in ("blockCode", "blockQuiz"):
+            parts = [f"[{block['type']}]"]
+        line = " ".join("".join(parts).split())
+        if line:
+            lines.append(line)
+    return lines
+
+
+def changes(old: list[str], new: list[str], limit: int = 8) -> str:
+    """The lines that differ, - for the site version and + for the repo version."""
+    out = []
+    for d in difflib.unified_diff(old, new, lineterm="", n=0):
+        if d.startswith(("---", "+++", "@@")):
+            continue
+        line = d[:160] + ("..." if len(d) > 160 else "")
+        out.append("      " + paint("31" if d.startswith("-") else "32", line))
+    more = f"\n      ... and {len(out) - limit} more" if len(out) > limit else ""
+    return "\n".join(out[:limit]) + more
 
 
 # --------------------------------------------------------------------- api ---
@@ -431,6 +530,7 @@ class Creator:
             "activity_sub_type": "SUBTYPE_DYNAMIC_PAGE", "content": {"type": "doc", "content": []},
             "published": True})
         section("lessons")[key(lesson)] = a["activity_uuid"].removeprefix("activity_")
+        CREATED.add(section("lessons")[key(lesson)])
         self.save()
         return a["id"]
 
@@ -442,6 +542,7 @@ class Creator:
         a = self.create_assignment(f"{hw['title']} (Homework)", hw["assignment_description"], [hw["task"]],
                                    chapter, org, auto_grading=False)
         section("homework")[hw_name(ex)] = a["activity_uuid"].removeprefix("activity_")
+        CREATED.add(section("homework")[hw_name(ex)])
         self.save()
         return a["id"]
 
@@ -453,6 +554,7 @@ class Creator:
         a = self.create_assignment(c["title"], c["assignment_description"], c["tasks"], chapter, org,
                                    auto_grading=True)
         section("checkins")[key(path)] = a["activity_uuid"].removeprefix("activity_")
+        CREATED.add(section("checkins")[key(path)])
         self.save()
         return a["id"]
 
@@ -487,6 +589,7 @@ def publish_lesson(api: Api, folder: Path, act: str, args) -> str:
             return f"would fill in the page ({need} image(s) to add by hand after)"
         notes = [image_note(src) for src in built["images"]]
         api.put(path, {"content": fill_images(built["content"], notes)})
+        remember(act, trimmed((api.get(path) or {}).get("content") or {}))
         return (f"filled in; now add {need} image(s) in the editor where the notes say "
                 f"({', '.join(built['images'])}), then run this again")
     if need != len(imgs) and not args.force:
@@ -501,19 +604,46 @@ def publish_lesson(api: Api, folder: Path, act: str, args) -> str:
         return "SKIPPED: not enough images on the page to fill the markdown's images"
     content = fill_images(built["content"], imgs)
     if same(trimmed(content), trimmed(live)):
+        if not args.dry_run and STATE.get(act) != fingerprint(trimmed(live)):
+            remember(act, trimmed(live))
         return "up to date"
+    diff = changes(page_text(live), page_text(content))
+    if edited_on_site(act, trimmed(live)) and not args.force:
+        why = ("it changed on the site since the last publish" if act in STATE
+               else "it wasn't published from the repo before, so it may have site edits")
+        return (f"SKIPPED: {why}. Copy the site's changes into the repo, or use --force to replace them "
+                f"(- site, + repo):\n{diff}")
     if args.dry_run:
-        return "would update"
+        return f"would update (- site, + repo):\n{diff}"
     api.put(path, {"content": content})
+    remember(act, trimmed((api.get(path) or {}).get("content") or {}))
     return "updated"
 
 
-def sync_assignment(api: Api, act: str, description: str, tasks: list[dict], args) -> str:
+def assignment_snapshot(api: Api, act: str) -> tuple[dict, list[dict], dict]:
     asg = api.get(f"/assignments/activity/activity_{act}")
+    live = sorted(api.get(f"/assignments/{asg['assignment_uuid']}/tasks") or [], key=lambda t: t.get("order") or 0)
+    snap = {"description": asg.get("description"),
+            "tasks": [{k: t.get(k) for k in ("title", "description", "hint", "assignment_type", "contents",
+                                              "max_grade_value")} for t in live]}
+    return asg, live, snap
+
+
+def sync_assignment(api: Api, act: str, description: str, tasks: list[dict], args) -> str:
+    asg, live, snap = assignment_snapshot(api, act)
     a_uuid = asg["assignment_uuid"]
-    live = sorted(api.get(f"/assignments/{a_uuid}/tasks") or [], key=lambda t: t.get("order") or 0)
     if len(live) > len(tasks) and not args.force:
         return f"SKIPPED: the assignment has {len(live)} tasks, the repo has {len(tasks)}"
+    up_to_date = asg.get("description") == description and len(live) == len(tasks) and \
+        all(covers(live[i], want) for i, want in enumerate(tasks))
+    if up_to_date:
+        if not args.dry_run and STATE.get(act) != fingerprint(snap):
+            remember(act, snap)
+        return "up to date"
+    if edited_on_site(act, snap) and not args.force:
+        why = ("it changed on the site since the last publish" if act in STATE
+               else "it wasn't published from the repo before, so it may have site edits")
+        return f"SKIPPED: {why}. Copy the site's changes into the repo, or use --force to replace them."
     changes = []
     if asg.get("description") != description:
         changes.append("instructions")
@@ -529,8 +659,8 @@ def sync_assignment(api: Api, act: str, description: str, tasks: list[dict], arg
             changes.append(f"new task {i + 1}")
             if not args.dry_run:
                 api.post(f"/assignments/{a_uuid}/tasks", want)
-    if not changes:
-        return "up to date"
+    if not args.dry_run:
+        remember(act, assignment_snapshot(api, act)[2])
     return ("would update " if args.dry_run else "updated ") + ", ".join(changes)
 
 
@@ -571,8 +701,8 @@ def main() -> int:
                 if wanted:
                     sys.exit(f"{key(course)} isn't on the site yet. To create it, run: "
                              f"python3 tools/lms/publish.py courses/{course.name}")
-                print(f"course    {course.name}: not on the site (to create it: "
-                      f"python3 tools/lms/publish.py courses/{course.name})")
+                show("course", course.name, "not on the site (to create it: "
+                     f"python3 tools/lms/publish.py courses/{course.name})")
                 continue
         lessons, homework, checkins = [], [], []
         for ch in numbered(course, "chapter.yaml"):
@@ -590,7 +720,7 @@ def main() -> int:
         parents = {h.parent.parent for h in homework} | {course / build.read_checkin(c)["after"] for c in checkins}
         for line in Creator(api, course, args).run(sorted(set(lessons) | parents)):
             problems += line.startswith("WARNING")
-            print(f"create    {line}")
+            show("create", "", line)
         for kind, items, fn in (("lesson", lessons, publish_lesson), ("homework", homework, publish_homework),
                                 ("checkin", checkins, publish_checkin)):
             for folder in items:
@@ -599,9 +729,11 @@ def main() -> int:
                     continue  # only happens on a dry run: it would be created above
                 result = fn(api, folder, act, args)
                 problems += result.startswith("SKIPPED")
-                print(f"{kind:8}  {key(folder)}: {result}")
+                show(kind, key(folder), result)
+    names = {"32": "changed", "33": "would change", "2": "up to date", "1;31": "need you"}
+    print("\n" + "   ".join(paint(c, f"{COUNTS[c]} {n}") for c, n in names.items() if COUNTS.get(c)))
     if problems:
-        print(f"\n{problems} problem(s). Fix them, or rerun with --force if you're sure.", file=sys.stderr)
+        print(paint("1;31", f"{problems} problem(s). Fix them, or rerun with --force if you're sure."))
     return 1 if problems else 0
 
 

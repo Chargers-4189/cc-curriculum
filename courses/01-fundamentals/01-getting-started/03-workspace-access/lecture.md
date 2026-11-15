@@ -4,7 +4,7 @@ Your Charging Courses workspace provides access to a programming editor and simu
 
 ## Create a Workspace
 
-To get started, first create a Java and Python Developer workspace here:
+First, create a Java and Python Developer workspace here:
 
 [Create Java and Python Developer Workspace](https://labs.chargingcourses.com/templates/aviator2277/starter-developer/workspace?mode=manual&param.Workspace+API+Key=********-****-****-****-************)
 

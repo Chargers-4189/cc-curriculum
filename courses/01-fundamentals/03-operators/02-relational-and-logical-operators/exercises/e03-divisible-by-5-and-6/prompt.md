@@ -20,7 +20,7 @@ Divisible by 5 or 6, but not both: true
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get divisible-by-5-and-6

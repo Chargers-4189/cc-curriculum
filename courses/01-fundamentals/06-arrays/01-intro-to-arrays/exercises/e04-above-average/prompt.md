@@ -13,13 +13,13 @@ Average: 85.0
 Above average: 2
 ```
 
-Loop through the array **twice**: once for the average, once to count.
+You need to go through the array **twice**: once to find the average, and again to count.
 
 **Hint:** `(double) sum / count` avoids integer division.
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get above-average

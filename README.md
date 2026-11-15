@@ -23,12 +23,13 @@ cc-curriculum/
 │   ├── 00-start-here/
 │   ├── 01-fundamentals/
 │   │   ├── course.yaml                  # course title, options
+│   │   ├── check-ins/                   # graded check-ins (YAML)
 │   │   └── 01-<chapter>/
 │   │       ├── chapter.yaml             # chapter title
 │   │       └── 01-<lesson>/
 │   │           ├── lecture.md           # main lecture (key points)
 │   │           ├── lecture-notes.md     # spoken notes for the lecture
-│   │           ├── slides.md            # slides (Fundamentals only)
+│   │           ├── slides.md            # slides (optional)
 │   │           ├── reading.md           # supporting reading
 │   │           ├── quiz/review.csv      # review quiz: question, answer, incorrect answers
 │   │           ├── practice/            # practice questions, flashcards, links
@@ -47,8 +48,10 @@ cc-curriculum/
 │   ├── validate/validate.py             # structure, front matter, quiz and link checks
 │   ├── export/quiz.py                   # quiz/practice -> Markdown, answer keys, flashcards
 │   ├── cases.py                         # tests/cases.csv -> tests/MainTest.java
-│   ├── lms/build.py                     # lesson/homework -> Charging Courses page content
-│   ├── lms/ids.yaml                     # which Charging Courses page each lesson/homework is
+│   ├── lms/publish.py                   # uploads everything to Charging Courses
+│   ├── lms/build.py                     # turns a lesson into a Charging Courses page
+│   ├── lms/ids.yaml                     # which page on the site each lesson is
+│   ├── lms/published.json               # what was last uploaded to each page
 │   └── check-exercises.sh               # runs every exercise's tests against its solution
 ├── .github/workflows/                   # CI and release automation
 ├── install.sh                           # one-line installer for ccm
@@ -80,10 +83,12 @@ Names work in place of numbers: `if-statements`, `1.2.if-statements.e1`.
 | `lecture.md` | yes | <!-- --> |
 | `lecture-notes.md` | no | <!-- --> |
 | `reading.md` | no | <!-- --> |
-| `slides.md` | Fundamentals only | <!-- --> |
+| `slides.md` | no | <!-- --> |
 | `quiz/` | no | <!-- --> |
 | `practice/` | no | <!-- --> |
 | `exercises/` | no | <!-- --> |
+
+Slides are optional. Fundamentals is the only course with them right now, but you can add them to any course.
 
 The templates include **Objectives**, **Prerequisites**, **Review**, and **Readings** (**Required** / **Further**) sections; keep the ones a lesson needs and delete the rest.
 
@@ -115,7 +120,7 @@ Students receive lectures, slides, readings, practice and exercise starter code.
 
 ### Adding content
 
-Run from a clone of this repo; each command copies the matching template and picks the next number:
+Run these from a clone of the repo. Each one copies a template and picks the next number for you:
 
 ```bash
 tools/ccm new chapter 1 control-flow
@@ -123,53 +128,37 @@ tools/ccm new lesson 1.2 if-statements
 tools/ccm new exercise 1.2.1 grade-calculator
 ```
 
-Exercises that don't need automatic checking can delete their `tests/` and `solution/` folders.
+If an exercise doesn't need tests, you can delete its `tests/` and `solution/` folders.
 
-### Exercise types
+### Exercises
 
-Each exercise's `prompt.md` front matter has a `type`:
+Each `prompt.md` has a `type` at the top:
 
-| Type | On Charging Courses | Files |
-|------|---------------------|-------|
-| `follow-along` | Described in the lesson's **Follow Along** section; students fill it in while reading | `starter/` and `solution/` with a descriptive class name (`Variables.java`) |
-| `practice` | A **code playground** on the lesson page | `starter/Main.java`, `solution/Main.java`, `tests/cases.csv` |
-| `homework` | Its own **assignment** page with a code task | same as practice; `tests/` is optional (e.g. random programs) |
+| Type | Where it shows up |
+|------|-------------------|
+| `follow-along` | The lesson's **Follow Along** section, students fill it in as they read |
+| `practice` | A code playground on the lesson page |
+| `homework` | Its own assignment page after the lesson |
 
-Practice and homework always use `public class Main`, because the LMS code editor runs `Main.java`. That way students can copy their code between Labs and Charging Courses.
+Practice and homework always use `public class Main` since that's what the Charging Courses code editor runs. This also lets students copy their code between Labs and the site.
 
-`tests/cases.csv` holds the tests (`label,input,output,hidden`). The same rows become the playground/assignment tests on the LMS and the JUnit tests `ccm test` runs. Output must match exactly, except spaces at the end of a line and blank lines at the end. After editing a `cases.csv`, regenerate the JUnit file:
+Tests go in `tests/cases.csv` (`label,input,output,hidden`), and both the site and `ccm test` use them. After editing one, run `python3 tools/cases.py` to update `MainTest.java`. The easiest way to fill in `output` is to run the solution and paste what it prints.
 
-```bash
-python3 tools/cases.py
-```
+### Quizzes
 
-The easiest way to get the `output` column right is to run the solution and paste what it prints (the prompts end up on one line with the answer, since typed input isn't shown).
-
-### Quizzes and practice
-
-Each lesson's review quiz is `quiz/review.csv`, one multiple-choice question per row:
+Each lesson's quiz is `quiz/review.csv`, with one question per line:
 
 | question | answer | incorrect_1 | incorrect_2 | incorrect_3 |
 |---|---|---|---|---|
 | What is 17 % 5? | 2 | 3 | 3.4 | 85 |
 
-For a **select all that apply** question, add `answer_2`, `answer_3`, ... columns after `answer` (leave them empty on single-answer rows):
+For select all that apply questions, add `answer_2` and `answer_3` columns and leave them blank on the other questions. Add the quiz to a lesson with `[Quiz](quiz/review.csv)`.
 
-| question | answer | answer_2 | incorrect_1 | incorrect_2 |
-|---|---|---|---|---|
-| Which of these are primitive types? (select all that apply) | int | boolean | String | Scanner |
-
-Keep each question on one line. The lesson links to it with `[Quiz](quiz/review.csv)`, which becomes an Interactive Quiz on the LMS.
-
-Practice sets can still be written in YAML (`practice/practice.yaml`) with types `mc`, `tf`, `short`, `long`, `code-output`, and `flashcard`.
-
-```bash
-python tools/export/quiz.py 1.2.1     # -> build/quizzes/: student copy, answer key, flashcards.tsv
-```
+Practice sets can also go in `practice/practice.yaml` (`mc`, `tf`, `short`, `long`, `code-output`, `flashcard`). To print a quiz with an answer key, run `python3 tools/export/quiz.py 1.2.1`.
 
 ### Check-ins
 
-Each course has 3 graded **check-ins**, written as YAML in `courses/<course>/check-ins/`. Each one becomes an auto-graded assignment placed right after the lesson in its `after:` line:
+Each course has 3 graded check-ins in `courses/<course>/check-ins/`. They show up as assignments right after the lesson in `after:` and grade themselves.
 
 ```yaml
 title: "Check-in 1"
@@ -177,60 +166,46 @@ after: 03-operators/02-relational-and-logical-operators
 description: |
   Covers Basics of Computers through Relational and Logical Operators.
 tasks:
-  - type: quiz            # multiple choice; use answers: [..] for select all that apply
+  - type: quiz              # use answers: [...] for select all that apply
     questions:
       - question: "What does the Java compiler create?"
         answer: "A class file (bytecode)"
         incorrect: ["A source file", "An .exe file"]
-  - type: number          # a numeric answer (optional tolerance, unit)
+  - type: number
     prompt: "What does System.out.println(17 / 5 + 17 % 5); print?"
     answer: 5
-  - type: short           # short text, matched ignoring case
+  - type: short             # not case sensitive
     prompt: "What command compiles HelloWorld.java?"
     answers: ["javac HelloWorld.java"]
-  - type: fill-in         # fill in the blanks
+  - type: fill-in
     questions:
       - text: "Declare an int named age:  ___ age = 16;"
         blanks: [{answer: "int", hint: "type"}]
 ```
 
-Points default to 10 per question, answer, or blank (`points:` overrides it).
-
-### Site-only blocks in lessons
-
-- `{{user.first_name}}` shows the student's own name. `{{user.full_name|capitalize|there}}` is path, format, and fallback.
-- `[General](community:community_<uuid>)` links to a community.
+Everything is worth 10 points unless you set `points:`.
 
 ### Publishing to Charging Courses
 
-`tools/lms/build.py` turns a lesson into the LMS editor's format: callouts, tables and code blocks become LearnHouse blocks, `[Quiz](quiz/review.csv)` becomes an Interactive Quiz, each practice link becomes a code playground, homework links and lesson links point at their Charging Courses pages (from `tools/lms/ids.yaml`), and images reuse the ones already uploaded to that page.
+Always make your changes here first, then publish them to the site.
+
+To set it up, install the requirements and put your API token in `.env` as `CC_API_TOKEN=lh_...`. You can make a token in Dashboard → Developers → API Access, with create, read, and update for courses, chapters, activities, and assignments.
 
 ```bash
 pip install -r tools/requirements.txt
-python3 tools/lms/build.py courses/01-fundamentals/02-java-basics/02-hello-world -o build/lms
-python3 tools/lms/build.py --homework courses/.../exercises/e05-day-of-week -o build/lms
-```
-
-The JSON it writes is the page's `content` (or an assignment and its code task) for the LearnHouse API.
-
-**Edit the repo first, then publish.** Changes made only on the site get overwritten the next time someone publishes, so make them here.
-
-To upload to the site, use `tools/lms/publish.py`. It rebuilds every lesson, homework, and check-in, updates the pages that are different, and creates anything that isn't on the site yet (lessons, homework, check-ins, chapters, or a whole course), saving the new ids in `ids.yaml`:
-
-```bash
 python3 tools/lms/publish.py --dry-run     # see what would change
-python3 tools/lms/publish.py               # update every course that's on the site
-python3 tools/lms/publish.py courses/02-object-oriented                        # create or update one course
+python3 tools/lms/publish.py               # update every course on the site
 python3 tools/lms/publish.py courses/01-fundamentals/05-loops/01-while-loops   # just one lesson
+python3 tools/lms/publish.py courses/02-object-oriented                        # make a new course
 ```
 
-- A new course is only created when you name its folder, and it starts **unpublished** so you can look it over first. New lessons and homework are published right away and placed in repo order.
-- Names come from `course.yaml` / `chapter.yaml` titles, lesson folder names (`02-for-loops` → "For Loops"), and "*Title* (Homework)". Renaming on the site is safe; publishing never changes names.
-- If a page with the same name already exists in that chapter, it's linked instead of duplicated.
-- API tokens can't upload images, so a new page gets a note where each image goes. Add the image there in the editor, delete the note, and the next run picks it up.
-- A page is skipped, not overwritten, if its image count doesn't match the markdown or it has blocks the markdown can't make (like a video added on the site). `--force` overrides that.
+A few things to know:
 
-It needs an API token (Dashboard → Developers → API Access, with create, read and update rights for courses, chapters, activities and assignments) in `.env` at the top of the repo as `CC_API_TOKEN=lh_...` (git ignores `.env`).
+- New courses start unpublished so you can look them over. New lessons, homework, and check-ins are published right away.
+- If someone changed a page on the site, it won't get overwritten. You'll see what's different so you can copy it into the repo, or use `--force` to replace it.
+- Images have to be added in the editor. New pages will have a note where each image goes.
+- In a lesson, `{{user.first_name}}` shows the student's name and `[General](community:community_<uuid>)` links to a community.
+- Commit `tools/lms/ids.yaml` and `tools/lms/published.json` after you publish.
 
 ### Checks
 
@@ -244,7 +219,7 @@ CI runs these on every push and pull request.
 
 ### Releases
 
-Tagging a version (e.g. `v2026.1`) publishes a release with exported quizzes and slide PDFs. `ccm` downloads the latest release by default, so edits on `main` don't affect students mid-course.
+Tagging a version (like `v2026.1`) makes a release with the exported quizzes and slide PDFs. `ccm` downloads the latest release, so changes on `main` won't affect students in the middle of a course.
 
 <!-- Release schedule / who tags releases. -->
 

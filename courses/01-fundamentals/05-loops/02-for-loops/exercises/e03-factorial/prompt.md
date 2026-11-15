@@ -11,11 +11,11 @@ Enter n (0-20): 5
 5! = 120
 ```
 
-**Hint:** `13!` is too big for an `int`, so use a `long`.
+**Hint:** factorials get **huge**. `13!` is already too big for an `int` (remember overflow?), so use a `long` for the answer.
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get factorial
