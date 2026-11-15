@@ -1,0 +1,7 @@
+label,input,output,hidden
+"Ada, 15","Ada
+15","Enter your name: Enter your age: Hi Ada, you are 15",
+"Grace, 17","Grace
+17","Enter your name: Enter your age: Hi Grace, you are 17",
+Two-word name,"Mary Jane
+14","Enter your name: Enter your age: Hi Mary Jane, you are 14",

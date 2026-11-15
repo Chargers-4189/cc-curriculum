@@ -1,7 +1,18 @@
 public class Relation {
     public static void main(String[] args) {
-        int a = 10;
-        int b = 20;
+        // --- Relational Operators ---
+
+        // --- Comparing Different Types ---
+
+        // --- Comparing Decimals ---
+
+        // --- Comparing Strings ---
+
+        // --- Logical Operators ---
+
+        // --- Short-Circuit Evaluation ---
+
+        // --- Operator Precedence ---
 
     }
 }

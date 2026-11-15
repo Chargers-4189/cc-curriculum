@@ -1,25 +1,21 @@
 ---
 title: "Relational and Logical Operators (Follow Along)"
+type: follow-along
 ---
 
-# Relational and Logical Operators (Follow Along)
+Follow along with the lesson in `Relation.java`. Each section of the lesson has a matching `// --- Section ---` comment in the file.
 
-## Getting the Files
+1. Print each relational operator on `a = 10` and `b = 20`.
+2. Try the `=` instead of `==` mistake and see what happens to `a`. Then comment it out.
+3. Print `0.1 + 0.2` and compare it to `0.3` the wrong way, then the right way.
+4. Compare Strings with `.equals()`.
+5. Combine conditions with `&&`, `||`, and `!`.
+6. Use short-circuiting to skip a divide by zero.
+7. Print `true` if `age` is above 16 and below 21.
 
-Open a terminal in your workspace and run:
+## In Labs
 
 ```bash
 ccm get relation-demo
 cd relation-demo
 ```
-
-## Task
-
-Follow along with the lecture in `Relation.java`. Predict each result before you run it.
-
-1. With `a = 10` and `b = 20`, print the result of each relational operator: `<`, `>`, `<=`, `>=`, `==`, `!=`.
-2. Compare `10 == 10.0`. Why is it true?
-3. Print `0.1 + 0.2` and check if it `== 0.3`. Then compare them the right way, using a small threshold.
-4. Compare two Strings with `==` and with `.equals()`.
-5. Try `&&`, `||`, and `!`. Then use short-circuiting to avoid a divide by zero.
-6. **Your turn:** with `int age = 17;`, print `true` if `age` is above 16 and below 21, and `false` otherwise.

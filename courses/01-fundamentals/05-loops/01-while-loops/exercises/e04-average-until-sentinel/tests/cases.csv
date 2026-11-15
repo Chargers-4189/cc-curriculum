@@ -1,0 +1,14 @@
+label,input,output,hidden
+Three scores,"90
+80
+75
+-1","Enter a score (-1 to stop): Enter a score (-1 to stop): Enter a score (-1 to stop): Enter a score (-1 to stop): Count: 3
+Average: 81.66666666666667",
+One score,"100
+-1","Enter a score (-1 to stop): Enter a score (-1 to stop): Count: 1
+Average: 100.0",
+No scores,-1,Enter a score (-1 to stop): No scores entered,
+Even average,"70
+80
+-1","Enter a score (-1 to stop): Enter a score (-1 to stop): Enter a score (-1 to stop): Count: 2
+Average: 75.0",

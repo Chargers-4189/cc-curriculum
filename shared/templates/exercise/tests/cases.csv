@@ -1,0 +1,3 @@
+label,input,output,hidden
+Doubles 5,5,Enter a number: Doubled: 10,
+Negative,-3,Enter a number: Doubled: -6,yes

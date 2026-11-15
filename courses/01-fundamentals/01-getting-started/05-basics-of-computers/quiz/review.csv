@@ -1,0 +1,13 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What is programming?,Giving a computer instructions,,,Fixing broken hardware,Designing how a website looks,Typing quickly on a keyboard
+Why do your instructions to a computer need to be very specific?,Computers take things literally,,,Computers get bored easily,Computers guess what you meant,Computers only read short sentences
+Which of these is hardware?,RAM,,,A saved .txt file,Windows,A Java program
+"In the Computer Model, which is an input device?",A keyboard,,,A CPU,A printer,A flash drive
+"On the robot, what part of the Computer Model are the motors?",Output devices,,,Input devices,Processing devices,Storage devices
+What is the main drawback of RAM?,It is cleared when the computer turns off,,,It can't hold programs,It's permanent and can't be changed,It's the slowest type of memory
+Which is an example of secondary storage?,An SSD,,,RAM,A monitor,A mouse
+A file named movie.mp4 is what kind of file?,A media file,,,A folder,A program file,A document file
+What is a repository?,A folder that tracks code and records who changed what and when,,,A type of memory chip,A program that runs Java code,A file format for images
+What is an IDE used for?,"Writing, storing, running, and deploying code",,,Browsing the internet,Storing photos and music,Cooling the CPU
+Which of these are input devices? (select all that apply),Keyboard,Mouse,Sensor,Speaker,Printer,
+Which of these are true about RAM? (select all that apply),It is the fastest memory,It is cleared when the computer turns off,,It is permanent storage,It is slower than an SSD,

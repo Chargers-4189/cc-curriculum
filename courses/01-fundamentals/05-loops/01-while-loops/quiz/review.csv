@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+When does a while loop stop?,When its condition is false,,,After 10 passes,When it reaches a print statement,Never
+What two things does every loop need?,"Something that changes, and a condition that becomes false because of it",,,A Scanner and a println,A counter starting at 0 and a break,Curly braces and a semicolon
+"What does this print? int i = 1, sum = 0; while (i < 4) { sum += i; i++; } System.out.println(sum);",6,,,10,3,4
+What happens if you forget i++ in that loop?,It loops forever (an infinite loop),,,It runs once,It doesn't compile,It runs 4 times
+How do you stop an infinite loop in the terminal?,Ctrl + C,,,Ctrl + S,Ctrl + Z,Typing stop
+What is a sentinel value?,"A special value that means ""I'm done"", like 0",,,The first value in a loop,A variable that counts passes,The value of i after the loop
+"In a sentinel loop, where do you read input?",Once before the loop and again at the bottom of the loop,,,Only inside the loop at the top,Only after the loop,Only before the loop
+What's the first step of the 3-step loop recipe?,Write the code to do the thing once and get it working,,,Write while (true),Write the condition,Add a break
+Which loops run forever? (select all that apply),while (true) { },int i = 0; while (i < 5) { System.out.println(i); },,int i = 0; while (i < 5) { i++; },int i = 5; while (i > 0) { i--; },
+Which of these could be a sentinel value? (select all that apply),0 when entering positive numbers,-1 when entering test scores,,50 when entering test scores,The loop counter i,

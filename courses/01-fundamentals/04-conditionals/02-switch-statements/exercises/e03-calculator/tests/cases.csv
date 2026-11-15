@@ -1,0 +1,19 @@
+label,input,output,hidden
+7 * 3,"7
+*
+3",Enter a number: Enter an operator (+ - * / %): Enter another number: 7 * 3 = 21,
+Add,"12
++
+30",Enter a number: Enter an operator (+ - * / %): Enter another number: 12 + 30 = 42,
+Subtract,"5
+-
+9",Enter a number: Enter an operator (+ - * / %): Enter another number: 5 - 9 = -4,
+Divide,"17
+/
+5",Enter a number: Enter an operator (+ - * / %): Enter another number: 17 / 5 = 3,
+Remainder,"17
+%
+5",Enter a number: Enter an operator (+ - * / %): Enter another number: 17 % 5 = 2,
+Unknown,"2
+^
+3",Enter a number: Enter an operator (+ - * / %): Enter another number: Unknown operator,

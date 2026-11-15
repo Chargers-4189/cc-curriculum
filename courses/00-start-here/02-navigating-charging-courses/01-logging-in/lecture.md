@@ -1,6 +1,6 @@
 First login to Charging Courses by going to this URL: [https://chargingcourses.com/login](https://chargingcourses.com/login)
 
-You'll be asked how you'd like to sign in. Choose **Email me a login link**, enter the email you signed up with, and click the link we send to your inbox. There is no password to remember. If you don't have an account yet, click **Sign up** at the bottom of the login page.
+You'll be asked how you'd like to sign in. Choose **Charging Courses Auth** as this will use your central Charging Courses account to login (This is especially needed for other services like Labs). Otherwise, you can choose **Email me a login link**, enter the email you signed up with, and click the link we send to your inbox. If you don't have an account yet, please contact me at [caleb.vang@uga.edu](mailto:caleb.vang@uga.edu?subject=Charging%20Courses%20Account%20Creation).
 
 <!-- SCREENSHOT: chargingcourses.com/login sign-in options (needs a logged-out browser) -->
 

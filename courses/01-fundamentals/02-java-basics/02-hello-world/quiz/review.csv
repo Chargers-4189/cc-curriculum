@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What three parts does every Hello World program have?,"A class declaration, a main method, and a print statement",,,"A variable, a loop, and a print statement","An import, a class, and a variable","A file, a folder, and a repository"
+A file named Robot.java holds public class Robot. What happens if you rename the file to Bot.java?,It won't compile,,,It runs normally,Java renames the class for you,It compiles but prints nothing
+What's the difference between print and println?,"println moves to a new line after printing, print doesn't",,,"print moves to a new line, println doesn't",println prints twice,There is no difference
+Every statement in Java ends with what?,A semicolon ;,,,A period .,A colon :,A closing brace }
+"What does this print? System.out.print(""Hi ""); System.out.println(""there"");",Hi there (on one line),,,Hi and there on two lines,Hi there there,"Nothing, it won't compile"
+Which line has a mistake?,"system.out.println(""Hello"");",,,"System.out.println(""Hello"");","System.out.print(""Hello"");","System.out.println(""hello"");"
+"What is text inside double quotes, like ""Hello World"", called?",A String,,,A char,A method,A class
+Your program has an error. What should you look at first?,The first error message: its file and line number,,,The last error message,The number of errors,"Nothing, just delete the file and start over"
+Which of these won't compile? (select all that apply),"System.out.println(""Hi"")","system.out.println(""Hi"");",System.out.println(Hi);,"System.out.println(""Hi"");","System.out.print(""Hi"");",
+Which lines print on their own line? (select all that apply),"System.out.println(""A"");","System.out.println(""B"");",,"System.out.print(""C"");",,

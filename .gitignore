@@ -33,3 +33,6 @@ __pycache__/
 
 # Local source material for conversion (not tracked)
 /import/
+
+# Local secrets (CC_API_TOKEN for tools/lms/publish.py)
+.env

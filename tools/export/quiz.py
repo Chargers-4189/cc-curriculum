@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Export quiz/practice YAML into copy-paste-ready files.
 
-For every lesson with quiz/*.yaml or practice/*.yaml, writes to <out>/<address>-<lesson>/:
+For every lesson with quiz/*.csv, quiz/*.yaml or practice/*.yaml, writes to <out>/<address>-<lesson>/:
   quiz.md / practice.md      student version (options shuffled, no answers)
   quiz-key.md / practice-key.md   answer key with explanations
   flashcards.tsv             front<TAB>back, importable into Quizlet / Anki
@@ -12,6 +12,8 @@ For every lesson with quiz/*.yaml or practice/*.yaml, writes to <out>/<address>-
 from __future__ import annotations
 
 import argparse
+import csv
+import io
 import hashlib
 import random
 import re
@@ -39,10 +41,15 @@ def lessons() -> list[Path]:
 
 def options(q: dict) -> list[str]:
     """Correct + incorrect answers, shuffled the same way every run."""
-    opts = [str(q["answer"])] + [str(x) for x in q.get("incorrect") or []]
+    opts = [str(x) for x in correct(q)] + [str(x) for x in q.get("incorrect") or []]
     seed = hashlib.sha256(str(q.get("question", "")).encode()).hexdigest()
     random.Random(seed).shuffle(opts)
     return opts
+
+
+def correct(q: dict) -> list:
+    """The right answer(s): `answer`, plus `also_correct` for select-all-that-apply questions."""
+    return [q["answer"]] + list(q.get("also_correct") or [])
 
 
 def code_block(code: str) -> list[str]:
@@ -59,14 +66,16 @@ def render(data: dict, lesson: Path, key: bool) -> str:
             continue
         n += 1
         pts = f" *({q['points']} pt{'s' if q['points'] != 1 else ''})*" if "points" in q else ""
-        out.append(f"**{n}.** {q.get('question', '').strip()}{pts}")
+        many = (" *(select all that apply)*" if q.get("also_correct")
+                and "select all" not in str(q.get("question", "")).lower() else "")
+        out.append(f"**{n}.** {q.get('question', '').strip()}{many}{pts}")
         if t == "code-output":
             out += code_block(q.get("code", ""))
         out.append("")
         has_options = t == "mc" or (t == "code-output" and bool(q.get("incorrect")))
         if has_options:
             for i, opt in enumerate(options(q)):
-                mark = "x" if key and opt == str(q["answer"]) else " "
+                mark = "x" if key and opt in [str(x) for x in correct(q)] else " "
                 out.append(f"- [{mark}] {LETTERS[i]}. {opt}")
         elif t == "tf":
             for opt in ("True", "False"):
@@ -90,13 +99,29 @@ def flashcards(data: dict) -> list[str]:
             for q in data.get("questions") or [] if q.get("type") == "flashcard"]
 
 
+def load_csv_quiz(f: Path) -> dict:
+    """quiz/*.csv: question,answer[,answer_2,...],incorrect_1,... -> the same shape as a YAML quiz."""
+    rows = list(csv.DictReader(io.StringIO(f.read_text(encoding="utf-8"))))
+    return {"title": f"{lesson_title(f.parent.parent)} Quiz", "questions": [
+        {"type": "mc", "question": r["question"], "answer": r["answer"],
+         "also_correct": [r[k] for k in sorted(r) if k.startswith("answer_") and r[k]],
+         "incorrect": [r[k] for k in sorted(r) if k.startswith("incorrect") and r[k]]} for r in rows]}
+
+
+def lesson_title(lesson: Path) -> str:
+    return " ".join(w.capitalize() for w in lesson.name.split("-")[1:])
+
+
 def export_lesson(lesson: Path, out_root: Path) -> int:
     written = 0
     dest = out_root / f"{address(lesson)}-{lesson.name.split('-', 1)[1]}"
     cards: list[str] = []
     for kind in ("quiz", "practice"):
-        for f in sorted((lesson / kind).glob("*.y*ml")):
-            data = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        for f in sorted([*(lesson / kind).glob("*.y*ml"), *(lesson / kind).glob("*.csv")]):
+            if f.suffix == ".csv":
+                data = load_csv_quiz(f)
+            else:
+                data = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
             stem = kind if f.stem == kind else f"{kind}-{f.stem}"
             dest.mkdir(parents=True, exist_ok=True)
             if any(q.get("type") != "flashcard" for q in data.get("questions") or []):

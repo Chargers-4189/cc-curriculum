@@ -1,0 +1,5 @@
+label,input,output,hidden
+4520,4520,Enter a number: Sum of digits: 11,
+234,234,Enter a number: Sum of digits: 9,
+One digit,8,Enter a number: Sum of digits: 8,
+Long number,9876543210123,Enter a number: Sum of digits: 51,

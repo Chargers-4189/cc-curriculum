@@ -7,6 +7,10 @@
 >
 > **Prerequisites:** [Relational and Logical Operators](../../03-operators/02-relational-and-logical-operators/lecture.md)
 
+## Follow Along
+
+Get the starter file in Charging Courses Labs with `ccm get conditional-demo` and open `Conditional.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one.
+
 ## Conditionals
 
 Recall the different errors that can arise in our programs, such as dividing by zero. If we wanted to avoid this, how can we implement this into our program?
@@ -70,7 +74,7 @@ if (age >= 16) {
 - `else if` runs only if every condition before it was `false` **and** its own condition is `true`
 - `else` runs if **none** of the conditions were `true`
 
-Run this with `age = 22`. It prints "You can drive", never "You can rent a car". The **first true branch wins** and the rest are skipped. Since every 22-year-old is also `>= 16`, the `age >= 21` branch can never be reached.
+With `age = 22` this prints "You can drive". The **first true branch wins** and the rest are skipped, so `age >= 21` is never reached.
 
 **Order matters.** Put the most specific condition first:
 
@@ -118,7 +122,7 @@ Use whichever is easier to read.
 
 ## Guarding Against Errors
 
-Remember short-circuiting? `&&` skips the right side when the left is `false`. That makes it perfect for preventing a crash:
+`&&` skips the right side when the left is `false`, so it can prevent a crash:
 
 ```java
 int dividend = 10;
@@ -139,6 +143,9 @@ if (Math.abs(total - 0.3) < 1e-9) {
 }
 ```
 
+> [!WARNING]
+> **Try it:** swap the two sides of the `&&` (put the division first) and run it. It crashes. Swap them back.
+
 ## Common Traps
 
 **Missing braces.** Without `{ }`, only the **next line** belongs to the if:
@@ -150,7 +157,7 @@ if (loggedIn)
     System.out.println("This prints even though loggedIn is false");
 ```
 
-The indentation lies! Java ignores it. Always use braces.
+Java ignores indentation. Always use braces.
 
 **Stray semicolon.** A `;` right after the condition ends the if statement immediately:
 
@@ -164,6 +171,9 @@ if (n > 0); // <- this semicolon is the whole if statement
 
 **Using `=` instead of `==`.** `if (x = 5)` doesn't compile, because the condition must be a boolean.
 
+> [!WARNING]
+> **Try it:** type the stray semicolon trap too. Then try `if (n = 5) { }`, read the error, and comment it out.
+
 ## Further
 
 - **Ternary operator:** a short if/else that produces a value.
@@ -173,30 +183,32 @@ if (n > 0); // <- this semicolon is the whole if statement
   // condition ? value if true : value if false
   ```
 
-- **Dangling else:** without braces, an `else` belongs to the **closest** `if`, not the one it's lined up with. Another reason to always use braces.
+- **Dangling else:** without braces, an `else` belongs to the **closest** `if`.
 
-## Review
+## Review Quiz
 
-- When does an `else` block run?
-- Why does the driving example with `age = 22` never print "You can rent a car"? How do you fix it?
-- What prints if you put a semicolon right after `if (n > 0)`?
-- How can you check `total / count` without crashing when `count` is 0?
+[If Statements Quiz](quiz/review.csv)
 
-## Exercises
+## Practice
 
-- [Conditionals (Follow Along)](exercises/e01-conditional-demo/prompt.md)
-- [Subtraction Quiz](exercises/e02-subtraction-quiz/prompt.md)
+Write your code in each editor and click **Test Run** until every test passes.
 
-### Getting the Files
+### 1. Positive, Negative, or Zero
 
-Open a terminal in your workspace and run:
+[Positive, Negative, or Zero](exercises/e02-positive-or-negative/prompt.md)
 
-```bash
-ccm get conditional-demo        # Conditionals (Follow Along)
-ccm get subtraction-quiz        # Subtraction Quiz
-```
+### 2. Letter Grade
 
-Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get if-statements`.
+[Letter Grade](exercises/e03-letter-grade/prompt.md)
 
-> [!TIP]
-> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+### 3. Safe Division
+
+[Safe Division](exercises/e04-safe-division/prompt.md)
+
+## Homework
+
+Each homework has its own assignment page after the lesson.
+
+### Subtraction Quiz
+
+[Subtraction Quiz](exercises/e05-subtraction-quiz/prompt.md)

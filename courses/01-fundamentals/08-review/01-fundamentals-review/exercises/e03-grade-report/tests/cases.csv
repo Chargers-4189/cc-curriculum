@@ -1,0 +1,19 @@
+label,input,output,hidden
+Three students,"3
+95 82 67","How many students? Enter the scores: Student 1: 95 (A)
+Student 2: 82 (B)
+Student 3: 67 (D)
+Average: 81.33333333333333
+Highest: 95",
+One student,"1
+100","How many students? Enter the scores: Student 1: 100 (A)
+Average: 100.0
+Highest: 100",
+Every grade,"5
+91 85 74 60 12","How many students? Enter the scores: Student 1: 91 (A)
+Student 2: 85 (B)
+Student 3: 74 (C)
+Student 4: 60 (D)
+Student 5: 12 (F)
+Average: 64.4
+Highest: 91",

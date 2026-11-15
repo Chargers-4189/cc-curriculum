@@ -1,0 +1,5 @@
+label,input,output,hidden
+4520,4520,Enter a positive number: 4520 has 4 digits,
+One digit,7,Enter a positive number: 7 has 1 digits,
+Big number,2147483647,Enter a positive number: 2147483647 has 10 digits,
+100,100,Enter a positive number: 100 has 3 digits,

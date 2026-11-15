@@ -1,0 +1,19 @@
+label,input,output,hidden
+From 3,3,"Enter a number: 3
+2
+1
+Liftoff!",
+From 10,10,"Enter a number: 10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+Liftoff!",
+From 1,1,"Enter a number: 1
+Liftoff!",
+Zero,0,Enter a number: Liftoff!,

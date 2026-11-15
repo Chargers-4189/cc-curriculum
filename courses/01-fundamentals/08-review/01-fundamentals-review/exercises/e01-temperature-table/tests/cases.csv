@@ -1,0 +1,12 @@
+label,input,output,hidden
+32 to 212,32 212 45,"Enter start, end, and step: 32 0
+77 25
+122 50
+167 75
+212 100",
+Small steps,0 40 10,"Enter start, end, and step: 0 -17
+10 -12
+20 -6
+30 -1
+40 4",
+One row,212 212 1,"Enter start, end, and step: 212 100",

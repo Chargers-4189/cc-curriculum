@@ -1,0 +1,52 @@
+# Where each course, lesson and homework lives on Charging Courses (chargingcourses.com).
+# The ids are the last part of the page's address: /course/<course>/activity/<activity>
+# tools/lms/publish.py fills these in when it creates something on the site,
+# and tools/lms/build.py uses them to turn lesson links into Charging Courses links.
+
+org: 1  # organization id on Charging Courses
+
+courses:  # course folder (under courses/) -> course
+  00-start-here: 3ab26e4a-e868-4c53-9b9d-36322b664117
+  01-fundamentals: 5191a77c-95bb-4199-a992-8f366f05f6a6
+
+lessons:  # lesson folder (under courses/) -> activity
+  00-start-here/01-introduction/01-welcome: b1106058-5ac8-4e3c-bfa0-19c4d8210857
+  00-start-here/02-navigating-charging-courses/01-logging-in: 36352448-6397-4cfa-8521-e0ab4da9e8dc
+  00-start-here/02-navigating-charging-courses/02-courses: 55a6236e-1a66-46ad-9ce9-33b3cc9e02b4
+  00-start-here/02-navigating-charging-courses/03-quizzes-and-assignments: c2810b42-1a1f-44ed-8d8b-0f1fe9f5d6fd
+  00-start-here/02-navigating-charging-courses/04-progress-and-calendar: 97cfe3e8-ac58-4fba-aa15-a8de491c4e98
+  00-start-here/02-navigating-charging-courses/05-communities: d5b71908-94c3-4b7b-9ebd-a8fb9a9d80c7
+  00-start-here/02-navigating-charging-courses/06-online-class: 43d827fe-0742-4cec-ac81-c549359fd67a
+  00-start-here/02-navigating-charging-courses/07-plugnmeet: f0a87f96-c118-42a5-9114-7e950a032b17
+  01-fundamentals/01-getting-started/01-fundamentals-introduction: 53bef316-39fa-4281-a4be-41f5b9f6cc27
+  01-fundamentals/01-getting-started/02-software-signup: 978bb23f-3986-4ec3-a0fd-6e4f39dfbee6
+  01-fundamentals/01-getting-started/03-workspace-access: 22a8d978-a639-4d82-8884-2aa207d6eea6
+  01-fundamentals/01-getting-started/04-java-workspace: a55afa29-45af-4ca5-89ce-231d29151325
+  01-fundamentals/01-getting-started/05-basics-of-computers: f0eebb1a-f853-405a-b79f-346e64ef8ba1
+  01-fundamentals/02-java-basics/01-how-java-works: d269a8cb-8bd3-4a6c-9462-3c577fe28665
+  01-fundamentals/02-java-basics/02-hello-world: 9eb11772-e430-44bb-97a5-e84f1e4ba007
+  01-fundamentals/02-java-basics/03-variables-and-data-types: b393ec91-d2fd-496c-8851-d5377b9a72bc
+  01-fundamentals/03-operators/01-arithmetic-operators: bae6492d-7139-457a-8ad9-b17889c26742
+  01-fundamentals/03-operators/02-relational-and-logical-operators: 59c25f09-3923-4d9a-9a04-488ae69c4467
+  01-fundamentals/04-conditionals/01-if-statements: 4f9af4de-0414-40d9-9dcf-a52c17f4071a
+  01-fundamentals/04-conditionals/02-switch-statements: 487a2051-6a60-472a-ab0d-3ba2785994ab
+  01-fundamentals/05-loops/01-while-loops: 3aa6883a-8e39-42a8-8d63-cb4bc6aa94d1
+  01-fundamentals/05-loops/02-for-loops: 7ab4b6fd-d8dd-4c64-9626-d79d09c8c91f
+  01-fundamentals/06-arrays/01-intro-to-arrays: 1718ed0d-2840-4d8b-bc17-a5ec6ba1c6c7
+  01-fundamentals/07-methods/01-writing-methods: 991b2afe-d912-42b9-812e-4637ec94c118
+  01-fundamentals/08-review/01-fundamentals-review: 653cc2ec-bd5c-4d41-8048-4745446ea522
+
+homework:  # exercise name -> assignment activity
+  subtraction-quiz: 936b587c-319f-435d-b47f-4ba8fff6b3ea
+  day-of-week: a5a70f09-d814-405a-93ed-47dccadd3818
+  guess-game: 1a71e5f3-3369-4747-865c-c10d9cceb1fc
+  number-pyramid: 3e4f3f40-d947-462b-b07b-fa4fac9dd1dd
+  leap-years: fb079d5e-876a-4fb0-abfe-062cd3095cdd
+  credit-card-validator: 6cbf7b3a-e8e4-41a7-90d1-39412b415259
+  days-from-today: 22964dcb-f0df-44aa-9188-f730ff4024da
+  quadratic-roots: 84c9a2fe-7885-4710-b6f3-6597ac78cf16
+
+checkins:  # check-in file (under courses/) -> assignment activity
+  01-fundamentals/check-ins/check-in-1.yaml: 76419dc5-6620-43d1-9331-0c08e9567e73
+  01-fundamentals/check-ins/check-in-2.yaml: 2e02aede-d9e9-49b8-9ae8-53af9932b94b
+  01-fundamentals/check-ins/check-in-3.yaml: 87e5ce32-6b1f-45c2-ad89-e9e79873bfbf

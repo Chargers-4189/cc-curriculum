@@ -1,6 +1,14 @@
 public class ArraysDemo {
     public static void main(String[] args) {
-        int[] scores = {90, 85, 72, 100, 64};
+        // --- Creating an Array ---
+
+        // --- Indexes ---
+
+        // --- Length ---
+
+        // --- Out of Bounds ---
+
+        // --- Looping Through an Array ---
 
     }
 }

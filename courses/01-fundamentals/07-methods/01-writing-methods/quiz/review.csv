@@ -1,0 +1,12 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+"public static int max(int num1, int num2) What is the return type?",int,,,max,public static,num1 and num2
+"In max(5, 2), what are 5 and 2 called?",Arguments,,,Parameters,Return types,Modifiers
+What does a void method return?,Nothing,,,0,null,A boolean
+What happens when Java reaches a return statement?,The method ends immediately and sends the value back,,,It keeps running to the end of the method,The program stops,It returns to the top of the method
+"x is 1. After increment(x) (which does n++), what is x?","1, the method got a copy",,,2,0,It won't compile
+Which is the better method name for a yes/no check?,isLeapYear,,,leapYear,getLeapYear,LeapYear
+Can two different methods each have a variable named count?,"Yes, each only exists in its own method",,,"No, the names clash",Only if one is void,Only if they're both int
+What is a stub?,A method that returns a dummy value so the program compiles,,,A method with no parameters,A broken method,A method that prints
+Which pair can't both exist in the same class?,"int max(int a, int b) and double max(int a, int b)",,,"int max(int a, int b) and double max(double a, double b)","int max(int a, int b) and int max(int a, int b, int c)","int max(int a, int b) and int min(int a, int b)"
+Which of these are valid return types? (select all that apply),int,void,boolean,static,public,
+Which are true about parameters? (select all that apply),They get copies of the argument values,They only exist inside the method,,Changing one changes the caller's variable,They must all be the same type,

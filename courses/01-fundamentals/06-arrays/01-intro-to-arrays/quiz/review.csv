@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+"int[] scores = {90, 85, 72, 100, 64}; What is scores[1]?",85,,,90,72,It crashes
+What is scores.length for that array?,5,,,4,6,100
+What is the last valid index of an array with 5 elements?,4,,,5,6,0
+What happens with scores[5]?,It crashes with ArrayIndexOutOfBoundsException,,,It gives 0,It gives the last element,It adds a new element
+What does new double[7] start filled with?,0.0 in every slot,,,Nothing (null),7.0 in every slot,Random numbers
+Which loop goes through every element?,for (int i = 0; i < scores.length; i++),,,for (int i = 0; i <= scores.length; i++),for (int i = 1; i <= scores.length; i++),for (int i = 1; i < scores.length; i++)
+Can an array change its size after it's created?,"No, arrays have a fixed size",,,"Yes, add to the end","Yes, with .length = 10",Only arrays of Strings
+Why should max start at scores[0] instead of 0?,"If every score is negative, 0 would be wrong",,,0 is not allowed in arrays,scores[0] is always the biggest,It doesn't matter
+"int[] a = {4, 8, 15, 16, 23}; Which are valid? (select all that apply)",a[0],a[4],a[a.length - 1],a[5],a[-1],
+Which of these create an array? (select all that apply),"int[] a = {1, 2, 3};",double[] b = new double[5];,,"int a = {1, 2, 3};",int[] c = new int;,

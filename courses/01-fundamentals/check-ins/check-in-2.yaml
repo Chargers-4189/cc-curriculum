@@ -1,0 +1,70 @@
+# Graded assignment on Charging Courses, placed after the lesson in `after`.
+title: "Check-in 2"
+after: 05-loops/02-for-loops
+description: |
+  Covers If Statements through For Loops.
+  Answer every task, then click Hand in my work.
+
+tasks:
+  - title: "Multiple choice"
+    type: quiz
+    questions:
+      - question: 'int t = 75; What prints? if (t > 90) { System.out.println("Hot"); } else if (t > 70) { System.out.println("Warm"); } else { System.out.println("Cold"); }'
+        answer: "Warm"
+        incorrect: ["Hot", "Cold", "Warm and Cold"]
+      - question: "What happens when a switch case has no break?"
+        answer: "It keeps running the cases below it"
+        incorrect: ["It won't compile", "It skips to default", "It stops the program"]
+      - question: "int n = 10; while (n > 0) { n -= 3; } What is n after the loop?"
+        answer: "-2"
+        incorrect: ["0", "1", "-3"]
+      - question: "Which loop fits printing the numbers 1 to 100?"
+        answer: "for"
+        incorrect: ["while with a sentinel", "do-while", "switch"]
+      - question: "What does this print? for (int i = 1; i <= 5; i++) { if (i == 3) { continue; } System.out.print(i); }"
+        answer: "1245"
+        incorrect: ["12345", "12", "345"]
+      - question: "The outer loop runs 4 times and the inner loop runs 5 times. How many times does the inner body run?"
+        answer: "20"
+        incorrect: ["9", "5", "4"]
+      - question: "Which of these loop forever? (select all that apply)"
+        answers: ["while (true) { }", "int i = 0; while (i < 5) { }"]
+        incorrect: ["for (int i = 0; i < 5; i++) { }", "int i = 10; while (i < 5) { i++; }"]
+      - question: "Which are true about else? (select all that apply)"
+        answers: ["It runs when every condition before it is false", "It is optional"]
+        incorrect: ["It needs a condition", "It must come before the if"]
+
+  - title: "While loop"
+    type: number
+    prompt: "int i = 1, sum = 0; while (i <= 4) { sum += i; i++; } What is sum?"
+    answer: 10
+
+  - title: "Counting by 3s"
+    type: number
+    prompt: "How many times does for (int k = 0; k < 12; k += 3) run?"
+    answer: 4
+
+  - title: "Two ifs"
+    type: number
+    prompt: "int x = 15; if (x > 10) { x -= 5; } else { x += 5; } if (x > 10) { x = 0; } What is x?"
+    answer: 10
+
+  - title: "Leaving a loop"
+    type: short
+    prompt: "What keyword exits a loop or a switch right away?"
+    answers: ["break", "break;"]
+
+  - title: "Infinite loops"
+    type: short
+    prompt: "What keys stop an infinite loop in the terminal?"
+    answers: ["ctrl + c", "ctrl+c", "ctrl c", "control + c", "control c", "control+c", "^c"]
+
+  - title: "Fill in the blanks"
+    type: fill-in
+    questions:
+      - text: "Run the body 10 times:  for (int i = 0; i ___ 10; i++)"
+        blanks: [{answer: "<", hint: "operator"}]
+      - text: "The switch case that runs when nothing matches:  ___:"
+        blanks: [{answer: "default", hint: "keyword"}]
+      - text: "Keep looping until the guess is right:  while (guess ___ number)"
+        blanks: [{answer: "!=", hint: "operator"}]

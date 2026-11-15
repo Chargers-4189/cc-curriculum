@@ -7,8 +7,8 @@
 
 Welcome to the first course of many! The Fundamentals course will give you a comprehensive guide to Java, programming, and program design. I won't take up too much of your time here, just a brief overview. As always let us know if you have any questions or concerns!
 
-- Caleb Vang: [caleb.vang@uga.edu](mailto:caleb.vang@uga.edu?subject=Charging%20Courses%20Contact)
-- Quinn David: [futureawesomescientist@gmail.com](mailto:futureawesomescientist@gmail.com?subject=Charging%20Courses%20Inquiry)
+- Caleb Vang: [caleb.vang@uga.edu](mailto:caleb.vang@uga.edu)
+- Quinn David: [futureawesomescientist@gmail.com](mailto:futureawesomescientist@gmail.com)
 
 ## Curriculum Overview
 

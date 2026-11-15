@@ -7,6 +7,22 @@
 >
 > **Prerequisites:** [Variables and Data Types](../../02-java-basics/03-variables-and-data-types/lecture.md)
 
+## Follow Along
+
+You'll write `Arithmetic.java` in this lesson. Open a terminal in **Charging Courses Labs** and run:
+
+```bash
+mkdir -p fundamentals/week2
+cd fundamentals/week2
+ccm get arithmetic-demo
+cd arithmetic-demo
+```
+
+Then open `Arithmetic.java` from the Explorer. It has a comment for each section, like `// --- Type Casting ---`. Write each section's code under its comment and run it. If a name is already used, pick a new one.
+
+> [!TIP]
+> Keep downloads organized in folders like `fundamentals/week1` and `fundamentals/hwk`. See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized).
+
 ## Operators
 
 Java has a few families of operators. We'll start with arithmetic, then cover the rest in the next lesson.
@@ -48,11 +64,11 @@ leftOver = totalCookies % totalCustomers;
 
 `%` gives you the **remainder** after division. `17 / 5` is 3 with 2 left over, so `17 % 5` is `2`.
 
-Modulus is more useful than it looks:
+Common uses:
 
 - `n % 2 == 0` checks if a number is **even**
 - `n % 10` gives you the **last digit** of a number
-- It "wraps around", which is perfect for things like days of the week
+- It "wraps around", like days of the week
 
 ## Integer Division vs Floating-point Division
 
@@ -68,9 +84,12 @@ System.out.println(3 / 4);      // 0   - 0.75, with the decimal cut off
 System.out.println(3 / 4.0);    // 0.75
 ```
 
-This is one of the most common bugs in Java. If you want a decimal answer, make sure one side is a `double`.
+If you want a decimal answer, make one side a `double`.
 
 You also can't divide an integer by zero. `10 / 0` crashes the program with an `ArithmeticException`.
+
+> [!WARNING]
+> **Try it:** add `System.out.println(10 / 0);` and run it to see the crash. Then comment it out.
 
 ## Integer Overflow
 
@@ -83,7 +102,7 @@ System.out.println(max + 1); // -2147483648
 
 ## Incrementing and Decrementing
 
-Adding or subtracting 1 is so common that Java has shortcuts:
+Java has shortcuts for adding or subtracting 1:
 
 - `j++` is equivalent to `j = j + 1`
 - `j--` is equivalent to `j = j - 1`
@@ -105,7 +124,7 @@ System.out.println(l);      // 7
 ```
 
 > [!TIP]
-> Use `++` on its own line and you never have to think about this.
+> Put `++` on its own line so the order doesn't matter.
 
 ## Compound Assignment Operators
 
@@ -140,29 +159,24 @@ Java follows an order similar to PEMDAS: parentheses first, then `* / %`, then `
 2 * (3 + 1)    // same as 2 * 4, which is 8
 ```
 
-When in doubt, use parentheses. They make your intent clear.
+When in doubt, use parentheses.
 
-## Review
+## Review Quiz
 
-- What is `17 % 5`? What about `20 % 5`?
-- What does `7 / 2` print? How would you get `3.5`?
-- What happens when you add 1 to `Integer.MAX_VALUE`?
-- If `k = 5`, what does `System.out.println(k++);` print? What is `k` afterward?
-- What does `"Score: " + 4 + 5` print?
+[Arithmetic Operators Quiz](quiz/review.csv)
 
-## Exercises
+## Practice
 
-- [Arithmetic (Follow Along)](exercises/e01-arithmetic-demo/prompt.md)
+Write your code in each editor and click **Test Run** until every test passes.
 
-### Getting the Files
+### 1. Seconds to Minutes
 
-Open a terminal in your workspace and run:
+[Seconds to Minutes](exercises/e02-seconds-to-minutes/prompt.md)
 
-```bash
-ccm get arithmetic-demo         # Arithmetic (Follow Along)
-```
+### 2. Fahrenheit to Celsius
 
-Each command creates a folder with that exercise's starter code. To get the whole lesson at once, including every exercise, run `ccm get arithmetic-operators`.
+[Fahrenheit to Celsius](exercises/e03-fahrenheit-to-celsius/prompt.md)
 
-> [!TIP]
-> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
+### 3. Sum of Digits
+
+[Sum of Digits](exercises/e04-sum-of-digits/prompt.md)

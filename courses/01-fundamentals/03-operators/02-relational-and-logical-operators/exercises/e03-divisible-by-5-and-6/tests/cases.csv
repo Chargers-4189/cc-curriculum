@@ -1,0 +1,13 @@
+label,input,output,hidden
+10,10,"Enter a number: Divisible by 5 and 6: false
+Divisible by 5 or 6: true
+Divisible by 5 or 6, but not both: true",
+30,30,"Enter a number: Divisible by 5 and 6: true
+Divisible by 5 or 6: true
+Divisible by 5 or 6, but not both: false",
+7,7,"Enter a number: Divisible by 5 and 6: false
+Divisible by 5 or 6: false
+Divisible by 5 or 6, but not both: false",
+18,18,"Enter a number: Divisible by 5 and 6: false
+Divisible by 5 or 6: true
+Divisible by 5 or 6, but not both: true",

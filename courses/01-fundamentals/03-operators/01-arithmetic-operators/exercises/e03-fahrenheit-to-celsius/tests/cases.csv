@@ -1,0 +1,5 @@
+label,input,output,hidden
+Boiling,212,Enter degrees Fahrenheit: Celsius: 100.0,
+Freezing,32,Enter degrees Fahrenheit: Celsius: 0.0,
+-40,-40,Enter degrees Fahrenheit: Celsius: -40.0,
+Room temperature,68,Enter degrees Fahrenheit: Celsius: 20.0,

@@ -1,9 +1,3 @@
----
-title: "Credits and Citation"
----
-
-# Credits and Citation
-
 ## Authors
 
 - Caleb Vang

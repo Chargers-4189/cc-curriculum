@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What is 17 % 5?,2,,,3,3.4,85
+What does System.out.println(7 / 2); print?,3,,,3.5,4,3.0
+What does System.out.println(7 / 2.0); print?,3.5,,,3,4,3.0
+How can you check if n is even?,n % 2 == 0,,,n / 2 == 0,n % 2 == 1,n * 2 == 0
+int max = Integer.MAX_VALUE; What is max + 1?,-2147483648 (it rolls over),,,2147483648,It crashes the program,0
+int j = 5; What does System.out.println(j++); print?,5,,,6,4,It won't compile
+"What does System.out.println(1 + 2 + ""3""); print?",33,,,123,6,15
+What is count after this? int count = 10; count *= 3; count -= 5;,25,,,30,15,5
+Which of these print 3? (select all that apply),System.out.println(7 / 2);,System.out.println(10 % 7);,System.out.println(1 + 2);,System.out.println(7 / 2.0);,System.out.println(13 % 5);,
+Which of these add 1 to j? (select all that apply),j++;,j += 1;,j = j + 1;,j + 1;,j =+ 2;,

@@ -20,7 +20,7 @@ If you already have a workspace, you can copy its name in the top right corner
 
 ## Activate your Account
 
-Log into your [account settings](https://auth.chargingcourses.com/if/user/#/settings) to access your API keys. You also can access your account settings from the dashboard of Charging Courses Auth in the top right.  If you have not activated your accounts API key access, you'll be able to do so in the settings page.
+Log into your [account settings](https://auth.chargingcourses.com/if/user/#/settings) to access your API keys. You also can access your account settings from the dashboard of Charging Courses Auth in the top right. If you have not activated your accounts API key access, you'll be able to do so in the settings page.
 
 ![activate.png](assets/activate.png)
 
@@ -28,7 +28,7 @@ To activate your account, you will need to accept the terms and guidelines.
 
 ### Generate your First API Key
 
-After activating your account, you can now manage your API keys. You'll be able to see the amount of keys you've used and the workspaces they're currently linked to.  To generate your first API key, click "Generate API Key" to get started.
+After activating your account, you can now manage your API keys. You'll be able to see the amount of keys you've used and the workspaces they're currently linked to. To generate your first API key, click "Generate API Key" to get started.
 
 ![generate.png](assets/generate.png)
 

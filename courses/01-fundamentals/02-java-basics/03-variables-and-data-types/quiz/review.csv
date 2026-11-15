@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+Is String firstName; a declaration or an initialization?,A declaration,,,An initialization,Both,Neither
+Which type would you use for the day of the month?,int,,,double,boolean,char
+Which of these is a char?,'A',,,"""A""",A,65.0
+What does this print? double price = 12.99; int dollars = (int) price; System.out.println(dollars);,12,,,13,12.99,It won't compile
+Which conversion does Java do automatically?,int to double (widening),,,double to int (narrowing),double to boolean,String to int
+Which variable name follows Java conventions?,totalPrice,,,TotalPrice,total_price,tp
+What does input.nextInt() do?,Reads a whole number the user types,,,Reads a whole line of text,Prints a number,Creates a new Scanner
+What is the difference between = and ==?,"= assigns a value, == checks equality",,,They do exactly the same thing,"= checks equality, == assigns a value",== is only used with text
+Which of these are primitive types? (select all that apply),int,boolean,char,String,Scanner,
+Which of these lines compile? (select all that apply),int age = 16;,double price = 19.99;,char grade = 'A';,"int age = ""sixteen"";","boolean ready = ""true"";",

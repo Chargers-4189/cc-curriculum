@@ -1,0 +1,10 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What does break do in a switch?,Jumps out of the switch,,,Stops the whole program,Skips to the next case,Restarts the switch
+When does default run?,When no case matched,,,"Always, at the end",Before the first case,Only when there's a break
+"int status = 1; What prints? switch (status) {   case 0: System.out.println(""A"");   case 1: System.out.println(""B"");   case 2: System.out.println(""C""); }",B and C (fall-through),,,B,"A, B, and C",Nothing
+Which can you NOT switch on?,A double,,,An int,A char,A String
+Which is better as a switch than an if ladder?,"A menu: choice 1, 2, 3, or 4",,,Checking if score >= 90,Checking if age >= 18 && hasID,Checking if a number is between 1 and 100
+How do you make case 6 and case 7 run the same code?,Stack them: case 6: case 7: with the code after both,,,"Write case 6, 7 -> twice",Use two switches,You can't
+What is the most common switch bug?,Forgetting a break,,,Forgetting the default,Using an int,Too many cases
+Which types can a switch use? (select all that apply),int,char,String,double,boolean,
+Which of these are good fits for a switch? (select all that apply),A menu choice from 1 to 4,A month number,An operator like + or -,Checking if score >= 90,Checking if age is between 13 and 19,

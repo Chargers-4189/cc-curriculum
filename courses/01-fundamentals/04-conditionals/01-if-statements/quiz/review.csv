@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What does an if statement's condition have to be?,A boolean,,,An int,A String,Anything
+"int age = 22; What prints? if (age >= 16) { System.out.println(""Drive""); } else if (age >= 21) { System.out.println(""Rent""); }",Drive,,,Rent,Drive and Rent,Nothing
+When does an else block run?,When every condition before it was false,,,Always,When the if condition was true,Only after a loop
+"int n = -5; What prints? if (n > 0); { System.out.println(""Hi""); }",Hi (the semicolon ended the if),,,Nothing,It won't compile,-5
+"Without braces, how much code belongs to an if?",Only the next line,,,Everything that's indented,The rest of the method,Nothing
+Which is the safe way to check for divide by zero?,if (divisor != 0 && dividend / divisor == 2),,,if (dividend / divisor == 2 && divisor != 0),if (dividend / divisor == 2),if (divisor = 0)
+Which grade ladder is in the right order?,"Check >= 90, then >= 80, then >= 70",,,"Check >= 70, then >= 80, then >= 90","Check >= 80, then >= 90, then >= 70",The order doesn't matter
+if (x = 5) { ... } What happens?,"It won't compile, the condition must be a boolean",,,It checks if x is 5,It always runs,It never runs
+int score = 85; Which conditions are true? (select all that apply),score >= 80,score < 90 && score > 70,score != 100,score >= 90,score < 60 || score > 90,
+Which of these are common if statement traps? (select all that apply),A semicolon right after the condition,Leaving out the braces,Using = instead of ==,Using else after if,Using && in a condition,

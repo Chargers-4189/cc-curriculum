@@ -1,25 +1,21 @@
 ---
 title: "Arithmetic (Follow Along)"
+type: follow-along
 ---
 
-# Arithmetic (Follow Along)
+Follow along with the lesson in `Arithmetic.java`. Each section of the lesson has a matching `// --- Section ---` comment in the file.
 
-## Getting the Files
+1. Try each of `+ - * / %` on `a = 17` and `b = 5`. Predict each answer before you run it.
+2. Compare `17 / 5` with `17.0 / 5`. Why are they different?
+3. Divide by zero on purpose and read the crash, then comment that line out.
+4. Add 1 to `Integer.MAX_VALUE` and see it roll over.
+5. Predict, then check, what `j++`, `++j`, and `l++ + ++l` print.
+6. Use `+=`, `*=`, and `%=` on a `count` variable.
+7. Print `1 + 2 + "3"` and `"1" + 2 + 3`. Can you explain the difference?
 
-Open a terminal in your workspace and run:
+## In Labs
 
 ```bash
 ccm get arithmetic-demo
 cd arithmetic-demo
 ```
-
-## Task
-
-Follow along with the lecture in `Arithmetic.java`. Before you run each line, **predict** what it will print and write your guess in a comment.
-
-1. Print `a + b`, `a - b`, `a * b`, `a / b`, and `a % b` for `a = 17` and `b = 5`.
-2. Compare integer division with floating-point division using `17.0` and `5.0`.
-3. Add 1 to `Integer.MAX_VALUE`. What happens?
-4. Try `j++` vs `++j`. Then work out `l++ + ++l` by hand before running it.
-5. Use the compound assignment operators `+=`, `*=`, and `/=`.
-6. Print `1 + 2`, `1 + 2 + "3"`, and `"1" + 2 + 3`. Why are they different?

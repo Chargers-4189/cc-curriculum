@@ -1,0 +1,6 @@
+label,input,output,hidden
+March,3,Enter a month (1-12): March,
+January,1,Enter a month (1-12): January,
+December,12,Enter a month (1-12): December,
+13 is invalid,13,Enter a month (1-12): Invalid month,
+0 is invalid,0,Enter a month (1-12): Invalid month,

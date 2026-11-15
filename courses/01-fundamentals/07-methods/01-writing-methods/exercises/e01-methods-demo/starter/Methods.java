@@ -1,18 +1,19 @@
 public class Methods {
     public static void main(String[] args) {
-        /*
-            int sum = 0;
-            for (int i = 1; i <= 10; i++) {
-                sum += i;
-            }
-            System.out.println(sum);
+        // --- Why Methods? ---
 
-            int sum = 0;
-            for (int i = 20; i <= 37; i++) {
-                sum += i;
-            }
-            System.out.println(sum);
-        */
+        // --- Anatomy of a Method ---
+
+        // --- void vs Value-Returning ---
+
+        // --- Pass-by-Value ---
+
+        // --- Scope ---
+
+        // --- Further ---
 
     }
+
+    // Write your methods down here: inside the class, but outside main.
+
 }

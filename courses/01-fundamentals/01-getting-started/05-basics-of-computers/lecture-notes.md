@@ -41,4 +41,4 @@
 
 ## Review
 
-- Go through the review questions
+- Go through the review quiz together at the end of the lesson

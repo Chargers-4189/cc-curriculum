@@ -1,0 +1,6 @@
+label,input,output,hidden
+Middle is biggest,4 9 2,Enter three numbers: Max: 9,
+Last is biggest,1 2 3,Enter three numbers: Max: 3,
+First is biggest,8 3 5,Enter three numbers: Max: 8,
+Negatives,-4 -9 -2,Enter three numbers: Max: -2,
+Ties,5 5 1,Enter three numbers: Max: 5,

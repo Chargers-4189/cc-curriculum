@@ -1,26 +1,19 @@
 ---
 title: "Arrays (Follow Along)"
+type: follow-along
 ---
 
-# Arrays (Follow Along)
+Follow along with the lesson in `ArraysDemo.java`. Each section of the lesson has a matching `// --- Section ---` comment in the file.
 
-## Getting the Files
+1. Create an array with values, and an empty one with `new`. Print an element from each.
+2. Read and change elements by index.
+3. Use `.length` to print the number of elements and the last element.
+4. Go out of bounds on purpose and read the crash, then comment it out.
+5. Loop through the array to print every score, then find the average and the highest score.
 
-Open a terminal in your workspace and run:
+## In Labs
 
 ```bash
 ccm get arrays-demo
 cd arrays-demo
 ```
-
-## Task
-
-Follow along with the lecture in `ArraysDemo.java`.
-
-1. Create an array of 5 test scores: `90, 85, 72, 100, 64`.
-2. Print the first score, the last score, and how many scores there are.
-3. Change the third score to `75` and print it.
-4. Use a `for` loop to print every score on its own line.
-5. Use a loop to find the **average** of the scores. (Watch out for integer division!)
-6. Use a loop to find the **highest** score.
-7. Try printing `scores[5]`. What error do you get, and why?

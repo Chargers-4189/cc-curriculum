@@ -1,0 +1,7 @@
+label,input,output,hidden
+5 and 3,"5
+3","Enter a: Enter b: a = 3, b = 5",
+Same numbers,"4
+4","Enter a: Enter b: a = 4, b = 4",
+Negatives,"-1
+10","Enter a: Enter b: a = 10, b = -1",
