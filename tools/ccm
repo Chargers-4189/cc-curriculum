@@ -443,6 +443,7 @@ run_suite() {
   [ -n "$tests" ] && [ -d "$tests" ] && java_sources "$tests" "$helpers" > "$out/test.txt"
   # one spinner for the whole run (compile, get the tests ready, run them); the steps leave
   # their output in $out and say how far they got in $out/stage
+  # shellcheck disable=SC2016  # the script gets its values as $1, $2, ...
   ui_spin "Testing $label..." sh -c '
     o=$1
     javac -encoding UTF-8 -nowarn -d "$o/main" @"$o/main.txt" > "$o/compile.txt" 2>&1 || { echo compile > "$o/stage"; exit 0; }
@@ -576,7 +577,7 @@ pick_downloaded() {
   case $pick in
     "$find_label") pick_folder; return ;;
     "$type_label")
-      d=$(ui_input "Folder with your exercise" "~/projects/countdown" "~/") || return 1
+      d=$(ui_input "Folder with your exercise" "$tilde/projects/countdown" "$tilde/") || return 1
       d=${d/#\~/$HOME}; [ -d "$d" ] || die "no such folder: $d"
       (cd "$d" && pwd -P); return ;;
   esac
@@ -772,6 +773,7 @@ ensure_python() {  # ensure_python <repo>
   command -v python3 >/dev/null 2>&1 || die "python3 is not installed"
   stamp="$venv/.requirements"
   if [ ! -x "$venv/bin/python" ] || [ ! -f "$stamp" ] || ! cmp -s "$req" "$stamp"; then
+    # shellcheck disable=SC2016  # the script gets its values as $1, $2, ...
     ui_spin "Setting up Python for the tools (only needed once)..." sh -c '
       [ -x "$1/bin/python" ] || python3 -m venv "$1" || { echo "could not create $1 (on Debian/Ubuntu: sudo apt install python3-venv)"; exit 1; }
       "$1/bin/python" -m pip install --quiet --disable-pip-version-check -r "$2"' _ "$venv" "$req" ||
@@ -969,6 +971,7 @@ cmd_doctor() {
   local net
   tmpdir
   net="$CCM_TMP/net-$RANDOM"
+  # shellcheck disable=SC2016  # the script gets its values as $1, $2, ...
   ui_spin "Checking the internet..." sh -c '
     curl -fsI --max-time 8 https://codeload.github.com >/dev/null 2>&1 && echo ok > "$1.github"
     curl -fsI --max-time 8 "$2" >/dev/null 2>&1 && echo ok > "$1.site"; exit 0' _ "$net" "$SITE" || true
@@ -1037,6 +1040,7 @@ cmd_release() {
          awk '$1 == "A" && $2 ~ /prompt\.md$/ { print $2 }' | sed 's#/prompt.md##; s#.*/e[0-9]*-##' | tr '\n' ' ')
   [ -z "$news" ] || say "New exercises students can ccm get: $news"
   ensure_python "$root"
+  # shellcheck disable=SC2016  # the script gets its values as $1, $2, ...
   ui_spin "Checking the curriculum and running every exercise's tests..." sh -c '
     "$1" tools/validate/validate.py --strict || { echo; echo "ccm validate found problems (a release needs 0 errors and 0 warnings)"; exit 1; }
     bash tools/check-exercises.sh || { echo; echo "exercise tests failed (see: ccm check)"; exit 1; }' _ "$PY" ||
