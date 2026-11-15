@@ -9,6 +9,18 @@ courses:  # course folder (under courses/) -> course
   00-start-here: 3ab26e4a-e868-4c53-9b9d-36322b664117
   01-fundamentals: 5191a77c-95bb-4199-a992-8f366f05f6a6
 
+chapters:  # chapter folder (under courses/) -> chapter id
+  00-start-here/01-introduction: 1
+  00-start-here/02-navigating-charging-courses: 2
+  01-fundamentals/01-getting-started: 3
+  01-fundamentals/02-java-basics: 4
+  01-fundamentals/03-operators: 5
+  01-fundamentals/04-conditionals: 6
+  01-fundamentals/05-loops: 7
+  01-fundamentals/06-arrays: 8
+  01-fundamentals/07-methods: 9
+  01-fundamentals/08-review: 10
+
 lessons:  # lesson folder (under courses/) -> activity
   00-start-here/01-introduction/01-welcome: b1106058-5ac8-4e3c-bfa0-19c4d8210857
   00-start-here/02-navigating-charging-courses/01-logging-in: 36352448-6397-4cfa-8521-e0ab4da9e8dc

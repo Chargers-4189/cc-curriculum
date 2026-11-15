@@ -1,40 +1,26 @@
 #!/usr/bin/env python3
-"""Upload courses, lessons and homework from this repo to Charging Courses (chargingcourses.com).
+"""Publish courses, lessons, homework, and check-ins from this repo to Charging Courses.
 
-Lessons, homework and check-ins are rebuilt with build.py and sent to the site through the LearnHouse API.
-Pages that already match are skipped. Anything that isn't on the site yet (a new lesson, homework,
-chapter, or a whole new course) is created, and its id is saved in tools/lms/ids.yaml.
+Each page is built with build.py and sent to the site. Pages that already match get skipped, and
+anything that isn't on the site yet gets made (its id is saved in tools/lms/ids.yaml).
 
-    python3 tools/lms/publish.py --dry-run          # show what would change, upload nothing
-    python3 tools/lms/publish.py                    # update + create everything in courses on the site
-    python3 tools/lms/publish.py courses/02-object-oriented          # create or update one course
-    python3 tools/lms/publish.py courses/01-fundamentals/05-loops    # one chapter
-    python3 tools/lms/publish.py courses/01-fundamentals/05-loops/01-while-loops   # one lesson
+    ccm publish --dry-run                    # show what would change
+    ccm publish                              # update every course on the site
+    ccm publish courses/01-fundamentals/05-loops/01-while-loops   # just one lesson
+    ccm publish courses/02-object-oriented   # make a new course
 
-A course that isn't on the site yet is only created when you name its folder, so a plain run never
-makes a surprise course. New courses are created unpublished: look them over, then publish them
-from the dashboard. New lessons and homework inside a course are published right away.
+A new course only gets made when you name its folder, and it starts unpublished so you can look it
+over. New lessons, homework, and check-ins are published right away. Names come from course.yaml,
+chapter.yaml, the lesson folder ("02-for-loops" is "For Loops"), and "<title> (Homework)". You can
+rename things on the site later and publishing will leave the names alone.
 
-Names on the site: a course and chapter use the title in course.yaml / chapter.yaml, a lesson
-uses its folder name ("02-for-loops" -> "For Loops"), homework uses "<title> (Homework)", and a
-check-in uses its title. Check-ins (courses/<course>/check-ins/*.yaml) go right after the lesson
-named in their `after:` line (and that lesson's homework), and are graded automatically.
-You can rename anything on the site afterwards; publishing never changes names.
+Put your API token in .env as CC_API_TOKEN=lh_... (Dashboard -> Developers -> API Access, with
+create, read, and update for courses, chapters, activities, and assignments).
 
-API token: Dashboard -> Developers -> API Access -> Create Token, with create, read and update
-rights for courses, chapters, activities and assignments. Put it in .env at the top of the repo
-as CC_API_TOKEN=lh_... (.env is in .gitignore, so it never gets committed), or in the
-CC_API_TOKEN environment variable.
-
-Edits made on the site: after every upload, the page's content is saved (as a fingerprint) in
-tools/lms/published.json. If a page has changed on the site since then, it's skipped and the
-changes are shown, so nothing done on the site gets overwritten. Copy those changes into the repo
-(then it's "up to date" again), or pass --force to replace them with the repo version.
-
-Safety checks (a page is skipped with a message, unless you pass --force):
-  - the page's images are kept, so the number of images must match the markdown
-  - a page that has a kind of block the markdown can't make (a video, an embed...) is left alone,
-    so nothing added by hand on the site gets wiped out
+After each publish, tools/lms/published.json remembers what each page looked like. If someone
+edits a page on the site after that, publishing skips it and shows you the changes. Use ccm pull
+to copy them into the repo, or --force to replace them. Pages are also skipped if their number of
+images doesn't match the markdown, or if they have a block the markdown can't make (like a video).
 """
 from __future__ import annotations
 
@@ -56,6 +42,9 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).parent))
 import build  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from ui import Spinner, echo  # noqa: E402
 
 API = build.SITE + "/api/v1"
 ROOT = build.ROOT
@@ -92,7 +81,7 @@ def show(kind: str, name: str, result: str) -> None:
     first, _, rest = result.partition("\n")
     COUNTS[status_color(first)] = COUNTS.get(status_color(first), 0) + 1
     label = f"{name}: " if name else ""
-    print(f"{paint('36', f'{kind:8}')}  {label}{paint(status_color(first), first)}" + ("\n" + rest if rest else ""))
+    echo(f"{paint('36', f'{kind:8}')}  {label}{paint(status_color(first), first)}" + ("\n" + rest if rest else ""))
 
 
 # ------------------------------------------------------------------- state ---
@@ -297,6 +286,7 @@ def write_ids() -> None:
             "# and tools/lms/build.py uses them to turn lesson links into Charging Courses links.\n\n"
             f"org: {IDS.get('org', 1)}  # organization id on Charging Courses\n\n"
             + block("courses", "course folder (under courses/) -> course", IDS.get("courses")) + "\n"
+            + block("chapters", "chapter folder (under courses/) -> chapter id", dict(sorted((IDS.get("chapters") or {}).items()))) + "\n"
             + block("lessons", "lesson folder (under courses/) -> activity", dict(sorted((IDS.get("lessons") or {}).items()))) + "\n"
             + block("homework", "exercise name -> assignment activity", IDS.get("homework")) + "\n"
             + block("checkins", "check-in file (under courses/) -> assignment activity", IDS.get("checkins")))
@@ -347,8 +337,8 @@ def simple(name: str) -> str:
 
 def image_note(src: str) -> dict:
     return {"type": "callout", "attrs": {"type": "warning", "dismissible": False}, "content": [
-        {"type": "paragraph", "content": [{"type": "text", "text": f"Add image here: {src} (from the repo). "
-                                           "Put the image right above this note, then delete the note."}]}]}
+        {"type": "paragraph", "content": [{"type": "text", "text": f"Add the image {src} from the repo here, "
+                                           "then delete this note."}]}]}
 
 
 def same(a, b) -> bool:
@@ -398,6 +388,8 @@ class Creator:
         act_id = {a["activity_uuid"].removeprefix("activity_"): a["id"]
                   for c in meta["chapters"] for a in c["activities"]}
         order = [[c["id"], [a["id"] for a in c["activities"]]] for c in meta["chapters"]]
+        before = json.dumps(order)
+        repo_acts: dict[int, list[int]] = {}  # site chapter -> its pages from the repo, in repo order
 
         repo_rank: dict[int, int] = {}  # site chapter -> position in the repo
         for ch_dir in numbered(self.course, "chapter.yaml"):
@@ -406,6 +398,7 @@ class Creator:
                 found = self.find_chapter(ch_dir, act_chapter, chapters)
                 if found is not None:
                     repo_rank.setdefault(found, len(repo_rank))
+                    self.remember_chapter(ch_dir, found)
                 continue
             ch = self.find_chapter(ch_dir, act_chapter, chapters)
             if ch is None:
@@ -420,7 +413,9 @@ class Creator:
                     continue
                 order.append([ch, []])
             repo_rank.setdefault(ch, len(repo_rank))
+            self.remember_chapter(ch_dir, ch)
             acts = next(c[1] for c in order if c[0] == ch)
+            mine = repo_acts.setdefault(ch, [])
             prev_act = None
             for lesson in ch_lessons:
                 items = ([("lesson", lesson)] + [("homework", h) for h in homework_of(lesson)]
@@ -428,8 +423,16 @@ class Creator:
                 for kind, item in items:
                     uid = page_id(kind, item)
                     if uid and uid in act_id:
-                        if act_chapter.get(uid) == ch:
-                            prev_act = act_id[uid]
+                        if act_chapter.get(uid) != ch:  # moved to another chapter in the repo
+                            for c in order:
+                                if act_id[uid] in c[1]:
+                                    c[1].remove(act_id[uid])
+                            acts.insert(acts.index(prev_act) + 1 if prev_act in acts else len(acts), act_id[uid])
+                            act_chapter[uid] = ch
+                            self.log.append(f"{'would move' if self.args.dry_run else 'moved'} {key(item)} "
+                                            f"to chapter '{chapters[ch]['name'] if ch in chapters else ch}'")
+                        prev_act = act_id[uid]
+                        mine.append(act_id[uid])
                         continue
                     if uid:  # in ids.yaml but gone from the site
                         self.log.append(f"WARNING: {key(item)} is in ids.yaml but its page isn't in this course")
@@ -437,6 +440,7 @@ class Creator:
                     found = self.existing(item, kind, chapters[ch] if ch in chapters else None, act_id)
                     if found:
                         prev_act = act_id[found]
+                        mine.append(act_id[found])
                         continue
                     new_id = (self.create_lesson(lesson, ch) if kind == "lesson"
                               else self.create_homework(item, ch, org) if kind == "homework"
@@ -445,17 +449,33 @@ class Creator:
                         continue
                     acts.insert(acts.index(prev_act) + 1 if prev_act in acts else len(acts), new_id)
                     prev_act = new_id
-        if self.made and not self.args.dry_run:
-            # chapters from the repo go in repo order; chapters only on the site keep their spot
-            slots = [i for i, c in enumerate(order) if c[0] in repo_rank]
-            ranked = sorted((order[i] for i in slots), key=lambda c: repo_rank[c[0]])
-            for i, c in zip(slots, ranked):
-                order[i] = c
-            self.api.put(f"/chapters/course/course_{cid}/order", {"chapter_order_by_ids": [
-                {"chapter_id": c, "activities_order_by_ids": [{"activity_id": a} for a in acts]}
-                for c, acts in order]})
-            self.log.append("put everything in repo order")
+                    mine.append(new_id)
+        # Repo pages go in repo order and repo chapters in repo order. Pages and chapters that
+        # only exist on the site (like Credits) keep their spot.
+        for c in order:
+            want = repo_acts.get(c[0]) or []
+            slots = [i for i, a in enumerate(c[1]) if a in want]
+            for i, a in zip(slots, sorted((c[1][i] for i in slots), key=want.index)):
+                c[1][i] = a
+        slots = [i for i, c in enumerate(order) if c[0] in repo_rank]
+        ranked = sorted((order[i] for i in slots), key=lambda c: repo_rank[c[0]])
+        for i, c in zip(slots, ranked):
+            order[i] = c
+        if json.dumps(order) != before or (self.made and not self.args.dry_run):
+            if self.args.dry_run:
+                self.log.append("would put the pages in repo order")
+            else:
+                self.api.put(f"/chapters/course/course_{cid}/order", {"chapter_order_by_ids": [
+                    {"chapter_id": c, "activities_order_by_ids": [{"activity_id": a} for a in acts]}
+                    for c, acts in order]})
+                self.log.append("put the pages in repo order")
         return self.log
+
+    def remember_chapter(self, ch_dir: Path, chapter: int) -> None:
+        if section("chapters").get(key(ch_dir)) != chapter:
+            section("chapters")[key(ch_dir)] = chapter
+            if not self.args.dry_run:
+                write_ids()
 
     def existing(self, item: Path, kind: str, chapter: dict | None, act_id: dict) -> str | None:
         """A page already on the site with this lesson's name (made by hand): link it, don't duplicate it."""
@@ -502,7 +522,10 @@ class Creator:
         return IDS["courses"][self.course.name]
 
     def find_chapter(self, ch_dir: Path, act_chapter: dict, chapters: dict) -> int | None:
-        """The site chapter that already holds this folder's lessons, or one with the same name."""
+        """The site chapter for this folder: saved in ids.yaml, or the one holding its lessons, or same name."""
+        saved = (IDS.get("chapters") or {}).get(key(ch_dir))
+        if saved in chapters:
+            return saved
         for l in numbered(ch_dir, "lecture.md"):
             uid = (IDS.get("lessons") or {}).get(key(l))
             if uid in act_chapter:
@@ -599,7 +622,7 @@ def publish_lesson(api: Api, folder: Path, act: str, args) -> str:
         return f"SKIPPED: the page has {len(imgs)} image(s), the markdown has {need}"
     extra = node_types(live) - node_types(built["content"]) - {"blockImage", None}
     if extra and not args.force:
-        return f"SKIPPED: the page has blocks the markdown doesn't make ({', '.join(sorted(extra))})"
+        return f"SKIPPED: the page has blocks that aren't in the markdown ({', '.join(sorted(extra))})"
     if need > len(imgs):
         return "SKIPPED: not enough images on the page to fill the markdown's images"
     content = fill_images(built["content"], imgs)
@@ -610,7 +633,7 @@ def publish_lesson(api: Api, folder: Path, act: str, args) -> str:
     diff = changes(page_text(live), page_text(content))
     if edited_on_site(act, trimmed(live)) and not args.force:
         why = ("it changed on the site since the last publish" if act in STATE
-               else "it wasn't published from the repo before, so it may have site edits")
+               else "it hasn't been published from the repo yet, so it might have edits from the site")
         return (f"SKIPPED: {why}. Copy the site's changes into the repo, or use --force to replace them "
                 f"(- site, + repo):\n{diff}")
     if args.dry_run:
@@ -642,7 +665,7 @@ def sync_assignment(api: Api, act: str, description: str, tasks: list[dict], arg
         return "up to date"
     if edited_on_site(act, snap) and not args.force:
         why = ("it changed on the site since the last publish" if act in STATE
-               else "it wasn't published from the repo before, so it may have site edits")
+               else "it hasn't been published from the repo yet, so it might have edits from the site")
         return f"SKIPPED: {why}. Copy the site's changes into the repo, or use --force to replace them."
     changes = []
     if asg.get("description") != description:
@@ -700,9 +723,9 @@ def main() -> int:
             if course not in wanted:
                 if wanted:
                     sys.exit(f"{key(course)} isn't on the site yet. To create it, run: "
-                             f"python3 tools/lms/publish.py courses/{course.name}")
+                             f"ccm publish courses/{course.name}")
                 show("course", course.name, "not on the site (to create it: "
-                     f"python3 tools/lms/publish.py courses/{course.name})")
+                     f"ccm publish courses/{course.name})")
                 continue
         lessons, homework, checkins = [], [], []
         for ch in numbered(course, "chapter.yaml"):
@@ -715,21 +738,24 @@ def main() -> int:
 
     api = Api(token())
     problems = 0
-    for course, (lessons, homework, checkins) in plan.items():
-        # create anything missing (lessons named on their own still get their homework created)
-        parents = {h.parent.parent for h in homework} | {course / build.read_checkin(c)["after"] for c in checkins}
-        for line in Creator(api, course, args).run(sorted(set(lessons) | parents)):
-            problems += line.startswith("WARNING")
-            show("create", "", line)
-        for kind, items, fn in (("lesson", lessons, publish_lesson), ("homework", homework, publish_homework),
-                                ("checkin", checkins, publish_checkin)):
-            for folder in items:
-                act = page_id(kind, folder)
-                if not act:
-                    continue  # only happens on a dry run: it would be created above
-                result = fn(api, folder, act, args)
-                problems += result.startswith("SKIPPED")
-                show(kind, key(folder), result)
+    with Spinner() as spin:
+        for course, (lessons, homework, checkins) in plan.items():
+            # create anything missing (lessons named on their own still get their homework created)
+            parents = {h.parent.parent for h in homework} | {course / build.read_checkin(c)["after"] for c in checkins}
+            spin.update(f"Checking {course.name} on the site...")
+            for line in Creator(api, course, args).run(sorted(set(lessons) | parents)):
+                problems += line.startswith("WARNING")
+                show("create", "", line)
+            for kind, items, fn in (("lesson", lessons, publish_lesson), ("homework", homework, publish_homework),
+                                    ("checkin", checkins, publish_checkin)):
+                for folder in items:
+                    act = page_id(kind, folder)
+                    if not act:
+                        continue  # only happens on a dry run: it would be created above
+                    spin.update(f"{'Checking' if args.dry_run else 'Publishing'} {key(folder)}...")
+                    result = fn(api, folder, act, args)
+                    problems += result.startswith("SKIPPED")
+                    show(kind, key(folder), result)
     names = {"32": "changed", "33": "would change", "2": "up to date", "1;31": "need you"}
     print("\n" + "   ".join(paint(c, f"{COUNTS[c]} {n}") for c, n in names.items() if COUNTS.get(c)))
     if problems:

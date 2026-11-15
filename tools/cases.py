@@ -16,13 +16,17 @@ tests that `ccm test` runs in Labs, so the two always agree.
 
     python3 tools/cases.py            # regenerate every MainTest.java
     python3 tools/cases.py --check    # fail if any MainTest.java is out of date (CI)
+    python3 tools/cases.py --fill     # run the solution to fill in every empty output, then regenerate
 """
 from __future__ import annotations
 
 import argparse
 import csv
 import io
+import shutil
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -89,6 +93,45 @@ def render_junit(csv_path: Path) -> str:
     return "\n".join(lines) + "\n"
 
 
+def run_solution(exercise: Path, stdin: str) -> str:
+    """Compile solution/*.java and run Main with this input. Returns what it prints."""
+    javac, java = shutil.which("javac"), shutil.which("java")
+    if not javac or not java:
+        raise SystemExit("--fill needs Java (javac and java) installed")
+    with tempfile.TemporaryDirectory() as out:
+        sources = [str(f) for f in sorted((exercise / "solution").glob("*.java"))]
+        r = subprocess.run([javac, "-d", out, *sources], capture_output=True, text=True)
+        if r.returncode:
+            raise SystemExit(f"{exercise.relative_to(ROOT)}: solution doesn't compile:\n{r.stderr}")
+        r = subprocess.run([java, "-cp", out, "Main"], input=stdin, capture_output=True, text=True, timeout=15)
+        if r.returncode:
+            raise SystemExit(f"{exercise.relative_to(ROOT)}: solution crashed on input {stdin!r}:\n{r.stderr}")
+        return r.stdout
+
+
+def fill(csv_path: Path) -> int:
+    """Fill in empty outputs by running the solution. Returns how many were filled."""
+    rows = list(csv.DictReader(io.StringIO(csv_path.read_text(encoding="utf-8"))))
+    if not rows or not any(not (r.get("output") or "").strip() for r in rows):
+        return 0
+    filled = 0
+    for r in rows:
+        if not (r.get("output") or "").strip():
+            stdin = r["input"].replace("\r\n", "\n")
+            if stdin and not stdin.endswith("\n"):
+                stdin += "\n"
+            printed = run_solution(csv_path.parent.parent, stdin)
+            r["output"] = "\n".join(line.rstrip() for line in printed.rstrip("\n").split("\n"))
+            filled += 1
+    cols = list(rows[0].keys())
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=cols, lineterminator="\n")
+    w.writeheader()
+    w.writerows(rows)
+    csv_path.write_text(buf.getvalue(), encoding="utf-8")
+    return filled
+
+
 def case_files() -> list[Path]:
     return sorted(ROOT.glob("courses/*/*/*/exercises/*/tests/cases.csv"))
 
@@ -96,9 +139,14 @@ def case_files() -> list[Path]:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--check", action="store_true", help="only report out-of-date files")
+    ap.add_argument("--fill", action="store_true", help="run the solution to fill in empty outputs")
     args = ap.parse_args()
     stale = 0
     for csv_path in case_files():
+        if args.fill:
+            n = fill(csv_path)
+            if n:
+                print(f"filled {n} output(s) in {csv_path.relative_to(ROOT)}")
         target = csv_path.parent / "MainTest.java"
         want = render_junit(csv_path)
         have = target.read_text(encoding="utf-8") if target.exists() else None

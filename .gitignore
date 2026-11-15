@@ -36,3 +36,6 @@ __pycache__/
 
 # Local secrets (CC_API_TOKEN for tools/lms/publish.py)
 .env
+
+# Python for the tools (made by ccm)
+.venv/

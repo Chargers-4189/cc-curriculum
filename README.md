@@ -51,7 +51,10 @@ cc-curriculum/
 │   ├── lms/publish.py                   # uploads everything to Charging Courses
 │   ├── lms/build.py                     # turns a lesson into a Charging Courses page
 │   ├── lms/ids.yaml                     # which page on the site each lesson is
-│   ├── lms/published.json               # what was last uploaded to each page
+│   ├── lms/published.json               # what was last published to each page
+│   ├── lms/pull.py                      # copies site edits back into a lesson
+│   ├── lms/forget.py                    # used by ccm remove
+│   ├── move.py                          # used by ccm mv
 │   └── check-exercises.sh               # runs every exercise's tests against its solution
 ├── .github/workflows/                   # CI and release automation
 ├── install.sh                           # one-line installer for ccm
@@ -88,7 +91,7 @@ Names work in place of numbers: `if-statements`, `1.2.if-statements.e1`.
 | `practice/` | no | <!-- --> |
 | `exercises/` | no | <!-- --> |
 
-Slides are optional. Fundamentals is the only course with them right now, but you can add them to any course.
+Slides are optional. Right now only Fundamentals has them, but any course can add them.
 
 The templates include **Objectives**, **Prerequisites**, **Review**, and **Readings** (**Required** / **Further**) sections; keep the ones a lesson needs and delete the rest.
 
@@ -107,28 +110,51 @@ ccm get 1.2.1            # download a lesson into the current folder
 ccm get if-statements    # same, by name
 ccm test                 # test the exercise(s) in the current folder
 ccm test 1.2.1.e1        # test a specific exercise from anywhere nearby
+ccm search loops         # find a lesson or exercise
+ccm show 1.2.1.e2        # read an exercise's instructions in the terminal
+ccm open 1.2.1           # open that lesson (or homework) on Charging Courses
+ccm doctor               # check that everything ccm needs is working
 ccm update               # refresh material and ccm itself
 ```
 
-Students receive lectures, slides, readings, practice and exercise starter code. Instructors can add `-i` to `ccm get` to include lecture notes and quizzes. Solutions are never downloaded.
+Students get the lectures, slides, readings, practice, and exercise starter code, but no solutions. `ccm test` needs Java 17+.
 
-`ccm test` needs Java 17+.
+If you leave out the address (like `ccm get` or `ccm show`), you'll get a list to pick from. You can type to search it. If `ccm test` can't find an exercise in the folder you're in, it lists the ones you've downloaded so you can pick one.
+
+`ccm` uses [gum](https://github.com/charmbracelet/gum) for its menus. If you don't have it, `ccm` downloads it the first time it needs it (about 14 MB, into its cache). To use plain prompts instead, set `CCM_NO_GUM=1`.
+
+`ccm help` only shows the student commands. To see the instructor commands too, run it inside a clone of the repo or run `ccm instructor on`.
 
 <!-- Note for students on where to put their work / how exercises are submitted on the LMS. -->
 
 ## For Instructors
 
-### Adding content
+### Instructor commands
 
-Run these from a clone of the repo. Each one copies a template and picks the next number for you:
+These only work inside a clone of the repo. The first time you use one that needs Python, `ccm` will set it up in `.venv`. You can run `ccm doctor` to check your setup.
 
 ```bash
-tools/ccm new chapter 1 control-flow
-tools/ccm new lesson 1.2 if-statements
-tools/ccm new exercise 1.2.1 grade-calculator
+ccm add                              # add a course, chapter, lesson, exercise or check-in, step by step
+ccm new lesson 1.2 if-statements     # same thing in one line (also: course, chapter, exercise)
+ccm mv 1.5.2 counting-loops          # rename (or: ccm mv 1.5.2 1 to make it first, --into 1.6 to move it)
+ccm rm 1.2.3                         # delete a course, chapter, lesson or exercise
+ccm get -i 1.2.1                     # download a lesson with its lecture notes and quizzes
+ccm validate                         # check structure, quizzes, links, check-ins
+ccm check                            # run every exercise's tests against its solution
+ccm cases --fill                     # fill in empty outputs in cases.csv by running the solution
+ccm export 1.2.1                     # print a quiz with an answer key
+ccm publish --dry-run                # see what would change on Charging Courses
+ccm pull                             # see which pages were changed on the site
+ccm release --dry-run                # check what students would get in the next release
 ```
 
-If an exercise doesn't need tests, you can delete its `tests/` and `solution/` folders.
+`ccm add` will ask you what you want to add, where it goes, the title, and which files to include, then make it from the templates. If the name you type is already used somewhere, it tells you where and asks again. You can also type a title like `While Loops` and it'll turn it into `while-loops`. `ccm new` does the same thing in one line. If an exercise doesn't need tests, you can delete its `tests/` and `solution/` folders.
+
+If you leave out the address for `ccm mv`, `ccm rm`, or `ccm pull`, you'll get a list to search and pick from.
+
+`ccm mv` also updates the links in other lessons, the `ccm get` lines, the check-ins, and `tools/lms/ids.yaml`, and the next publish moves the page on the site too. The addresses students use will change, so it's best to rename things before a course starts.
+
+`ccm rm` will show you what it's deleting and what links to it, then ask you to type the name to confirm. It only deletes things in the repo, so you will need to remove the page on Charging Courses yourself.
 
 ### Exercises
 
@@ -140,9 +166,9 @@ Each `prompt.md` has a `type` at the top:
 | `practice` | A code playground on the lesson page |
 | `homework` | Its own assignment page after the lesson |
 
-Practice and homework always use `public class Main` since that's what the Charging Courses code editor runs. This also lets students copy their code between Labs and the site.
+Practice and homework always use `public class Main` because that's what the Charging Courses code editor runs. Students can then copy their code between Labs and the site.
 
-Tests go in `tests/cases.csv` (`label,input,output,hidden`), and both the site and `ccm test` use them. After editing one, run `python3 tools/cases.py` to update `MainTest.java`. The easiest way to fill in `output` is to run the solution and paste what it prints.
+Tests go in `tests/cases.csv` (`label,input,output,hidden`). The site and `ccm test` both use them. After you edit one, run `ccm cases` to update `MainTest.java`. If you leave `output` empty, `ccm cases --fill` will fill it in by running the solution.
 
 ### Quizzes
 
@@ -152,13 +178,13 @@ Each lesson's quiz is `quiz/review.csv`, with one question per line:
 |---|---|---|---|---|
 | What is 17 % 5? | 2 | 3 | 3.4 | 85 |
 
-For select all that apply questions, add `answer_2` and `answer_3` columns and leave them blank on the other questions. Add the quiz to a lesson with `[Quiz](quiz/review.csv)`.
+For select all that apply questions, add `answer_2` and `answer_3` columns and leave them blank for the other questions. To add the quiz to a lesson, put `[Quiz](quiz/review.csv)` where you want it.
 
-Practice sets can also go in `practice/practice.yaml` (`mc`, `tf`, `short`, `long`, `code-output`, `flashcard`). To print a quiz with an answer key, run `python3 tools/export/quiz.py 1.2.1`.
+Practice sets can also go in `practice/practice.yaml` (`mc`, `tf`, `short`, `long`, `code-output`, `flashcard`).
 
 ### Check-ins
 
-Each course has 3 graded check-ins in `courses/<course>/check-ins/`. They show up as assignments right after the lesson in `after:` and grade themselves.
+Each course has 3 graded check-ins in `courses/<course>/check-ins/`. Each one is an assignment that goes right after the lesson in `after:`, and it's graded automatically.
 
 ```yaml
 title: "Check-in 1"
@@ -183,43 +209,36 @@ tasks:
         blanks: [{answer: "int", hint: "type"}]
 ```
 
-Everything is worth 10 points unless you set `points:`.
+Each question is worth 10 points unless you set `points:`.
 
 ### Publishing to Charging Courses
 
-Always make your changes here first, then publish them to the site.
+Please make your changes here first, then publish them to the site.
 
-To set it up, install the requirements and put your API token in `.env` as `CC_API_TOKEN=lh_...`. You can make a token in Dashboard → Developers → API Access, with create, read, and update for courses, chapters, activities, and assignments.
+To set it up, make an API token in Dashboard → Developers → API Access with create, read, and update for courses, chapters, activities, and assignments. Then put it in `.env` as `CC_API_TOKEN=lh_...`.
 
 ```bash
-pip install -r tools/requirements.txt
-python3 tools/lms/publish.py --dry-run     # see what would change
-python3 tools/lms/publish.py               # update every course on the site
-python3 tools/lms/publish.py courses/01-fundamentals/05-loops/01-while-loops   # just one lesson
-python3 tools/lms/publish.py courses/02-object-oriented                        # make a new course
+ccm publish --dry-run     # see what would change
+ccm publish               # update every course on the site
+ccm publish courses/01-fundamentals/05-loops/01-while-loops   # just one lesson
+ccm publish courses/02-object-oriented                        # make a new course
 ```
 
-A few things to know:
+Some things to know:
 
-- New courses start unpublished so you can look them over. New lessons, homework, and check-ins are published right away.
-- If someone changed a page on the site, it won't get overwritten. You'll see what's different so you can copy it into the repo, or use `--force` to replace it.
+- New courses are unpublished at first so you can look them over. New lessons, homework, and check-ins are published right away.
+- If someone edited a page on the site, publishing will skip it. Run `ccm pull 1.2.1` to copy those edits into the repo, or use `--force` to replace them.
 - Images have to be added in the editor. New pages will have a note where each image goes.
 - In a lesson, `{{user.first_name}}` shows the student's name and `[General](community:community_<uuid>)` links to a community.
 - Commit `tools/lms/ids.yaml` and `tools/lms/published.json` after you publish.
 
 ### Checks
 
-```bash
-pip install -r tools/requirements.txt
-python tools/validate/validate.py     # structure, front matter, quizzes, links
-tools/check-exercises.sh              # exercise tests pass against solutions
-```
-
-CI runs these on every push and pull request.
+`ccm validate` and `ccm check` also run on every push and pull request.
 
 ### Releases
 
-Tagging a version (like `v2026.1`) makes a release with the exported quizzes and slide PDFs. `ccm` downloads the latest release, so changes on `main` won't affect students in the middle of a course.
+Students download from the latest release, so they won't see new material until you make a new one. Run `ccm release` from `main`. It will run the checks, show you what changed, then tag and push the next version (like `v2026.1`). GitHub then builds the release with the exported quizzes and slide PDFs.
 
 <!-- Release schedule / who tags releases. -->
 

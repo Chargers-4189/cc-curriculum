@@ -55,7 +55,9 @@ IDS = yaml.safe_load(IDS_FILE.read_text(encoding="utf-8")) or {}
 
 
 def sid(*parts: str) -> str:
-    return str(uuid.uuid5(NS, "/".join(parts)))
+    """A stable id. Paths count from the repo, so every clone (on any computer) gets the same ids."""
+    root = str(ROOT) + "/"
+    return str(uuid.uuid5(NS, "/".join(p[len(root):] if p.startswith(root) else p for p in parts)))
 
 
 def front_matter(path: Path) -> tuple[dict, str]:
@@ -499,7 +501,7 @@ def read_checkin(path: Path) -> dict:
 
 def checkin_task(path: Path, i: int, t: dict) -> dict:
     kind = t["type"]
-    base = f"{path}#{i}"
+    base = f"check-in:{path.parent.parent.name}/{path.stem}#{i}"  # stays the same if folders move
     if kind == "quiz":
         questions = []
         for q in t["questions"]:
