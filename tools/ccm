@@ -5,6 +5,8 @@ set -euo pipefail
 CCM_VERSION="0.1.0"
 CCM_REPO="${CCM_REPO:-Chargers-4189/cc-curriculum}"
 CCM_CACHE="${CCM_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/ccm}"
+CCM_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/ccm"
+SITE="https://chargingcourses.com"
 MAIN_MAX_AGE_MIN=60   # re-download branch snapshots older than this
 
 JUNIT_VERSION="1.11.4"
@@ -12,11 +14,22 @@ JUNIT_SHA256="b016ef6b1c3454d6d7c2c88ce081dabf289699686af6622d6e4e2e1b54b4a2fc"
 JUNIT_URL="https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/${JUNIT_VERSION}/junit-platform-console-standalone-${JUNIT_VERSION}.jar"
 TEST_TIMEOUT="${CCM_TEST_TIMEOUT:-10s}"   # per test; catches infinite loops
 
-if [ -t 2 ]; then
-  BOLD=$'\033[1m' RED=$'\033[31m' GREEN=$'\033[32m' YELLOW=$'\033[33m' DIM=$'\033[2m' RESET=$'\033[0m'
+# Charging Courses colors: greens and emeralds first, navy second.
+# (256-color codes so they work in every terminal, including macOS Terminal.)
+if [ -t 2 ] && [ -z "${NO_COLOR:-}" ]; then
+  BOLD=$'\033[1m' DIM=$'\033[2m' RESET=$'\033[0m'
+  GREEN=$'\033[38;5;35m' EMERALD=$'\033[38;5;36m' NAVY=$'\033[38;5;25m'
+  RED=$'\033[38;5;167m' YELLOW=$'\033[38;5;179m'
 else
-  BOLD="" RED="" GREEN="" YELLOW="" DIM="" RESET=""
+  BOLD="" DIM="" RESET="" GREEN="" EMERALD="" NAVY="" RED="" YELLOW=""
 fi
+# The same colors for gum (it picks the closest match the terminal can show).
+C_PRIMARY="#10B981" C_LIGHT="#34D399" C_DARK="#047857" C_MINT="#D1FAE5"
+C_NAVY="#1E3A8A" C_NAVY_DARK="#172554" C_MUTED="#94A3B8" C_FAINT="#64748B" C_DANGER="#7F1D1D"
+
+GUM_VERSION="2.0.2"
+GUM=""
+LAST_GET=""
 
 die()  { printf '%sccm: %s%s\n' "$RED" "$*" "$RESET" >&2; exit 1; }
 warn() { printf '%sccm: %s%s\n' "$YELLOW" "$*" "$RESET" >&2; }
@@ -25,6 +38,7 @@ say()  { printf '%s\n' "$*" >&2; }
 CCM_TMP=""
 cleanup() { if [ -n "$CCM_TMP" ]; then rm -rf "$CCM_TMP"; fi; }
 trap cleanup EXIT
+trap 'printf "\n" >&2; die "cancelled"' INT
 tmpdir() { if [ -z "$CCM_TMP" ]; then CCM_TMP=$(mktemp -d "${TMPDIR:-/tmp}/ccm.XXXXXX"); fi; }
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -87,8 +101,7 @@ tree_for() {
   mkdir -p "$CCM_CACHE/trees"
   tmpdir
   tgz="$CCM_TMP/src-$RANDOM.tgz"
-  say "${DIM}Downloading curriculum ($ref)...${RESET}"
-  if ! curl -fsSL --max-time 120 "https://codeload.github.com/$CCM_REPO/tar.gz/$ref" -o "$tgz"; then
+  if ! ui_spin "Downloading curriculum ($ref)..." curl -fsSL --max-time 120 "https://codeload.github.com/$CCM_REPO/tar.gz/$ref" -o "$tgz"; then
     if [ -f "$stamp" ]; then warn "download failed; using cached copy of $ref"; echo "$dir"; return; fi
     die "could not download $CCM_REPO at '$ref' (check your internet connection)"
   fi
@@ -238,8 +251,10 @@ list_node() {  # list_node <repo path> <indent> <with exercises 0|1>
   if [ "$kind" != root ]; then
     addr=$(addr_of "$p")
     title=$(title_of "$TREE/$p" "$kind")
-    [ "$kind" = exercise ] && [ -d "$TREE/$p/tests" ] && extra=" ${GREEN}[tests]${RESET}"
-    printf '%s%s%-10s%s %s%s%s\n' "$indent" "$BOLD" "$addr" "$RESET" "$(dslug "$(basename "$p")")" \
+    [ "$kind" = exercise ] && [ -d "$TREE/$p/tests" ] && extra=" ${GREEN}✓ tests${RESET}"
+    local color=$EMERALD
+    [ "$kind" != course ] || color="$BOLD$NAVY"
+    printf '%s%s%-10s%s %s%s%s\n' "$indent" "$color" "$addr" "$RESET" "$(dslug "$(basename "$p")")" \
       "${title:+  ${DIM}$title${RESET}}" "$extra"
     indent="$indent  "
   fi
@@ -342,8 +357,10 @@ get_one() {
   cp -R "$TREE/$p" "$stage/$name"
   "prep_$kind" "$stage/$name" "$p"
   dest="${OUT_DIR%/}/$name"
-  say "${BOLD}$(addr_of "$p")${RESET} $name ($kind)"
+  LAST_GET=$dest
+  say "${GREEN}✓${RESET} ${EMERALD}$(addr_of "$p")${RESET} $name ${DIM}($kind)${RESET}"
   merge_into "$stage/$name" "$dest"
+  remember_download "$dest"
   rm -rf "$stage"
 }
 
@@ -360,12 +377,19 @@ cmd_get() {
     esac
     shift
   done
-  [ "${#targets[@]}" -gt 0 ] || die "usage: ccm get <address|name>...   (see: ccm list)"
+  if [ "${#targets[@]}" -eq 0 ]; then
+    interactive || die "usage: ccm get <address|name>...   (see: ccm list)"
+    current_tree
+    targets=("$(pick_any "What do you want to download?")")
+  fi
   current_tree
   mkdir -p "$OUT_DIR"
   local t
   for t in "${targets[@]}"; do get_one "$t"; done
   [ "$REF" = local ] || say "${DIM}version: $REF${RESET}"
+  if [ "${#targets[@]}" -eq 1 ] && [ -t 2 ]; then
+    say "${DIM}Next: cd ${LAST_GET#./}, then ccm show to read it or ccm test to check your code${RESET}"
+  fi
 }
 
 # ------------------------------------------------------------------- test ---
@@ -386,8 +410,8 @@ ensure_junit() {
   [ -f "$JUNIT_JAR" ] && return
   mkdir -p "$CCM_CACHE/lib"
   tmpdir
-  say "${DIM}Downloading JUnit $JUNIT_VERSION (one time)...${RESET}"
-  curl -fsSL --max-time 120 "$JUNIT_URL" -o "$CCM_TMP/junit.jar" || die "could not download JUnit"
+  ui_spin "Downloading JUnit $JUNIT_VERSION (one time)..." curl -fsSL --max-time 120 "$JUNIT_URL" -o "$CCM_TMP/junit.jar" ||
+    die "could not download JUnit"
   [ "$(sha256 "$CCM_TMP/junit.jar")" = "$JUNIT_SHA256" ] || die "JUnit download failed its checksum"
   mv "$CCM_TMP/junit.jar" "$JUNIT_JAR"
 }
@@ -410,32 +434,44 @@ run_suite() {
   tmpdir
   out="$CCM_TMP/build-$RANDOM"
   mkdir -p "$out/main" "$out/test"
-  printf '\n%s== %s ==%s\n' "$BOLD" "$label" "$RESET"
+  printf '\n%s%s%s\n' "$BOLD$NAVY" "$label" "$RESET"
   java_sources "$code" > "$out/main.txt"
   if [ ! -s "$out/main.txt" ]; then
-    printf '%sFAIL%s no .java files in %s\n' "$RED" "$RESET" "$code"; return 1
+    printf '%s✗ FAIL%s no .java files in %s\n' "$RED" "$RESET" "$code"; return 1
   fi
-  if ! javac -encoding UTF-8 -nowarn -d "$out/main" @"$out/main.txt"; then
-    printf '%sFAIL%s your code does not compile (see errors above)\n' "$RED" "$RESET"; return 1
-  fi
-  if [ -z "$tests" ] || [ ! -d "$tests" ]; then
-    printf '%sOK%s compiles (this exercise has no automatic tests)\n' "$GREEN" "$RESET"; return 0
-  fi
-  java_sources "$tests" "$helpers" > "$out/test.txt"
-  if ! javac -encoding UTF-8 -nowarn -d "$out/test" -cp "$out/main:$JUNIT_JAR" @"$out/test.txt" 2>"$out/test-errors.txt"; then
-    cat "$out/test-errors.txt" >&2
-    printf '%sFAIL%s the tests could not use your code. Check class and method names match the prompt.\n' "$RED" "$RESET"
-    return 1
-  fi
-  local status=0
-  java -jar "$JUNIT_JAR" execute --disable-banner --disable-ansi-colors --details=tree \
-       --config=junit.jupiter.execution.timeout.default="$TEST_TIMEOUT" \
-       --config=junit.jupiter.execution.timeout.thread.mode.default=SEPARATE_THREAD \
-       --class-path "$out/main:$out/test" --scan-class-path < /dev/null 2>&1 | junit_filter || status=$?
+  local status=0 stage
+  [ -n "$tests" ] && [ -d "$tests" ] && java_sources "$tests" "$helpers" > "$out/test.txt"
+  # one spinner for the whole run (compile, get the tests ready, run them); the steps leave
+  # their output in $out and say how far they got in $out/stage
+  ui_spin "Testing $label..." sh -c '
+    o=$1
+    javac -encoding UTF-8 -nowarn -d "$o/main" @"$o/main.txt" > "$o/compile.txt" 2>&1 || { echo compile > "$o/stage"; exit 0; }
+    [ -s "$o/test.txt" ] || { echo no-tests > "$o/stage"; exit 0; }
+    javac -encoding UTF-8 -nowarn -d "$o/test" -cp "$o/main:$2" @"$o/test.txt" > "$o/test-errors.txt" 2>&1 ||
+      { echo test-compile > "$o/stage"; exit 0; }
+    java -jar "$2" execute --disable-banner --disable-ansi-colors --details=tree \
+      --config=junit.jupiter.execution.timeout.default="$3" \
+      --config=junit.jupiter.execution.timeout.thread.mode.default=SEPARATE_THREAD \
+      --class-path "$o/main:$o/test" --scan-class-path < /dev/null > "$o/junit.txt" 2>&1 && echo pass > "$o/stage" ||
+      echo fail > "$o/stage"' _ "$out" "$JUNIT_JAR" "$TEST_TIMEOUT" || true
+  stage=$(cat "$out/stage" 2>/dev/null || echo compile)
+  case $stage in
+    compile)
+      cat "$out/compile.txt" >&2
+      printf '%s✗ FAIL%s your code does not compile (see the errors above)\n' "$RED" "$RESET"; return 1 ;;
+    no-tests)
+      printf '%s✓ OK%s it compiles (this exercise has no automatic tests)\n' "$GREEN" "$RESET"; return 0 ;;
+    test-compile)
+      cat "$out/test-errors.txt" >&2
+      printf "%s✗ FAIL%s the tests couldn't use your code. Check that your class and method names match the instructions.\n" "$RED" "$RESET"
+      return 1 ;;
+  esac
+  junit_filter < "$out/junit.txt" || status=$?
+  [ "$stage" = pass ] || status=1
   if [ "$status" -eq 0 ]; then
-    printf '%sPASS%s %s\n' "$GREEN" "$RESET" "$label"; return 0
+    printf '%s✓ PASS%s %s\n' "$GREEN" "$RESET" "$label"; return 0
   else
-    printf '%sFAIL%s %s\n' "$RED" "$RESET" "$label"; return 1
+    printf '%s✗ FAIL%s %s\n' "$RED" "$RESET" "$label"; return 1
   fi
 }
 
@@ -486,6 +522,88 @@ target_matches() {
   return 1
 }
 
+DOWNLOADS="$CCM_CACHE/downloads"   # every folder ccm get has downloaded into, newest last
+
+remember_download() {
+  local d
+  d=$(cd "$1" 2>/dev/null && pwd -P) || return 0
+  mkdir -p "$CCM_CACHE"
+  { grep -vxF "$d" "$DOWNLOADS" 2>/dev/null || true; echo "$d"; } > "$DOWNLOADS.tmp" && mv "$DOWNLOADS.tmp" "$DOWNLOADS"
+}
+
+SEARCH_DEPTH=3   # how many folders down ccm looks in your home folder and the current folder
+
+# scan_exercises <root>: a quick search for downloaded exercises a few folders down (hidden
+# folders are skipped).
+scan_exercises() {
+  local root=$1
+  [ -d "$root" ] || return 0
+  find "$root" -maxdepth $((SEARCH_DEPTH + 1)) \( -type d ! -path "$root" -name '.?*' \) -prune \
+       -o -name .ccm -type f -print 2>/dev/null | while IFS= read -r f; do
+    d=$(dirname "$f")
+    [ "$(kind_of "$(marker_get "$d" path)")" = exercise ] && (cd "$d" && pwd -P)
+  done
+}
+
+# known_exercises: every downloaded exercise ccm knows about, newest first. Uses the folders
+# ccm get remembered, plus a quick search of the current folder and your home folder.
+known_exercises() {
+  local d
+  {
+    if [ -f "$DOWNLOADS" ]; then
+      while IFS= read -r d; do [ -d "$d" ] && exercise_markers_under "$d"; done < "$DOWNLOADS"
+    fi
+    scan_exercises "$PWD"
+    scan_exercises "$HOME"
+  } | awk '!seen[$0]++' | while IFS= read -r d; do printf '%s\t%s\n' "$(file_mtime "$d")" "$d"; done |
+    sort -rn | cut -f2-
+}
+
+# pick_downloaded: pick one of the exercises you've downloaded, or find the folder yourself.
+pick_downloaded() {
+  local exs=() labels=() ex d pick i tilde="~" find_label="Find a folder..." type_label="Type a folder path..."
+  while IFS= read -r ex; do [ -n "$ex" ] && exs+=("$ex"); done < <(ui_bg "Looking for your exercises (ctrl+c to cancel)..." known_exercises)
+  for ex in ${exs[@]+"${exs[@]}"}; do
+    labels+=("$(printf '%-10s %-24s %s' "$(addr_of "$(marker_get "$ex" path)")" "$(basename "$ex")" "${ex/#$HOME/$tilde}")")
+  done
+  labels+=("$find_label" "$type_label")
+  if have_gum; then
+    pick=$("$GUM" filter --header "Which exercise do you want to test?" --placeholder "Type to search" --height 14 "${labels[@]}") ||
+      return 1
+  else
+    pick=$(ui_choose "Which exercise do you want to test?" "${labels[@]}") || return 1
+  fi
+  case $pick in
+    "$find_label") pick_folder; return ;;
+    "$type_label")
+      d=$(ui_input "Folder with your exercise" "~/projects/countdown" "~/") || return 1
+      d=${d/#\~/$HOME}; [ -d "$d" ] || die "no such folder: $d"
+      (cd "$d" && pwd -P); return ;;
+  esac
+  for i in "${!labels[@]}"; do [ "${labels[$i]}" = "$pick" ] && { echo "${exs[$i]}"; return; }; done
+  return 1
+}
+
+# pick_folder: search the folders a few levels down from here and from your home folder.
+pick_folder() {
+  local tilde="~" n dirs pick root
+  dirs=$(for root in "$PWD" "$HOME"; do
+           find "$root" -mindepth 1 -maxdepth "$SEARCH_DEPTH" \( -type d -name '.?*' \) -prune -o -type d -print 2>/dev/null
+         done | awk '!seen[$0]++' | sed "s#^$HOME#$tilde#")
+  [ -n "$dirs" ] || die "no folders found here or in your home folder"
+  if have_gum; then
+    pick=$(printf '%s\n' "$dirs" | "$GUM" filter --header "Which folder is your exercise in?" --placeholder "Type part of the folder name" --height 14) ||
+      return 1
+  else
+    local opts=()
+    while IFS= read -r n; do opts+=("$n"); done <<< "$dirs"
+    pick=$(ui_choose "Which folder is your exercise in?" "${opts[@]}") || return 1
+  fi
+  echo "${pick/#$tilde/$HOME}"
+}
+
+file_mtime() { stat -c %Y "$1" 2>/dev/null || stat -f %m "$1" 2>/dev/null || echo 0; }
+
 cmd_test() {
   local target="" here roots=() top found=() d p ex
   while [ $# -gt 0 ]; do
@@ -501,7 +619,12 @@ cmd_test() {
   if [ -z "$target" ]; then
     if d=$(nearest_marker "$here"); then roots=("$d"); else roots=("$here"); fi
     while IFS= read -r ex; do [ -n "$ex" ] && found+=("$ex"); done < <(exercise_markers_under "${roots[@]}")
-    [ "${#found[@]}" -gt 0 ] || die "no downloaded exercises here. Run 'ccm get <lesson>' first, or cd into a lesson folder."
+    if [ "${#found[@]}" -eq 0 ]; then
+      interactive || die "no downloaded exercises here. Run 'ccm get <lesson>' first, or cd into a lesson folder."
+      d=$(pick_downloaded) || die "no downloaded exercises found. Run 'ccm get <lesson>' first."
+      while IFS= read -r ex; do [ -n "$ex" ] && found+=("$ex"); done < <(exercise_markers_under "$d")
+      [ "${#found[@]}" -gt 0 ] || die "there are no downloaded exercises in $d"
+    fi
   else
     # Look under the current folder, the downloaded material we're inside, and its siblings.
     roots=("$here")
@@ -520,22 +643,15 @@ cmd_test() {
         case $p in "$resolved"|"$resolved"/*) found+=("$ex") ;; esac
       done
     fi
-    # Still nothing: widen the search one parent folder at a time (up to your home folder),
-    # so e.g. fundamentals/week2 can find fundamentals/hwk/day-of-week.
+    # Still nothing: look through the exercises ccm knows you've downloaded.
     if [ "${#found[@]}" -eq 0 ]; then
-      local up=$here stop
-      stop=$(cd "$HOME" 2>/dev/null && pwd -P || echo /)
-      case $here in "$stop"|"$stop"/*) ;; *) stop=/ ;; esac
-      while [ "${#found[@]}" -eq 0 ] && [ "$up" != "$stop" ] && [ "$up" != / ]; do
-        up=$(dirname "$up")
-        while IFS= read -r ex; do
-          [ -n "$ex" ] || continue
-          p=$(marker_get "$ex" path)
-          if target_matches "$p" "$target"; then found+=("$ex")
-          elif [ -n "$resolved" ]; then case $p in "$resolved"|"$resolved"/*) found+=("$ex") ;; esac
-          fi
-        done < <(exercise_markers_under "$up")
-      done
+      while IFS= read -r ex; do
+        [ -n "$ex" ] || continue
+        p=$(marker_get "$ex" path)
+        if target_matches "$p" "$target"; then found+=("$ex")
+        elif [ -n "$resolved" ]; then case $p in "$resolved"|"$resolved"/*) found+=("$ex") ;; esac
+        fi
+      done < <(ui_bg "Looking for your copy of $target (ctrl+c to cancel)..." known_exercises)
     fi
     [ "${#found[@]}" -gt 0 ] || die "couldn't find your copy of '$target' here. Run 'ccm get $target' first, or cd to the folder that contains it."
     # The same exercise downloaded in two places: ask which one.
@@ -568,6 +684,13 @@ cmd_test() {
   done
   printf '\n%s%d passed%s, %s%d failed%s%s\n' "$GREEN" "$pass" "$RESET" "$RED" "$fail" "$RESET" \
     "$([ "$skipped" -gt 0 ] && echo ", $skipped skipped")"
+  if [ "$fail" -gt 0 ] && [ -t 2 ]; then
+    if [ "${#found[@]}" -eq 1 ]; then
+      say "${DIM}To read the instructions again: ccm show $(addr_of "$(marker_get "${found[0]}" path)")${RESET}"
+    else
+      say "${DIM}To read an exercise's instructions again: ccm show <address>${RESET}"
+    fi
+  fi
   [ "$fail" -eq 0 ]
 }
 
@@ -587,6 +710,7 @@ cmd_compile_dir() {
 # -------------------------------------------------------------------- new ---
 
 cmd_new() {
+  if [ $# -eq 0 ] && interactive; then cmd_add; return; fi
   [ $# -ge 2 ] || die "usage: ccm new course <name> | ccm new chapter|lesson|exercise <parent address> <name>"
   local kind=$1 parent name want dir pre="" max=0 any=0 d n new tmpl
   shift
@@ -604,15 +728,8 @@ cmd_new() {
     [ "$(kind_of "$parent")" = "$want" ] || die "$1 is a $(kind_of "$parent"), expected a $want"
   fi
   [[ $name =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || die "name must be lowercase-with-hyphens, e.g. if-statements"
-  if [ "$kind" = lesson ] || [ "$kind" = exercise ]; then
-    local clash
-    clash=$(find "$TREE/courses" -mindepth 3 -maxdepth 5 -type d \( -name "[0-9]*-$name" -o -name "e[0-9]*-$name" \) 2>/dev/null |
-            while IFS= read -r d; do
-              r=${d#"$TREE"/}; k=$(kind_of "$r")
-              [ "$k" = "$kind" ] && [ "$(dslug "$(basename "$d")")" = "$name" ] && addr_of "$r"
-            done)
-    [ -z "$clash" ] || die "$kind names must be unique; '$name' is already used at $clash"
-  fi
+  local why
+  if why=$(name_conflict "$name"); then die "$why. Pick another name."; fi
   dir="$TREE/$parent"
   if [ "$kind" = exercise ]; then dir="$dir/exercises"; pre=e; fi
   mkdir -p "$dir"
@@ -634,6 +751,836 @@ cmd_new() {
   fi
   local rel=${dir#"$TREE"/}/$new
   say "${GREEN}created${RESET} $rel  ($(addr_of "$rel"))"
+}
+
+# ------------------------------------------------------- instructor tools ---
+# Front ends for the Python tools in tools/. They only work in a clone of the repo.
+
+repo_root() {  # repo_root <command name>
+  local r
+  r=$(local_source) || r=$(git rev-parse --show-toplevel 2>/dev/null) || r=""
+  if [ -z "$r" ] || [ ! -d "$r/tools/lms" ]; then
+    die "ccm $1 is for instructors: run it inside a clone of $CCM_REPO"
+  fi
+  echo "$r"
+}
+
+# Sets PY to a Python with the tools' requirements, making <repo>/.venv the first time
+# (and again whenever tools/requirements.txt changes).
+ensure_python() {  # ensure_python <repo>
+  local venv="$1/.venv" req="$1/tools/requirements.txt" stamp
+  command -v python3 >/dev/null 2>&1 || die "python3 is not installed"
+  stamp="$venv/.requirements"
+  if [ ! -x "$venv/bin/python" ] || [ ! -f "$stamp" ] || ! cmp -s "$req" "$stamp"; then
+    ui_spin "Setting up Python for the tools (only needed once)..." sh -c '
+      [ -x "$1/bin/python" ] || python3 -m venv "$1" || { echo "could not create $1 (on Debian/Ubuntu: sudo apt install python3-venv)"; exit 1; }
+      "$1/bin/python" -m pip install --quiet --disable-pip-version-check -r "$2"' _ "$venv" "$req" ||
+      die "couldn't set up Python for the tools"
+    cp "$req" "$stamp"
+  fi
+  PY="$venv/bin/python"
+  export PYTHONDONTWRITEBYTECODE=1
+}
+
+run_tool() {  # run_tool <command name> <script under tools/> [args...]
+  local name=$1 script=$2 root
+  shift 2
+  root=$(repo_root "$name")
+  ensure_python "$root"
+  exec "$PY" "$root/tools/$script" "$@"
+}
+
+cmd_remove() {
+  local yes=0 target="" rel kind addr title files refs
+  while [ $# -gt 0 ]; do
+    case $1 in
+      -y|--yes) yes=1 ;;
+      -*) die "ccm remove: unknown option $1" ;;
+      *) [ -z "$target" ] || die "ccm remove takes one thing at a time"; target=$1 ;;
+    esac
+    shift
+  done
+  TREE=$(repo_root remove)
+  if [ -z "$target" ]; then
+    interactive || die "usage: ccm remove <address|name> [-y]   (a course, chapter, lesson or exercise)"
+    target=$(pick_any "What do you want to delete?")
+  fi
+  rel=$(resolve "$target")
+  kind=$(kind_of "$rel")
+  case $kind in course|chapter|lesson|exercise) ;; *) die "can only remove a course, chapter, lesson or exercise" ;; esac
+  addr=$(addr_of "$rel")
+  title=$(title_of "$TREE/$rel" "$kind")
+  files=$(find "$TREE/$rel" -type f | wc -l | tr -d ' ')
+
+  ui_header "Delete $kind $addr${title:+  $title}" danger
+  say "  $rel  ($files file(s))"
+  # lessons elsewhere that link into what's being removed
+  refs=$(grep -rlF --include='*.md' "$(basename "$rel")/" "$TREE/courses" 2>/dev/null |
+         grep -v "^$TREE/$rel/" | sed "s|^$TREE/||" || true)
+  if [ -n "$refs" ]; then
+    say "${YELLOW}  These files link to it (fix them after):${RESET}"
+    printf '%s\n' "$refs" | sed 's/^/    /' >&2
+  fi
+  ensure_python "$TREE"
+  "$PY" "$TREE/tools/lms/forget.py" "$TREE/$rel" >&2 || true
+  say "  This won't delete anything on Charging Courses. You'll need to remove those pages on the site."
+  say "  The other folders keep their numbers. Use ccm mv if you want to renumber them."
+
+  if [ "$yes" = 0 ]; then
+    [ -t 0 ] || die "not removing without confirmation (use -y)"
+    ui_typed "$(dslug "$(basename "$rel")")" "delete it" || die "cancelled, nothing was removed"
+  fi
+  "$PY" "$TREE/tools/lms/forget.py" --apply "$TREE/$rel" || die "could not update tools/lms/ids.yaml"
+  rm -rf "${TREE:?}/$rel"
+  say "${GREEN}removed${RESET} $rel"
+  if git -C "$TREE" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    say "  (if it was committed, you can bring it back with: git restore $rel)"
+  fi
+}
+
+cmd_mv() {
+  local src args=() a
+  TREE=$(repo_root mv)
+  if [ $# -eq 0 ]; then
+    interactive || die "usage: ccm mv <address> [new-name | new-position] [--into <address>] [-y]"
+    mv_menu
+    return
+  fi
+  src=$(resolve "$1"); shift
+  while [ $# -gt 0 ]; do
+    a=$1
+    case $a in
+      --name) shift; args+=(--name "${1:?--name needs a name}") ;;
+      --to|--position) shift; args+=(--position "${1:?--to needs a number}") ;;
+      --into) shift; args+=(--into "$TREE/$(resolve "${1:?--into needs an address}")") ;;
+      -y|--yes) args+=(--yes) ;;
+      -*) die "ccm mv: unknown option $a" ;;
+      *) if is_num "$a"; then args+=(--position "$a"); else args+=(--name "$a"); fi ;;
+    esac
+    shift
+  done
+  [ "${#args[@]}" -gt 0 ] || die "tell ccm mv what to change: a new name, a new position, or --into <address>"
+  ensure_python "$TREE"
+  exec "$PY" "$TREE/tools/move.py" "$TREE/$src" "${args[@]}"
+}
+
+# ccm mv with nothing: pick what to move, then what to do with it.
+mv_menu() {
+  local src kind parent_kind what name pos into labels=() d n=0 sibs here
+  src=$(pick_any "What do you want to rename or move?")
+  kind=$(kind_of "$src")
+  case $kind in course|chapter|lesson|exercise) ;; *) die "pick a course, chapter, lesson or exercise" ;; esac
+  case $kind in course) parent_kind=root ;; chapter) parent_kind=course ;; lesson) parent_kind=chapter ;; exercise) parent_kind=lesson ;; esac
+  local choices=("rename it" "move it up or down")
+  [ "$kind" != course ] && choices+=("move it to another $parent_kind")
+  what=$(ui_choose "What do you want to do with $(addr_of "$src")?" "${choices[@]}") || die "cancelled"
+  ensure_python "$TREE"
+  case $what in
+    rename*)
+      name=$(ask_slug "$kind" "$(dslug "$(basename "$src")")" "$src")
+      exec "$PY" "$TREE/tools/move.py" "$TREE/$src" --name "$name" ;;
+    "move it up"*)
+      sibs=$(dirname "$src")
+      for d in "$TREE/$sibs"/[0-9e]*-*/; do
+        [ -d "$d" ] || continue
+        n=$((n + 1)); d=${d%/}
+        here=""; [ "${d#"$TREE"/}" != "$src" ] || here="  (here now)"
+        labels+=("$n  $(title_of "$d" "$kind")$here")
+      done
+      pos=$(ui_choose "Where should it go?" "${labels[@]}") || die "cancelled"
+      exec "$PY" "$TREE/tools/move.py" "$TREE/$src" --position "${pos%% *}" ;;
+    *)
+      into=$(pick_kind "Move it into which $parent_kind?" "$parent_kind")
+      exec "$PY" "$TREE/tools/move.py" "$TREE/$src" --into "$TREE/$into" ;;
+  esac
+}
+
+cmd_pull() {
+  local args=() a
+  TREE=$(repo_root pull)
+  for a in "$@"; do
+    case $a in -y|--yes) args+=(--yes) ;; *) args+=("$TREE/$(resolve "$a")") ;; esac
+  done
+  ensure_python "$TREE"
+  exec "$PY" "$TREE/tools/lms/pull.py" ${args[@]+"${args[@]}"}
+}
+
+ids_get() {  # ids_get <section> <key>   (from tools/lms/ids.yaml)
+  local f="$TREE/tools/lms/ids.yaml"
+  [ -f "$f" ] || return 0
+  SEC=$1 KEY=$2 awk 'BEGIN { s = ENVIRON["SEC"] ":"; k = ENVIRON["KEY"] }
+    index($0, s) == 1 { on = 1; next }
+    /^[^ #]/ { on = 0 }
+    on && index($0, "  " k ": ") == 1 { v = substr($0, length(k) + 5); sub(/[ \t]+#.*/, "", v); print v; exit }' "$f"
+}
+
+cmd_open() {
+  local rel kind course cid act="" url="" d
+  current_tree
+  if [ $# -gt 0 ]; then
+    rel=$(resolve "$1")
+  else
+    if d=$(nearest_marker "$PWD"); then
+      rel=$(marker_get "$d" path)
+    else
+      interactive || die "usage: ccm open <address>   (or run it inside something you downloaded)"
+      rel=$(pick_any "What do you want to open?")
+    fi
+  fi
+  kind=$(kind_of "$rel")
+  course=$(printf %s "${rel#courses/}" | cut -d/ -f1)
+  cid=$(ids_get courses "$course")
+  [ -n "$cid" ] || die "$(addr_of "$rel") isn't on Charging Courses yet"
+  case $kind in
+    course) url="$SITE/course/$cid" ;;
+    chapter)
+      for d in "$TREE/$rel"/[0-9]*-*/; do
+        d=${d%/}
+        act=$(ids_get lessons "${d#"$TREE"/courses/}")
+        [ -n "$act" ] && break
+      done ;;
+    lesson) act=$(ids_get lessons "${rel#courses/}") ;;
+    exercise)
+      if [ "$(yaml_scalar "$TREE/$rel/prompt.md" type)" = homework ]; then
+        act=$(ids_get homework "$(dslug "$(basename "$rel")")")
+      fi
+      [ -n "$act" ] || act=$(ids_get lessons "$(dirname "$(dirname "${rel#courses/}")")") ;;
+  esac
+  if [ -z "$url" ]; then
+    [ -n "$act" ] || die "$(addr_of "$rel") isn't on Charging Courses yet"
+    url="$SITE/course/$cid/activity/$act"
+  fi
+  echo "$url"
+  if [ "$(uname)" = Darwin ]; then open "$url"
+  elif [ -n "${BROWSER:-}" ]; then "$BROWSER" "$url" >/dev/null 2>&1 &
+  elif command -v xdg-open >/dev/null 2>&1 && [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then xdg-open "$url" >/dev/null 2>&1 &
+  fi
+}
+
+doctor_ok()  { say "  ${GREEN}✓${RESET} $*"; }
+doctor_no()  { say "  ${RED}✗${RESET} $*"; DOCTOR_BAD=1; }
+doctor_meh() { say "  ${YELLOW}-${RESET} $*"; }
+
+cmd_doctor() {
+  local v root=""
+  DOCTOR_BAD=0
+  ui_header "ccm $CCM_VERSION"
+  if command -v curl >/dev/null 2>&1; then doctor_ok "curl"; else doctor_no "curl isn't installed"; fi
+  local net
+  tmpdir
+  net="$CCM_TMP/net-$RANDOM"
+  ui_spin "Checking the internet..." sh -c '
+    curl -fsI --max-time 8 https://codeload.github.com >/dev/null 2>&1 && echo ok > "$1.github"
+    curl -fsI --max-time 8 "$2" >/dev/null 2>&1 && echo ok > "$1.site"; exit 0' _ "$net" "$SITE" || true
+  if [ -f "$net.github" ]; then doctor_ok "can reach GitHub (for ccm get)"
+  else doctor_no "can't reach GitHub, so ccm get won't work (check your internet)"; fi
+  if [ -f "$net.site" ]; then doctor_ok "can reach Charging Courses"; else doctor_no "can't reach $SITE"; fi
+  if [ "${CCM_NO_GUM:-}" = 1 ]; then doctor_meh "gum is turned off (CCM_NO_GUM=1)"
+  elif find_gum; then doctor_ok "gum for menus ($GUM)"
+  else doctor_meh "gum couldn't be downloaded, so ccm uses plain menus"; fi
+  v=$( (find_java >/dev/null 2>&1 && javac -version 2>&1) | grep -Eo '[0-9]+' | head -1 || true)
+  if [ -n "$v" ] && [ "$v" -ge 17 ]; then doctor_ok "Java $v (for ccm test)"
+  else doctor_no "Java 17+ not found (needed for ccm test). Labs already has it; otherwise install a JDK or WPILib."; fi
+  if is_instructor; then
+    ui_header "Instructor"
+    if root=$(repo_root doctor 2>/dev/null); then doctor_ok "repo clone at $root"
+    else root=""; doctor_no "not inside a clone of $CCM_REPO (instructor commands need one)"; fi
+    if command -v git >/dev/null 2>&1; then doctor_ok "git"; else doctor_no "git isn't installed"; fi
+    if python3 -c 'import sys; sys.exit(sys.version_info < (3, 9))' 2>/dev/null; then
+      doctor_ok "Python $(python3 -c 'import sys; print("%d.%d" % sys.version_info[:2])')"
+    else doctor_no "Python 3.9+ not found"; fi
+    if [ -n "$root" ]; then
+      if [ -x "$root/.venv/bin/python" ]; then doctor_ok "tools' Python is set up (.venv)"
+      else doctor_meh "tools' Python gets set up the first time you need it"; fi
+      if [ -n "${CC_API_TOKEN:-}" ] || grep -q '^CC_API_TOKEN=.' "$root/.env" 2>/dev/null; then
+        if [ -x "$root/.venv/bin/python" ] && (cd "$root" && .venv/bin/python -c '
+import sys; sys.path.insert(0, "tools/lms")
+import publish as P
+P.Api(P.token()).get("/courses/course_%s/meta?slim=true" % next(iter(P.IDS["courses"].values())))
+' >/dev/null 2>&1); then doctor_ok "API token works (for ccm publish)"
+        else doctor_no "the API token didn't work (make a new one in Dashboard → Developers → API Access)"; fi
+      else doctor_no "no API token yet (add CC_API_TOKEN=lh_... to .env for ccm publish)"; fi
+    fi
+  fi
+  if [ "$DOCTOR_BAD" = 0 ]; then say "${GREEN}all good${RESET}"; fi
+  return "$DOCTOR_BAD"
+}
+
+cmd_release() {
+  local dry=0 tag="" a root branch last year news
+  local empty_tree=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+  for a in "$@"; do
+    case $a in
+      --dry-run|-n) dry=1 ;;
+      v[0-9]*) tag=$a ;;
+      *) die "usage: ccm release [vYYYY.N] [--dry-run]" ;;
+    esac
+  done
+  root=$(repo_root release)
+  cd "$root"
+  [ -z "$(git status --porcelain)" ] || die "commit or stash your changes first (see: git status)"
+  git fetch --tags --quiet origin 2>/dev/null || warn "couldn't get the tags from GitHub, so using the ones you have"
+  branch=$(git branch --show-current)
+  last=$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)
+  year=$(date +%Y)
+  if [ -z "$tag" ]; then
+    if [[ $last =~ ^v$year\.([0-9]+)$ ]]; then tag="v$year.$((BASH_REMATCH[1] + 1))"; else tag="v$year.1"; fi
+  fi
+  if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then die "$tag already exists"; fi
+
+  ui_header "Release $tag"
+  say "from ${branch:-detached HEAD} (last release: ${last:-none})"
+  [ "$branch" = main ] || warn "you're on '$branch'. Releases usually come from main."
+  say "Changes since ${last:-the beginning}:"
+  git log --oneline "${last:+$last..}HEAD" | head -15 | sed 's/^/  /' >&2
+  news=$(git diff --name-status "${last:-$empty_tree}" HEAD -- courses |
+         awk '$1 == "A" && $2 ~ /prompt\.md$/ { print $2 }' | sed 's#/prompt.md##; s#.*/e[0-9]*-##' | tr '\n' ' ')
+  [ -z "$news" ] || say "New exercises students can ccm get: $news"
+  ensure_python "$root"
+  ui_spin "Checking the curriculum and running every exercise's tests..." sh -c '
+    "$1" tools/validate/validate.py --strict || { echo; echo "ccm validate found problems (a release needs 0 errors and 0 warnings)"; exit 1; }
+    bash tools/check-exercises.sh || { echo; echo "exercise tests failed (see: ccm check)"; exit 1; }' _ "$PY" ||
+    die "fix the problems above, then try again"
+  say "${GREEN}checks passed${RESET}"
+  if [ "$dry" = 1 ]; then say "dry run: would tag and push $tag"; return; fi
+  [ -t 0 ] || die "not releasing without confirmation"
+  ui_typed "$tag" "tag and push it" || die "cancelled"
+  git tag -a "$tag" -m "Release $tag"
+  git push origin "$tag"
+  say "${GREEN}released $tag${RESET}. GitHub is building it now: https://github.com/$CCM_REPO/actions"
+}
+
+# Everything in the curriculum, one per line: <address>  <title>  · <kind>
+search_index() {
+  local d rel kind
+  find "$TREE/courses" -mindepth 1 -maxdepth 5 -type d \( -name '[0-9]*-*' -o -name 'e[0-9]*-*' \) 2>/dev/null | sort |
+    while IFS= read -r d; do
+      rel=${d#"$TREE"/}; kind=$(kind_of "$rel")
+      case $kind in course|chapter|lesson|exercise) ;; *) continue ;; esac
+      printf '%-12s %s  · %s\n' "$(addr_of "$rel")" "$(title_of "$d" "$kind")" "$kind"
+    done
+}
+
+cmd_search() {
+  local query="$*" line addr what lines
+  current_tree
+  if have_gum; then
+    line=$(ui_bg "Loading the curriculum..." search_index | "$GUM" filter --placeholder "Search lessons and exercises" --value "$query" \
+           --header "Type to search, enter to pick" --height 15) || die "cancelled"
+    addr=${line%% *}
+    what=$(ui_choose "$line" "Download it" "Read it here" "Open it on Charging Courses" "See what's in it") || die "cancelled"
+    case $what in
+      Download*) cmd_get "$addr" ;;
+      Read*)     cmd_show "$addr" ;;
+      Open*)     cmd_open "$addr" ;;
+      *)         cmd_list "$addr" ;;
+    esac
+    return
+  fi
+  [ -n "$query" ] || die "usage: ccm search <words>"
+  lines=$(search_index | grep -iF -- "${query%% *}" || true)
+  for w in $query; do lines=$(printf '%s\n' "$lines" | grep -iF -- "$w" || true); done
+  if [ -n "$lines" ]; then
+    printf '%s\n' "$lines" | while IFS= read -r line; do
+      printf '%s%s%s%s\n' "$BOLD$EMERALD" "${line:0:12}" "$RESET" "${line:12}"
+    done
+  fi
+  local hits
+  hits=$(grep -rilF --include=lecture.md --include=prompt.md -- "$query" "$TREE/courses" 2>/dev/null | sort | head -10)
+  if [ -n "$hits" ]; then
+    say "${DIM}Also mentioned in:${RESET}"
+    printf '%s\n' "$hits" | while IFS= read -r f; do
+      d=$(dirname "$f"); rel=${d#"$TREE"/}
+      printf '  %s%-12s%s %s\n' "$EMERALD" "$(addr_of "$rel")" "$RESET" "$(title_of "$d" "$(kind_of "$rel")")"
+    done
+  fi
+  [ -n "$lines$hits" ] || say "nothing found for '$query'"
+}
+
+cmd_show() {  # read a lesson or exercise in the terminal
+  local rel d f text
+  current_tree
+  if [ $# -gt 0 ]; then rel=$(resolve "$1")
+  elif d=$(nearest_marker "$PWD"); then rel=$(marker_get "$d" path)
+  else
+    interactive || die "usage: ccm show <address>"
+    rel=$(pick_any "What do you want to read?")
+  fi
+  case $(kind_of "$rel") in
+    exercise) f="$TREE/$rel/prompt.md" ;;
+    lesson)   f="$TREE/$rel/lecture.md" ;;
+    *) cmd_list "$rel"; return ;;
+  esac
+  [ -f "$f" ] || die "nothing to read for $(addr_of "$rel")"
+  text="# $(addr_of "$rel")  $(title_of "$TREE/$rel" "$(kind_of "$rel")")
+$(awk 'NR == 1 && /^---$/ { fm = 1; next } fm && /^---$/ { fm = 0; next } !fm' "$f")"
+  if have_gum && [ -t 1 ]; then
+    printf '%s\n' "$text" | "$GUM" format --theme dark | "$GUM" pager --soft-wrap
+  elif [ -t 1 ] && command -v less >/dev/null 2>&1; then
+    printf '%s\n' "$text" | less -R
+  else
+    printf '%s\n' "$text"
+  fi
+}
+
+cmd_check() {
+  local root
+  root=$(repo_root check)
+  exec bash "$root/tools/check-exercises.sh" "$@"
+}
+
+# ------------------------------------------------------------- instructor ---
+
+in_clone() {
+  local r
+  r=$(local_source 2>/dev/null) || r=$(git rev-parse --show-toplevel 2>/dev/null) || return 1
+  [ -d "$r/tools/lms" ]
+}
+
+# Instructor mode shows the instructor commands in `ccm help`. It's on inside a clone of the
+# repo, after `ccm instructor on`, or with CCM_INSTRUCTOR=1 (CCM_INSTRUCTOR=0 turns it off).
+is_instructor() {
+  case "${CCM_INSTRUCTOR:-}" in
+    0|no|false|off) return 1 ;;
+    "") ;;
+    *) return 0 ;;
+  esac
+  [ -f "$CCM_CONFIG/instructor" ] || in_clone
+}
+
+cmd_instructor() {
+  case "${1:-status}" in
+    on)  mkdir -p "$CCM_CONFIG" && touch "$CCM_CONFIG/instructor"; say "instructor mode is on (ccm help shows everything)" ;;
+    off) rm -f "$CCM_CONFIG/instructor"; say "instructor mode is off${DIM} (it's still on inside a clone of the repo)${RESET}" ;;
+    status) if is_instructor; then say "instructor mode is on"; else say "instructor mode is off (turn it on with: ccm instructor on)"; fi ;;
+    *) die "usage: ccm instructor on|off|status" ;;
+  esac
+}
+
+# -------------------------------------------------------------------- add ---
+# `ccm add`: asks what you want to add and makes it from the templates. Uses gum
+# (github.com/charmbracelet/gum) if it's installed, and plain prompts if not.
+
+gum_sha256() {  # checksums from gum's release page (checksums.txt)
+  case $1 in
+    Darwin_arm64)  echo 4777a69b1170b8db23c95d5889fb32186cfda1a3ac950d339aa17e3513633890 ;;
+    Darwin_x86_64) echo 5374966c7c7199ea879fcaa525ddc6d447a098d3d35496e430a9a1ef38d30485 ;;
+    Linux_arm64)   echo 8ebf8b54ec1e8c81f2bb58b59ff9b70998186a4d11375f0cf357b80e0ccfa1d5 ;;
+    Linux_x86_64)  echo d842e06d93dbed90af48cb8dd10698db6f22e331fc40346bb37bbc753109edc2 ;;
+    *) return 1 ;;
+  esac
+}
+
+# find_gum: sets GUM to a gum binary. Uses one that's installed, or downloads gum into the
+# ccm cache the first time (about 14 MB). If that can't happen, ccm uses plain prompts.
+find_gum() {
+  [ "${CCM_NO_GUM:-}" != 1 ] || return 1
+  [ "$GUM" != none ] || return 1
+  [ -z "$GUM" ] || return 0
+  local bin="$CCM_CACHE/bin/gum-$GUM_VERSION" skip="$CCM_CACHE/bin/.no-gum" os arch platform sum tgz
+  if command -v gum >/dev/null 2>&1; then
+    GUM=$(command -v gum)
+  elif [ -x "$bin" ]; then
+    GUM=$bin
+  elif [ -f "$skip" ] && [ -n "$(find "$skip" -mtime -1 2>/dev/null)" ]; then
+    GUM=none; return 1   # the download failed recently; don't retry every time
+  else
+    os=$(uname -s); arch=$(uname -m)
+    case $arch in aarch64|arm64) arch=arm64 ;; x86_64|amd64) arch=x86_64 ;; esac
+    platform="${os}_${arch}"
+    mkdir -p "$CCM_CACHE/bin"
+    if ! sum=$(gum_sha256 "$platform"); then touch "$skip"; GUM=none; return 1; fi
+    tmpdir
+    tgz="$CCM_TMP/gum.tgz"
+    say "${DIM}Getting gum for menus (one time)...${RESET}"
+    if curl -fsSL --max-time 60 "https://github.com/charmbracelet/gum/releases/download/v$GUM_VERSION/gum_${GUM_VERSION}_${platform}.tar.gz" -o "$tgz" &&
+       [ "$(sha256 "$tgz")" = "$sum" ] &&
+       tar -xzf "$tgz" -C "$CCM_TMP" "gum_${GUM_VERSION}_${platform}/gum" 2>/dev/null; then
+      mv "$CCM_TMP/gum_${GUM_VERSION}_${platform}/gum" "$bin" && chmod +x "$bin"
+      GUM=$bin
+    else
+      touch "$skip"; GUM=none; return 1
+    fi
+  fi
+  export CCM_GUM=$GUM   # the Python tools use the same gum
+  gum_theme
+}
+
+gum_theme() {  # Charging Courses colors for every gum component (your own GUM_* settings win)
+  local kv name
+  for kv in \
+    GUM_CHOOSE_CURSOR="› " GUM_CHOOSE_CURSOR_FOREGROUND=$C_PRIMARY GUM_CHOOSE_SELECTED_FOREGROUND=$C_PRIMARY \
+    GUM_CHOOSE_HEADER_FOREGROUND=$C_LIGHT \
+    GUM_CONFIRM_PROMPT_FOREGROUND=$C_LIGHT GUM_CONFIRM_SELECTED_BACKGROUND=$C_DARK \
+    GUM_CONFIRM_SELECTED_FOREGROUND=$C_MINT GUM_CONFIRM_UNSELECTED_BACKGROUND=$C_NAVY_DARK \
+    GUM_CONFIRM_UNSELECTED_FOREGROUND=$C_MUTED \
+    GUM_INPUT_PROMPT="› " GUM_INPUT_PROMPT_FOREGROUND=$C_PRIMARY GUM_INPUT_CURSOR_FOREGROUND=$C_PRIMARY \
+    GUM_INPUT_HEADER_FOREGROUND=$C_LIGHT GUM_INPUT_PLACEHOLDER_FOREGROUND=$C_FAINT \
+    GUM_FILTER_PROMPT="› " GUM_FILTER_PROMPT_FOREGROUND=$C_PRIMARY GUM_FILTER_INDICATOR_FOREGROUND=$C_PRIMARY \
+    GUM_FILTER_MATCH_FOREGROUND=$C_LIGHT GUM_FILTER_HEADER_FOREGROUND=$C_LIGHT \
+    GUM_FILTER_PLACEHOLDER_FOREGROUND=$C_FAINT GUM_FILTER_CURSOR_TEXT_FOREGROUND=$C_MINT \
+    GUM_SPIN_SPINNER=dot GUM_SPIN_SPINNER_FOREGROUND=$C_PRIMARY GUM_SPIN_TITLE_FOREGROUND=$C_MUTED \
+    GUM_WRITE_CURSOR_FOREGROUND=$C_PRIMARY GUM_WRITE_HEADER_FOREGROUND=$C_LIGHT \
+    GUM_WRITE_PROMPT_FOREGROUND=$C_DARK GUM_WRITE_PLACEHOLDER_FOREGROUND=$C_FAINT \
+    GUM_TABLE_HEADER_FOREGROUND=$C_LIGHT GUM_TABLE_BORDER_FOREGROUND=$C_NAVY \
+    GUM_TABLE_SELECTED_FOREGROUND=$C_MINT GUM_TABLE_SELECTED_BACKGROUND=$C_DARK \
+    GUM_PAGER_MATCH_FOREGROUND=$C_MINT GUM_PAGER_MATCH_BACKGROUND=$C_DARK \
+    GUM_PAGER_MATCH_HIGH_FOREGROUND=$C_MINT GUM_PAGER_MATCH_HIGH_BACKGROUND=$C_NAVY \
+    GUM_PAGER_HELP_FOREGROUND=$C_FAINT; do
+    name=${kv%%=*}
+    [ -z "${!name:-}" ] || continue
+    export "${kv?}"
+  done
+}
+
+# have_gum: true when gum can be used here. stdout isn't checked because the ui_* helpers run
+# inside $(...), and gum draws on the terminal anyway.
+have_gum() { [ -t 0 ] && [ -t 2 ] && find_gum; }
+
+# ui_header <text> [danger]: a title badge in Charging Courses colors.
+ui_header() {
+  if have_gum; then
+    local bg=$C_NAVY
+    [ -z "${2:-}" ] || bg=$C_DANGER
+    "$GUM" style --bold --foreground "$C_MINT" --background "$bg" --padding "0 1" --margin "1 0 0 0" "$1" >&2
+  else
+    local fg=$NAVY
+    [ -z "${2:-}" ] || fg=$RED
+    say ""; say "${BOLD}$fg$1${RESET}"
+  fi
+}
+
+ui_choose() {  # ui_choose <header> <option>...   -> prints the chosen option
+  local header=$1 i=1 opt pick
+  shift
+  if have_gum; then "$GUM" choose --header "$header" "$@"; return; fi
+  say "$header"
+  for opt in "$@"; do say "  $i) $opt"; i=$((i + 1)); done
+  while :; do
+    printf '> ' >&2; read -r pick || return 1
+    if is_num "$pick" && [ "$pick" -ge 1 ] && [ "$pick" -le $# ]; then
+      shift $((pick - 1)); echo "$1"; return
+    fi
+    say "pick a number from 1 to $#"
+  done
+}
+
+ui_multi() {  # ui_multi <header> <preselected,comma,list> <option>...  -> one choice per line
+  local header=$1 selected=$2 opt answer
+  shift 2
+  if have_gum; then "$GUM" choose --no-limit --header "$header" --selected "$selected" "$@"; return; fi
+  say "$header"
+  for opt in "$@"; do
+    case ",$selected," in *",$opt,"*) answer=Y ;; *) answer=n ;; esac
+    printf '  %s? [%s] ' "$opt" "$([ "$answer" = Y ] && echo Y/n || echo y/N)" >&2
+    read -r pick || return 1
+    pick=${pick:-$answer}
+    case $pick in [Yy]*) echo "$opt" ;; esac
+  done
+}
+
+ui_input() {  # ui_input <prompt> [placeholder] [starting text]
+  local answer
+  if have_gum; then "$GUM" input --header "$1" --placeholder "${2:-}" --value "${3:-}"; return; fi
+  printf '%s%s: ' "$1" "${2:+ (e.g. $2)}" >&2; read -r answer || return 1; echo "$answer"
+}
+
+# ui_spin <title> <command...>: a spinner while an outside command runs. Its output only shows
+# if it fails. Without gum it just runs the command (after printing the title).
+ui_spin() {
+  local title=$1
+  shift
+  if have_gum; then "$GUM" spin --title "$title" --show-error -- "$@" >&2; return; fi
+  local out status=0
+  [ -t 2 ] && say "${DIM}$title${RESET}"
+  out=$("$@" 2>&1) || status=$?
+  if [ "$status" != 0 ]; then printf '%s\n' "$out" >&2; fi
+  return "$status"
+}
+
+# ui_bg <title> <function> [args...]: run a ccm function with a spinner and print what it printed.
+ui_bg() {
+  local title=$1 out pid status=0
+  shift
+  if ! have_gum; then "$@"; return; fi
+  tmpdir
+  out="$CCM_TMP/bg-$RANDOM"
+  "$@" > "$out" &
+  pid=$!
+  "$GUM" spin --title "$title" -- sh -c "while kill -0 $pid 2>/dev/null; do sleep 0.1; done" >&2 || true
+  wait "$pid" || status=$?
+  cat "$out"
+  return "$status"
+}
+
+ui_typed() {  # ui_typed <word> <what it does>: you have to type <word> to go ahead
+  local answer
+  if have_gum; then
+    answer=$("$GUM" input --header "Type $1 to $2" --placeholder "$1") || return 1
+  else
+    printf 'Type %s to %s: ' "$1" "$2" >&2; read -r answer || return 1
+  fi
+  [ "$answer" = "$1" ]
+}
+
+ui_write() {  # ui_write <header> [placeholder]: a few lines of text (joined into one line)
+  local answer
+  if have_gum; then
+    answer=$("$GUM" write --header "$1" --placeholder "${2:-}" --height 4 --show-line-numbers=false) || return 1
+  else
+    answer=$(ui_input "$1" "${2:-}") || return 1
+  fi
+  printf '%s\n' "$answer" | tr '\n' ' ' | sed 's/ *$//'
+}
+
+ui_confirm() {  # ui_confirm <question>
+  local answer
+  if have_gum; then "$GUM" confirm --default=false "$1"; return; fi
+  printf '%s [y/N] ' "$1" >&2; read -r answer || return 1
+  case $answer in [Yy]*) return 0 ;; *) return 1 ;; esac
+}
+
+yaml_set() {  # yaml_set <file> <key> <value>   (top-level key: "value")
+  local v=${3//\\/\\\\}
+  v=${v//\"/\\\"}
+  KEY=$2 VAL=$v awk 'BEGIN { k = ENVIRON["KEY"]; v = ENVIRON["VAL"] }
+    !done && $0 ~ "^#? *" k ":" { print k ": \"" v "\""; done = 1; next } { print }' "$1" > "$1.tmp" && mv "$1.tmp" "$1"
+}
+
+slugify() {  # "While Loops!" -> while-loops
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-*//; s/-*$//'
+}
+
+# name_conflict <name> [path to ignore]: prints what already uses this folder name, if anything.
+# Names have to be unique across the whole curriculum so addresses like `ccm get loops` work.
+name_conflict() {
+  local name=$1 skip=${2:-} d rel kind
+  while IFS= read -r d; do
+    rel=${d#"$TREE"/}
+    [ "$rel" = "$skip" ] && continue
+    [ "$(dslug "$(basename "$d")")" = "$name" ] || continue
+    kind=$(kind_of "$rel")
+    case $kind in course|chapter|lesson|exercise) ;; *) continue ;; esac
+    echo "the $kind $(addr_of "$rel") ($(title_of "$d" "$kind")) already uses '$name'"
+    return 0
+  done < <(find "$TREE/courses" -mindepth 1 -maxdepth 5 -type d -name "*-$name" 2>/dev/null)
+  return 1
+}
+
+ask_slug() {  # ask_slug <what> <example> [path to ignore]: asks until the name is free
+  local name="" typed why
+  while :; do
+    typed=$(ui_input "Folder name for the $1" "$2" "$name") || die "cancelled"
+    name=$(slugify "$typed")
+    if [ -z "$name" ]; then
+      say "${RED}type a name, like $2${RESET}"
+    elif why=$(name_conflict "$name" "${3:-}"); then
+      say "${RED}✗ $why. Try another name.${RESET}"
+    else
+      [ "$name" = "$typed" ] || say "${DIM}using $name${RESET}"
+      echo "$name"; return
+    fi
+  done
+}
+
+pick_child() {  # pick_child <header> <parent repo path> [e]  -> repo path of the chosen child
+  local header=$1 parent=$2 pre=${3:-} d rel labels=() paths=() kind label
+  for d in "$TREE/$parent"/"$pre"[0-9]*-*/; do
+    [ -d "$d" ] || continue
+    rel=${d#"$TREE"/}; rel=${rel%/}
+    kind=$(kind_of "$rel")
+    label="$(addr_of "$rel")  $(title_of "$TREE/$rel" "$kind")"
+    labels+=("$label"); paths+=("$rel")
+  done
+  [ "${#labels[@]}" -gt 0 ] || die "nothing to pick in $parent"
+  label=$(ui_choose "$header" "${labels[@]}") || die "cancelled"
+  local i
+  for i in "${!labels[@]}"; do [ "${labels[$i]}" = "$label" ] && { echo "${paths[$i]}"; return; }; done
+  die "cancelled"
+}
+
+interactive() { [ -t 0 ] && [ -t 2 ]; }
+
+KIND_ORDER="course chapter lesson exercise"
+
+kinds_upto() {  # kinds_upto <kind>: "course|chapter|..." up to and including <kind>
+  local k out=""
+  for k in $KIND_ORDER; do out="$out${out:+|}$k"; [ "$k" = "$1" ] && break; done
+  echo "$out"
+}
+
+# pick_search <header> <kinds>: search everything of those kinds (e.g. "lesson|exercise") and
+# return the repo path you pick. With gum it's one list you can type in; without gum it asks
+# for a word and shows a numbered list of matches.
+pick_search() {
+  local header=$1 kinds=$2 lines line query
+  lines=$(ui_bg "Loading the curriculum..." search_index | awk -v k="$kinds" '{ n = split(k, a, "|"); for (i = 1; i <= n; i++) if ($NF == a[i]) { print; next } }')
+  [ -n "$lines" ] || die "there's nothing to pick yet"
+  if have_gum; then
+    line=$(printf '%s\n' "$lines" | "$GUM" filter --header "$header" --placeholder "Type to search, or use the arrow keys" --height 15) ||
+      die "cancelled"
+  else
+    say "$header"
+    query=$(ui_input "Search for" "while loops") || die "cancelled"
+    local w hits=$lines
+    for w in $query; do hits=$(printf '%s\n' "$hits" | grep -iF -- "$w" || true); done
+    [ -n "$hits" ] || die "nothing found for '$query'"
+    local opts=()
+    while IFS= read -r line; do opts+=("$line"); done <<< "$hits"
+    line=$(ui_choose "Which one?" "${opts[@]}") || die "cancelled"
+  fi
+  resolve "${line%% *}"
+}
+
+# pick_kind <header> <kind>: pick one course, chapter, lesson or exercise.
+pick_kind() {
+  if have_gum; then pick_search "$1" "$2"; return; fi
+  local header=$1 want=$2 path=courses pick
+  pick=$(ui_choose "$header" "Browse" "Search by name") || die "cancelled"
+  if [ "$pick" = "Search by name" ]; then pick_search "$header" "$want"; return; fi
+  while [ "$(kind_of "$path")" != "$want" ]; do
+    if [ "$(kind_of "$path")" = lesson ]; then path=$(pick_child "$header" "$path" e); else path=$(pick_child "$header" "$path"); fi
+  done
+  echo "$path"
+}
+
+# pick_any <header> [deepest kind]: walk down course -> chapter -> lesson -> exercise and return
+# the repo path you stop at. Each level offers "all of <it>" to pick the thing itself.
+pick_any() {
+  local header=$1 deepest=${2:-exercise} path=courses kind sub d rel labels paths label i here
+  if have_gum; then pick_search "$header" "$(kinds_upto "$deepest")"; return; fi
+  label=$(ui_choose "$header" "Browse" "Search by name") || die "cancelled"
+  if [ "$label" = "Search by name" ]; then pick_search "$header" "$(kinds_upto "$deepest")"; return; fi
+  while :; do
+    kind=$(kind_of "$path")
+    [ "$kind" = "$deepest" ] && { echo "$path"; return; }
+    sub=$path; [ "$kind" = lesson ] && sub="$path/exercises"
+    labels=(); paths=()
+    if [ "$path" != courses ]; then
+      here="all of $(addr_of "$path")  $(title_of "$TREE/$path" "$kind")"
+      labels+=("$here"); paths+=("$path")
+    fi
+    for d in "$TREE/$sub"/[0-9e]*-*/; do
+      [ -d "$d" ] || continue
+      rel=${d#"$TREE"/}; rel=${rel%/}
+      case $(kind_of "$rel") in course|chapter|lesson|exercise) ;; *) continue ;; esac
+      labels+=("$(addr_of "$rel")  $(title_of "$TREE/$rel" "$(kind_of "$rel")")"); paths+=("$rel")
+    done
+    if [ "${#paths[@]}" -le 1 ] && [ "$path" != courses ]; then echo "$path"; return; fi
+    label=$(ui_choose "$header" "${labels[@]}") || die "cancelled"
+    for i in "${!labels[@]}"; do
+      if [ "${labels[$i]}" = "$label" ]; then
+        [ "${paths[$i]}" = "$path" ] && { echo "$path"; return; }
+        path=${paths[$i]}
+        break
+      fi
+    done
+  done
+}
+
+newest_child() {  # newest_child <parent dir> [e]  -> the highest-numbered child folder
+  local d last=""
+  for d in "$1"/"${2:-}"[0-9]*-*/; do [ -d "$d" ] && last=${d%/}; done
+  echo "$last"
+}
+
+cmd_add() {
+  TREE=$(repo_root add)
+  local kind course chapter lesson name title desc dir files f
+  ui_header "Add to the curriculum"
+  kind=$(ui_choose "What do you want to add?" course chapter lesson exercise check-in) || die "cancelled"
+  case $kind in
+    course)
+      name=$(ask_slug course object-oriented)
+      title=$(ui_input "Title" "Object Oriented")
+      desc=$(ui_write "Description (optional)" "What the students will learn")
+      local slides=no
+      ui_confirm "Will this course have slides?" && slides=yes
+      say "Adding course '$name' ($title), slides: $slides"
+      ui_confirm "Create it?" || die "cancelled"
+      cmd_new course "$name"
+      dir=$(newest_child "$TREE/courses")
+      yaml_set "$dir/course.yaml" title "$title"
+      yaml_set "$dir/course.yaml" description "$desc"
+      if [ "$slides" = yes ]; then
+        awk '{ if ($0 ~ /^# slides: true/) print "slides: true"; else print }' "$dir/course.yaml" > "$dir/course.yaml.tmp" &&
+          mv "$dir/course.yaml.tmp" "$dir/course.yaml"
+      fi ;;
+    chapter)
+      course=$(pick_kind "Which course does it go in?" course)
+      name=$(ask_slug chapter loops)
+      title=$(ui_input "Title" "Loops")
+      desc=$(ui_write "Description (optional)" "What the students will learn")
+      ui_confirm "Add chapter '$name' ($title) to $(addr_of "$course")?" || die "cancelled"
+      cmd_new chapter "$(addr_of "$course")" "$name"
+      dir=$(newest_child "$TREE/$course")
+      yaml_set "$dir/chapter.yaml" title "$title"
+      yaml_set "$dir/chapter.yaml" description "$desc" ;;
+    lesson)
+      chapter=$(pick_kind "Which chapter does it go in?" chapter)
+      course=$(dirname "$chapter")
+      name=$(ask_slug lesson while-loops)
+      say "On the site this lesson will be called: $(basename "$name" | awk -F- '{ for (i = 1; i <= NF; i++) $i = toupper(substr($i, 1, 1)) substr($i, 2); print }')"
+      local pre="lecture-notes.md,quiz"
+      [ "$(yaml_scalar "$TREE/$course/course.yaml" slides)" = true ] && pre="$pre,slides.md"
+      files=$(ui_multi "What should it have? (lecture.md is always included)" "$pre" \
+              lecture-notes.md slides.md reading.md quiz practice) || die "cancelled"
+      ui_confirm "Add lesson '$name' to $(addr_of "$chapter")?" || die "cancelled"
+      cmd_new lesson "$(addr_of "$chapter")" "$name"
+      dir=$(newest_child "$TREE/$chapter")
+      cp -n "$TREE/shared/templates/lesson/slides.md" "$dir/" 2>/dev/null || true
+      for f in lecture-notes.md slides.md reading.md quiz practice; do
+        grep -qx "$f" <<< "$files" || rm -rf "${dir:?}/$f"
+      done
+      if ui_confirm "Add an exercise to it now?"; then add_exercise "${dir#"$TREE"/}"; fi ;;
+    exercise)
+      lesson=$(pick_kind "Which lesson does it go in?" lesson)
+      add_exercise "$lesson" ;;
+    check-in)
+      lesson=$(pick_kind "Which lesson does it go after?" lesson)
+      course=$(dirname "$(dirname "$lesson")")
+      title=""
+      while :; do
+        title=$(ui_input "Title" "Check-in 1" "$title") || die "cancelled"
+        name=$(slugify "$title")
+        f="$TREE/$course/check-ins/$name.yaml"
+        if [ -z "$name" ]; then say "${RED}type a title, like Check-in 1${RESET}"
+        elif [ -e "$f" ]; then say "${RED}✗ there's already a check-in called '$title' in this course. Try another title.${RESET}"
+        else break; fi
+      done
+      ui_confirm "Add '$title' after $(addr_of "$lesson")?" || die "cancelled"
+      mkdir -p "$TREE/$course/check-ins"
+      cp "$TREE/shared/templates/check-in.yaml" "$f"
+      yaml_set "$f" title "$title"
+      yaml_set "$f" after "${lesson#"$course"/}"
+      say "${GREEN}created${RESET} ${f#"$TREE"/}" ;;
+  esac
+  say "Next: fill in the template, then run ccm validate."
+}
+
+add_exercise() {  # add_exercise <lesson repo path>
+  local lesson=$1 name title type difficulty dir
+  name=$(ask_slug exercise grade-calculator)
+  title=$(ui_input "Title" "Grade Calculator")
+  type=$(ui_choose "What kind of exercise?" \
+         "practice      code playground on the lesson page" \
+         "homework      its own assignment page" \
+         "follow-along  students fill it in during the lesson") || die "cancelled"
+  type=${type%% *}
+  difficulty=$(ui_choose "Difficulty?" easy medium hard) || die "cancelled"
+  ui_confirm "Add $type '$name' ($title) to $(addr_of "$lesson")?" || die "cancelled"
+  cmd_new exercise "$(addr_of "$lesson")" "$name"
+  dir=$(newest_child "$TREE/$lesson/exercises" e)
+  yaml_set "$dir/prompt.md" title "$title"
+  KEY_T=$type KEY_D=$difficulty awk '
+    /^type:/ { print "type: " ENVIRON["KEY_T"] "     # follow-along | practice | homework"; next }
+    /^difficulty:/ { print "difficulty: " ENVIRON["KEY_D"]; next } { print }' "$dir/prompt.md" > "$dir/prompt.md.tmp" &&
+    mv "$dir/prompt.md.tmp" "$dir/prompt.md"
+  sed -i.bak "s/<!-- name -->/$name/g" "$dir/prompt.md" && rm -f "$dir/prompt.md.bak"
+  if [ "$type" = follow-along ]; then
+    rm -rf "${dir:?}/tests"
+    say "Follow-along files usually get a class name that fits the lesson (like Variables.java) instead of Main.java."
+  fi
 }
 
 # ----------------------------------------------------------------- update ---
@@ -665,22 +1612,39 @@ ccm $CCM_VERSION — Charging Courses curriculum tool
 
   ccm list [address]          show courses, chapters and lessons (or one subtree)
   ccm get <address>...        download a course, chapter, lesson or exercise here
-       -i, --instructor        include lecture notes and quizzes
        -o, --out <dir>         download into <dir> instead of the current folder
   ccm test [address]          test your exercise code (run from anywhere near it)
+  ccm search [words]          find a lesson or exercise
+  ccm show [address]          read a lesson or exercise's instructions here
+  ccm open [address]          open a lesson or homework on Charging Courses
+  ccm doctor                  check that everything ccm needs is working
   ccm update                  refresh downloaded curriculum and ccm itself
-  ccm new <kind> ...          (instructors, in a checkout) create from templates:
-       ccm new course <name>
-       ccm new chapter <course> <name>
-       ccm new lesson <chapter> <name>
-       ccm new exercise <lesson> <name>
   ccm version
 
 Addresses:  1 (course)  1.2 (chapter)  1.2.1 (lesson)  1.2.1.e1 (exercise)
             names work too: if-statements, 1.2.if-statements.e1, grade-calc
-
-Environment: CCM_REF (version/branch), CCM_SOURCE (local checkout), CCM_CACHE
 EOF
+  if is_instructor || [ "${1:-}" = --all ]; then
+    cat <<EOF
+
+Instructors (inside a clone of the repo):
+  ccm get -i <address>        also download lecture notes and quizzes
+  ccm add                     add material step by step
+  ccm new <kind> ...          same in one line: course <name> | chapter|lesson|exercise <parent> <name>
+  ccm mv <address> <name|n>   rename, or move to position n  (--into <address> to move elsewhere)
+  ccm rm <address> [-y]       delete a course, chapter, lesson or exercise
+  ccm validate                check structure, quizzes, links, check-ins
+  ccm check                   run every exercise's tests against its solution
+  ccm cases [--fill]          rebuild MainTest.java (--fill: run solutions to fill empty outputs)
+  ccm export [address]        quizzes -> Markdown with answer keys
+  ccm publish [folder]...     upload to Charging Courses (--dry-run, --force)
+  ccm pull [address]          bring edits made on the site back into the repo
+  ccm release [--dry-run]     tag a release so students get the new material
+  ccm instructor on|off       show these commands in ccm help everywhere
+
+Environment: CCM_REF (version/branch), CCM_SOURCE (local checkout), CCM_CACHE, CCM_INSTRUCTOR, CCM_NO_GUM
+EOF
+  fi
 }
 
 main() {
@@ -692,8 +1656,23 @@ main() {
     test)             cmd_test "$@" ;;
     update)           cmd_update "$@" ;;
     new)              cmd_new "$@" ;;
+    add)              cmd_add "$@" ;;
+    mv|move)          cmd_mv "$@" ;;
+    pull)             cmd_pull "$@" ;;
+    open)             cmd_open "$@" ;;
+    search|find)      cmd_search "$@" ;;
+    show|read)        cmd_show "$@" ;;
+    doctor)           cmd_doctor "$@" ;;
+    release)          cmd_release "$@" ;;
+    instructor)       cmd_instructor "$@" ;;
+    remove|rm)        cmd_remove "$@" ;;
+    validate)         run_tool validate validate/validate.py "$@" ;;
+    check)            cmd_check "$@" ;;
+    cases)            run_tool cases cases.py "$@" ;;
+    export)           run_tool export export/quiz.py "$@" ;;
+    publish)          run_tool publish lms/publish.py "$@" ;;
     version|--version|-v) echo "ccm $CCM_VERSION" ;;
-    help|--help|-h)   usage ;;
+    help|--help|-h)   usage "$@" ;;
     _test-dir)        cmd_test_dir "$@" ;;
     _compile-dir)     cmd_compile_dir "$@" ;;
     *) die "unknown command '$cmd' (see: ccm help)" ;;

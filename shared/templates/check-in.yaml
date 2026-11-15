@@ -1,0 +1,30 @@
+# A graded check-in. It shows up as an assignment right after the lesson in `after:`.
+title: ""
+after: ""          # lesson folder in this course, e.g. 03-operators/02-relational-and-logical-operators
+description: |
+  Covers ...
+  Answer every task, then click Hand in my work.
+
+tasks:
+  - title: "Multiple choice"
+    type: quiz              # use answers: [...] for select all that apply
+    questions:
+      - question: ""
+        answer: ""
+        incorrect: ["", "", ""]
+
+  - title: ""
+    type: number
+    prompt: ""
+    answer: 0
+
+  - title: ""
+    type: short             # not case sensitive
+    prompt: ""
+    answers: [""]
+
+  - title: "Fill in the blanks"
+    type: fill-in
+    questions:
+      - text: "___"
+        blanks: [{answer: "", hint: ""}]
