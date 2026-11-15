@@ -53,17 +53,17 @@ public static int getSize(long d)               // getSize(4388) -> 4
 public static long getPrefix(long number, int k) // getPrefix(4388576018410707L, 2) -> 43
 ```
 
-**How to approach it:**
+**How to approach it:** this is a lot to write at once, so build it one method at a time.
 
 1. Every method starts as a **stub** that returns a dummy value, so your program compiles from the start.
 2. Implement the easy ones first: `getDigit`, then `getSize`. Test each one by printing it from `main` (e.g. `System.out.println(getDigit(12));`), then delete the test print.
 3. Then `getPrefix` and `prefixMatched`, then the two sums.
-4. Then put it together in `isValid` and `main`.
+4. Only then put it together in `isValid` and `main`.
 
 **Hints:**
 - `number % 10` gives the last digit; `number / 10` removes it.
-- Use `long` for the card number, since it's too big for an `int`. Long literals end in `L`: `4388576018410707L`.
-- In Labs, `ccm test` also checks each method on its own.
+- Use `long` for the card number. It's too big for an `int`; long literals end in `L`: `4388576018410707L`.
+- In Labs, `ccm test` also checks each method on its own, so you can see your progress one method at a time.
 
 ## In Labs
 
@@ -75,4 +75,4 @@ cd credit-card-validator
 ccm test
 ```
 
-Then paste all of `Main.java` into the assignment.
+When it works, copy **all** of `Main.java` into the assignment on Charging Courses and hand it in.

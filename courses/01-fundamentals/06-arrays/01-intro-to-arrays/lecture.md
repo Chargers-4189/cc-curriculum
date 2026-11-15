@@ -8,11 +8,11 @@
 
 ## Follow Along
 
-Get the starter file in Charging Courses Labs with `ccm get arrays-demo` and open `ArraysDemo.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one.
+Write `ArraysDemo.java` along with this lesson. Get the starter file in Charging Courses Labs with `ccm get arrays-demo` and open `ArraysDemo.java`. It has a `// --- Section ---` comment for each heading in this lesson. As you go, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one.
 
 ## What is an Array?
 
-Say you want to store 30 test scores. Making 30 variables (`score1`, `score2`, ...) gets out of hand fast.
+Say you want to store 30 test scores. You could make 30 variables: `score1`, `score2`, `score3`... but that gets out of hand fast.
 
 **Arrays** are just a tray of containers. They hold **many values of the same type** under one name, and you use an **index position** to get to any element in the array.
 
@@ -58,10 +58,10 @@ scores[2] = 75;                // change the third element
 
 ```java
 System.out.println(scores.length);                // 5
-System.out.println(scores[scores.length - 1]);   // 64 - the last element
+System.out.println(scores[scores.length - 1]);   // 64 - always the last element
 ```
 
-The last index is always `length - 1`.
+Since indexes start at 0, the last index is always `length - 1`.
 
 ## Out of Bounds
 
@@ -74,11 +74,11 @@ System.out.println(scores[5]); // ArrayIndexOutOfBoundsException
 `scores` has 5 elements, so the valid indexes are 0 to 4.
 
 > [!WARNING]
-> **Try it:** under `// --- Out of Bounds ---`, add `System.out.println(scores[5]);` and run it. Read the crash, then comment it out.
+> **Try it:** under `// --- Out of Bounds ---`, add `System.out.println(scores[5]);` and run it. Read the crash, then **comment it out**, or the rest of your program won't run.
 
 ## Looping Through an Array
 
-Loop from `0` up to (but not including) `length`:
+Arrays and for loops go together. Loop from `0` up to (but not including) `length`:
 
 ```java
 for (int i = 0; i < scores.length; i++) {
@@ -86,7 +86,7 @@ for (int i = 0; i < scores.length; i++) {
 }
 ```
 
-Two common patterns:
+This works for any size array. Two common patterns:
 
 ```java
 // Sum and average
@@ -105,11 +105,11 @@ for (int i = 1; i < scores.length; i++) {
 }
 ```
 
-Use `i < scores.length`. `<=` goes one past the end.
+Notice `i < scores.length`, not `<=`. Using `<=` would go one past the end.
 
 ## Arrays Are Objects
 
-Arrays are **objects**, even when they hold primitives. That's why you create them with `new` and why `.length` uses a dot. More on this in the Object Oriented course.
+You'll hear that arrays are always **objects**, whether they hold primitives or not. That's why we create them with `new` and why `.length` uses a dot. We'll dig into what that means in the Object Oriented course. For now, you know everything you need to use them.
 
 ## Review Quiz
 
@@ -117,7 +117,7 @@ Arrays are **objects**, even when they hold primitives. That's why you create th
 
 ## Practice
 
-Write your code in each editor and click **Test Run** until every test passes.
+Write your code in each editor and click **Test Run** until every test passes. (Or `ccm get` it and work in Labs.)
 
 ### 1. Reverse the List
 

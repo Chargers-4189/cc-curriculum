@@ -27,7 +27,7 @@ Print the `+` root first.
 **Hints:**
 - `Math.sqrt(x)` gives the square root of `x`.
 - Calculate `b² - 4ac` once and store it in a variable (it's called the **discriminant**).
-- `/ 2 * a` is not the same as `/ (2 * a)`.
+- Watch your parentheses! `/ 2 * a` is not the same as `/ (2 * a)`.
 
 ## In Labs
 
@@ -39,4 +39,4 @@ cd quadratic-roots
 ccm test
 ```
 
-Then paste all of `Main.java` into the assignment.
+When it works, copy **all** of `Main.java` into the assignment on Charging Courses and hand it in.

@@ -1,6 +1,6 @@
 ## Introduction
 
-Charging Courses organizes its curriculum by Courses → Chapters → Lessons.
+Charging Courses organizes its curriculum pipeline by Courses → Chapters → Lessons.
 
 - A **Course** will contain most of the material for a topic or several topics.
    - For example, the Fundamentals course will go through the basics of Java and important programming concepts.
@@ -23,7 +23,7 @@ Scroll down to see what you will learn and the **Course Lessons**. Each chapter 
 
 ## Inside a Lesson
 
-At the top of a lesson, you'll see the course, the chapter, and a progress bar. Each numbered dot on the bar is a lesson, so you can jump between them or use the arrows on each side. The expand icon on the right turns on **Focus Mode**, which hides everything except the lesson.
+At the top of a lesson, you'll see the course, the chapter, and a progress bar. Each numbered dot on the bar is a chapter, so you can jump between them. While the sectioned horizontal bar between the numbers represent each lesson in each chapter. The expand icon on the right turns on **Focus Mode**, which hides everything except the lesson.
 
 ![lesson-header.jpg](assets/lesson-header.jpg)
 

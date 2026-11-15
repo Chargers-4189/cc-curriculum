@@ -5,7 +5,7 @@
 > - Compare primary and secondary storage
 > - Understand files, folders, repositories, and IDEs
 >
-> **Prerequisites:** none
+> **Prerequisites:** None! This is where we start.
 
 ## What is Programming
 
@@ -23,7 +23,7 @@ Programming is a way of giving computer instructions.
 - **Communication** between controls, motors, and other components
 - Programming allows us to give **detailed instructions** on what to do
 
-Humans and computers are good at different things:
+Humans and computers are good at very different things. That's why we program: we bring the creativity, the computer brings the speed and consistency.
 
 | Human | Computer |
 |---|---|
@@ -55,7 +55,7 @@ The Computer Model shows how a computer works:
 - **Processing Devices** process information: the CPU in laptops and desktops
 - **Output Devices** output information: motors, speakers, printers
 
-The robot fits this model too: sensors and controllers are inputs, the roboRIO processes, and motors are outputs.
+Notice the robot fits this model too. Sensors and controllers are inputs, the roboRIO processes, and motors are outputs.
 
 ## Memory
 

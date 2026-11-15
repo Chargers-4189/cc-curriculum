@@ -9,7 +9,7 @@
 
 ## Follow Along
 
-Get the starter file in Charging Courses Labs with `ccm get conditional-demo` and open `Conditional.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one.
+Write `Conditional.java` along with this lesson. Get the starter file in Charging Courses Labs with `ccm get conditional-demo` and open `Conditional.java`. It has a `// --- Section ---` comment for each heading in this lesson. As you go, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one.
 
 ## Conditionals
 
@@ -74,7 +74,7 @@ if (age >= 16) {
 - `else if` runs only if every condition before it was `false` **and** its own condition is `true`
 - `else` runs if **none** of the conditions were `true`
 
-With `age = 22` this prints "You can drive". The **first true branch wins** and the rest are skipped, so `age >= 21` is never reached.
+Run this with `age = 22`. It prints "You can drive", never "You can rent a car". The **first true branch wins** and the rest are skipped. Since every 22-year-old is also `>= 16`, the `age >= 21` branch can never be reached.
 
 **Order matters.** Put the most specific condition first:
 
@@ -122,7 +122,7 @@ Use whichever is easier to read.
 
 ## Guarding Against Errors
 
-`&&` skips the right side when the left is `false`, so it can prevent a crash:
+Remember short-circuiting? `&&` skips the right side when the left is `false`. We can use that to prevent a crash:
 
 ```java
 int dividend = 10;
@@ -144,7 +144,7 @@ if (Math.abs(total - 0.3) < 1e-9) {
 ```
 
 > [!WARNING]
-> **Try it:** swap the two sides of the `&&` (put the division first) and run it. It crashes. Swap them back.
+> **Try it:** swap the two sides of the `&&` (put the division first) and run it. It crashes! Swap them back.
 
 ## Common Traps
 
@@ -157,7 +157,7 @@ if (loggedIn)
     System.out.println("This prints even though loggedIn is false");
 ```
 
-Java ignores indentation. Always use braces.
+Java ignores the indentation, so always use braces.
 
 **Stray semicolon.** A `;` right after the condition ends the if statement immediately:
 
@@ -172,7 +172,7 @@ if (n > 0); // <- this semicolon is the whole if statement
 **Using `=` instead of `==`.** `if (x = 5)` doesn't compile, because the condition must be a boolean.
 
 > [!WARNING]
-> **Try it:** type the stray semicolon trap too. Then try `if (n = 5) { }`, read the error, and comment it out.
+> **Try it:** type the stray semicolon trap too. Then try `if (n = 5) { }`, read the error, and **comment it out** so your file compiles again.
 
 ## Further
 
@@ -183,7 +183,7 @@ if (n > 0); // <- this semicolon is the whole if statement
   // condition ? value if true : value if false
   ```
 
-- **Dangling else:** without braces, an `else` belongs to the **closest** `if`.
+- **Dangling else:** without braces, an `else` belongs to the **closest** `if`, not the one it's lined up with. Another reason to always use braces.
 
 ## Review Quiz
 
@@ -191,7 +191,7 @@ if (n > 0); // <- this semicolon is the whole if statement
 
 ## Practice
 
-Write your code in each editor and click **Test Run** until every test passes.
+Write your code in each editor and click **Test Run** until every test passes. (Or `ccm get` it and work in Labs.)
 
 ### 1. Positive, Negative, or Zero
 

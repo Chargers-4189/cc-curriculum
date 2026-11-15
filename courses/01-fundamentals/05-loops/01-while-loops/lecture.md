@@ -8,7 +8,7 @@
 
 ## Follow Along
 
-Get the starter file in Charging Courses Labs with `ccm get while-demo` and open `While.java`. Write each section's code under its `// --- Section ---` comment and run it. If a name is already used, pick a new one.
+Write `While.java` along with this lesson. Get the starter file in Charging Courses Labs with `ccm get while-demo` and open `While.java`. It has a `// --- Section ---` comment for each heading in this lesson. As you go, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one.
 
 ## Why Loops?
 
@@ -51,14 +51,14 @@ System.out.println(sum); // 45
 1. **Something inside the body that changes**
 2. **A condition that eventually becomes false because of that change**
 
-In the example, `i++` changes `i`, and eventually `i < 10` becomes false. Without `i++`, `i` stays 1 forever. That's an **infinite loop**.
+In the example, `i++` changes `i`, and eventually `i < 10` becomes false. Forget the `i++` and `i` stays 1 forever. That's an **infinite loop**: the program never stops. (Stop it with **Ctrl + C** in the terminal.)
 
 > [!WARNING]
-> **Try it:** delete the `i++` from your loop and run it. It never ends. Press **Ctrl + C** in the terminal to stop it, then put the `i++` back.
+> **Try it:** delete the `i++` from your loop and run it. It never ends! Click into the terminal and press **Ctrl + C** to stop it. Then **put the `i++` back**, or your program will get stuck there every time you run it.
 
 ## How to Write a Loop: The 3-Step Recipe
 
-Write a loop in three steps:
+Don't try to write the finished loop in one go. Instead:
 
 1. Write the code to do the thing **once**. Get it working.
 2. Wrap it in `while (true) { ... }`
@@ -66,7 +66,7 @@ Write a loop in three steps:
 
 ## Sentinel-Controlled Loops
 
-When you **don't know** how many times to loop, use a **sentinel**: a special value that means "I'm done".
+Sometimes you **don't know** how many times to loop, because the user decides. A **sentinel** is a special value that means "I'm done".
 
 ```java
 Scanner input = new Scanner(System.in);
@@ -82,7 +82,7 @@ while (data != 0) {
 System.out.println("Sum is " + total);
 ```
 
-Here `0` is the sentinel.
+Here `0` is the sentinel. There's no counter at all.
 
 - We read once **before** the loop and again at the **bottom** of the loop
 - If the very first input is 0, the body never runs and the sum stays 0
@@ -109,7 +109,7 @@ while (guess != number) {
 System.out.println("You win!");
 ```
 
-`guess` starts at `-1` because `0` could be the answer, and then the loop would never run. Start with a value that **can't be a real guess**.
+Why does `guess` start at `-1` and not `0`? Because `0` is a legal answer! If `guess` started at 0 and the secret number happened to be 0, the loop would never run. Pick a starting value that **can't be a real value**.
 
 ## Further
 
@@ -126,7 +126,7 @@ do {
 System.out.println("Sum is " + total);
 ```
 
-This is the sentinel program with only one read. Use do-while when something has to happen at least once, like a menu. Note the **semicolon** after `while (...)`.
+This is the sentinel program again, but the read appears only once. Use do-while for menus and prompts, anything that has to happen at least once. Don't forget the **semicolon** after `while (...)`.
 
 ## Review Quiz
 
@@ -134,7 +134,7 @@ This is the sentinel program with only one read. Use do-while when something has
 
 ## Practice
 
-Write your code in each editor and click **Test Run** until every test passes.
+Write your code in each editor and click **Test Run** until every test passes. (Or `ccm get` it and work in Labs.)
 
 ### 1. Countdown
 

@@ -14,7 +14,7 @@ In 50 days it will be day 6
 
 So if today is Friday (5), in 50 days it will be Saturday (6). Use only arithmetic operators (`+ - * / %`), no loops or if statements.
 
-**Hint:** `%` gives 0 to 6. Subtract 1 from the day before using `%`, then add 1 back.
+**Hint:** `%` wraps around, but it gives 0 to 6, not 1 to 7. Shift the day down by 1 before you use `%`, then shift it back up.
 
 ## In Labs
 
@@ -26,4 +26,4 @@ cd days-from-today
 ccm test
 ```
 
-Then paste all of `Main.java` into the assignment.
+When it works, copy **all** of `Main.java` into the assignment on Charging Courses and hand it in.

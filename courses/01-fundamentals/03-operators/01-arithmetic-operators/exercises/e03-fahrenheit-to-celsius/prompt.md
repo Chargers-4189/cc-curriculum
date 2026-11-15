@@ -15,13 +15,13 @@ Enter degrees Fahrenheit: 212
 Celsius: 100.0
 ```
 
-Typed into Java as written, every answer comes out `0.0`. Fix it.
+Careful! If you type that formula into Java exactly as written, every answer comes out `0.0`. Figure out why, then fix it.
 
 **Hint:** what is `5 / 9` when both numbers are `int`s?
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get fahrenheit-to-celsius

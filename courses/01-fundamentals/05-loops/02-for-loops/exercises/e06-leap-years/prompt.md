@@ -27,7 +27,7 @@ A year is a **leap year** if it is divisible by 4 but not by 100, **or** it is d
 
 **Hints:**
 - Use a counter to know when you've printed 10 on a line, then `System.out.println()` and reset it.
-- Use `%` to check "divisible by".
+- `%` is your friend for "divisible by".
 
 ## In Labs
 
@@ -39,4 +39,4 @@ cd leap-years
 ccm test
 ```
 
-Then paste all of `Main.java` into the assignment.
+When it works, copy **all** of `Main.java` into the assignment on Charging Courses and hand it in.

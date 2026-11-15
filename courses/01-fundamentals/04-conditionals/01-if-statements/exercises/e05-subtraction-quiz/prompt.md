@@ -36,4 +36,4 @@ ccm get subtraction-quiz
 cd subtraction-quiz
 ```
 
-There are no automatic tests because the numbers are random. Run it a few times, then paste all of `Main.java` into the assignment.
+There are no automatic tests for this one (the numbers are random), so run it a few times yourself and make sure every path works. Then copy **all** of `Main.java` into the assignment on Charging Courses and hand it in.

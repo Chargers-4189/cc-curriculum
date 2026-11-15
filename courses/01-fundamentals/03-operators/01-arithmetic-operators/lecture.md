@@ -9,7 +9,7 @@
 
 ## Follow Along
 
-You'll write `Arithmetic.java` in this lesson. Open a terminal in **Charging Courses Labs** and run:
+In this lesson you'll write `Arithmetic.java` along with us. Open a terminal in **Charging Courses Labs** and run:
 
 ```bash
 mkdir -p fundamentals/week2
@@ -18,10 +18,10 @@ ccm get arithmetic-demo
 cd arithmetic-demo
 ```
 
-Then open `Arithmetic.java` from the Explorer. It has a comment for each section, like `// --- Type Casting ---`. Write each section's code under its comment and run it. If a name is already used, pick a new one.
+Then open `Arithmetic.java` from the Explorer. It has a comment for each section of this lesson, like `// --- Type Casting ---`, so you know where each part goes. As you go through the lesson, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one. Type it out yourself instead of copying and pasting.
 
 > [!TIP]
-> Keep downloads organized in folders like `fundamentals/week1` and `fundamentals/hwk`. See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized).
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
 
 ## Operators
 
@@ -64,11 +64,11 @@ leftOver = totalCookies % totalCustomers;
 
 `%` gives you the **remainder** after division. `17 / 5` is 3 with 2 left over, so `17 % 5` is `2`.
 
-Common uses:
+Modulus comes up a lot:
 
 - `n % 2 == 0` checks if a number is **even**
 - `n % 10` gives you the **last digit** of a number
-- It "wraps around", like days of the week
+- It "wraps around", which is handy for things like days of the week
 
 ## Integer Division vs Floating-point Division
 
@@ -84,12 +84,12 @@ System.out.println(3 / 4);      // 0   - 0.75, with the decimal cut off
 System.out.println(3 / 4.0);    // 0.75
 ```
 
-If you want a decimal answer, make one side a `double`.
+This is one of the most common bugs in Java. If you want a decimal answer, make sure one side is a `double`.
 
 You also can't divide an integer by zero. `10 / 0` crashes the program with an `ArithmeticException`.
 
 > [!WARNING]
-> **Try it:** add `System.out.println(10 / 0);` and run it to see the crash. Then comment it out.
+> **Try it:** add `System.out.println(10 / 0);` and run it to see the crash. Then **comment that line out** (`//` in front), or nothing after it will ever run.
 
 ## Integer Overflow
 
@@ -102,7 +102,7 @@ System.out.println(max + 1); // -2147483648
 
 ## Incrementing and Decrementing
 
-Java has shortcuts for adding or subtracting 1:
+Adding or subtracting 1 is so common that Java has shortcuts:
 
 - `j++` is equivalent to `j = j + 1`
 - `j--` is equivalent to `j = j - 1`
@@ -124,7 +124,7 @@ System.out.println(l);      // 7
 ```
 
 > [!TIP]
-> Put `++` on its own line so the order doesn't matter.
+> Use `++` on its own line and you never have to think about this.
 
 ## Compound Assignment Operators
 
@@ -159,7 +159,7 @@ Java follows an order similar to PEMDAS: parentheses first, then `* / %`, then `
 2 * (3 + 1)    // same as 2 * 4, which is 8
 ```
 
-When in doubt, use parentheses.
+When in doubt, use parentheses. They make your intent clear.
 
 ## Review Quiz
 
@@ -167,7 +167,7 @@ When in doubt, use parentheses.
 
 ## Practice
 
-Write your code in each editor and click **Test Run** until every test passes.
+Write your code in each editor and click **Test Run** until every test passes. (Or `ccm get` it and work in Labs.)
 
 ### 1. Seconds to Minutes
 

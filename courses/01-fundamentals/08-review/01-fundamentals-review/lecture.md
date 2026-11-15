@@ -3,14 +3,14 @@
 > - Recognize the most common traps in each topic
 > - Combine the topics in one program
 >
-> **Prerequisites:** every lesson in this course
+> **Prerequisites:** Every lesson in this course! This is where it all comes together.
 
 ## 1. Variables and Types
 
 ```java
-String firstName;        // declaration
-firstName = "bob";       // initialization
-int myNum = 20;          // both at once
+String firstName;        // declaration - the box exists, nothing in it
+firstName = "bob";       // initialization - now something is in it
+int myNum = 20;          // both at once, which is what you'll normally do
 
 double ratio = 0.8;
 char grade = 'A';        // single quotes = char, double quotes = String
@@ -19,6 +19,8 @@ boolean ready = true;
 int ratioInt = (int) ratio; // 0 - casting cuts off the decimal
 ```
 
+Once a variable has a type, it can only hold that type of value.
+
 ## 2. Arithmetic and the Operator Traps
 
 ```java
@@ -26,7 +28,7 @@ System.out.println(17 / 5);    // 3   int / int stays int
 System.out.println(17.0 / 5);  // 3.4 one double makes it all decimal
 System.out.println(17 % 5);    // 2   remainder
 
-System.out.println(Integer.MAX_VALUE + 1); // -2147483648 - overflow
+System.out.println(Integer.MAX_VALUE + 1); // -2147483648 - overflow wraps around silently
 
 int k = 5;
 int result = k++ + ++k;        // 5 + 7
@@ -65,13 +67,13 @@ Traps to remember:
 
 ## 4. Loops
 
-Every loop needs a condition and something in the body that eventually makes it false.
+Every loop needs a condition that's true to start with, and something in the body that eventually makes it false.
 
 ```java
 int i = 1, sum = 0;
 while (i < 10) {      // condition
     sum += i;         // body
-    i++;              // makes it stop
+    i++;              // the thing that makes it stop
 }
 
 sum = 0;
@@ -107,6 +109,7 @@ public static int max(int num1, int num2) {
 }
 ```
 
+- The header tells you what the method needs and what type it gives back
 - `void` methods do something; value-returning methods produce something
 - Java is **pass-by-value**: methods get copies, so `swap` can't swap the caller's variables
 - A variable lives until the closing brace of its block
@@ -120,7 +123,7 @@ public static boolean isPrime(int number) {
     }
     for (int divisor = 2; divisor <= number / 2; divisor++) {
         if (number % divisor == 0) {
-            return false; // one divisor is enough
+            return false; // one divisor is enough - leave immediately
         }
     }
     return true;
@@ -137,7 +140,7 @@ public static int countPrimesBelow(int limit) {
 }
 ```
 
-`countPrimesBelow` uses a method, a loop, a condition, and `%`. `main` stays short: `System.out.println(countPrimesBelow(50));`
+`countPrimesBelow` uses a method that uses a loop that uses a condition that uses the `%` operator. That's most of the course in one program. Notice how `main` can stay short and read like a summary: `System.out.println(countPrimesBelow(50));`
 
 ## Review Quiz
 
@@ -145,7 +148,7 @@ public static int countPrimesBelow(int limit) {
 
 ## Practice
 
-Write your code in each editor and click **Test Run** until every test passes.
+Write your code in each editor and click **Test Run** until every test passes. (Or `ccm get` it and work in Labs.)
 
 ### 1. Temperature Table
 

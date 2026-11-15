@@ -10,7 +10,7 @@ Write a method that returns the largest of three whole numbers:
 public static int max(int a, int b, int c)
 ```
 
-`main` is already written.
+`main` is already written for you. It reads three numbers and prints `max(...)`.
 
 ```
 Enter three numbers: 4 9 2
@@ -21,7 +21,7 @@ Max: 9
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get max-of-three

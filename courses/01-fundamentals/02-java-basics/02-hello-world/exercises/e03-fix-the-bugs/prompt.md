@@ -11,13 +11,13 @@ I can fix bugs!
 Java is picky.
 ```
 
-It has **three** mistakes and won't compile. Read the first error, fix it, and run it again until it works.
+But it has **three** mistakes, so it won't even compile. Run it, read the first error (it tells you the line number), fix it, and run it again until it works.
 
 **Hint:** look for a missing semicolon, a capitalization mistake, and a missing quote.
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get fix-the-bugs

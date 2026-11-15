@@ -23,7 +23,7 @@ If the very first score is `-1`, print `No scores entered` instead.
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get average-until-sentinel

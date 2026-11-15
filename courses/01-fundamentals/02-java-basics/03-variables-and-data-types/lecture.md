@@ -9,7 +9,7 @@
 
 ## Follow Along
 
-You'll write `Variables.java` in this lesson. Open a terminal in **Charging Courses Labs** and run:
+In this lesson you'll write `Variables.java` along with us. Open a terminal in **Charging Courses Labs** and run:
 
 ```bash
 mkdir -p fundamentals/week1
@@ -18,10 +18,10 @@ ccm get variables-demo
 cd variables-demo
 ```
 
-Then open `Variables.java` from the Explorer. It has a comment for each section, like `// --- Type Casting ---`. Write each section's code under its comment and run it. If a name is already used, pick a new one.
+Then open `Variables.java` from the Explorer. It has a comment for each section of this lesson, like `// --- Type Casting ---`, so you know where each part goes. As you go through the lesson, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one. Type it out yourself instead of copying and pasting.
 
 > [!TIP]
-> Keep downloads organized in folders like `fundamentals/week1` and `fundamentals/hwk`. See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized).
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
 
 ## Variables
 
@@ -36,7 +36,7 @@ String firstName;
 firstName = "Steve";
 ```
 
-Variables **store data** so your program can use and change it.
+Variables are used in nearly every program to **store and manipulate data**: calculations, storing information, controlling program flow, and more.
 
 ## Declaration & Initialization
 
@@ -66,7 +66,7 @@ boolean isJavaFun = false;
 Once a variable exists, you can **assign it a new value** any time, but its type stays the same. `age` will always hold an `int`.
 
 > [!WARNING]
-> **Try it:** add `age = "seventeen";` and run it. It won't compile, because `age` holds an `int`. Read the error, then comment the line out (put `//` in front of it).
+> **Try it:** add `age = "seventeen";` and run it. Java won't compile it, because `age` can only hold an `int`. Read the error, then **comment that line out** (put `//` in front of it) so the rest of your file runs.
 
 ## Data Types
 
@@ -84,16 +84,16 @@ Once a variable exists, you can **assign it a new value** any time, but its type
 - `int` can store about -2 billion to +2 billion (exactly -2,147,483,648 to 2,147,483,647)
 - `double` can store decimals at high precision
 
-You'll also use **`String`** a lot. It holds text in double quotes, like `"Hello World"`.
+There's one more type you'll use constantly: **`String`** holds text, in double quotes, like `"Hello World"`. It's not a primitive (we'll learn why in the Object Oriented course), but you can use it just like the others.
 
 > [!INFO]
-> Use `int` when you only need whole numbers. It uses less memory than `double`.
+> Consider size and memory when choosing data types. `int` is more efficient than `double` due to decimal precision, so use `int` when you only need whole numbers.
 
 ## Type Casting
 
 Converting a value to another data type is called **type casting**. There are two types:
 
-- **Widening** goes from a smaller type to a larger one. Java does this automatically:
+- **Widening** goes from a smaller type to a larger one. Java does this automatically, because nothing is lost:
   - `byte` → `short` → `int` → `long` → `float` → `double`
   - `char` also widens to `int` (every character has a number)
 
@@ -108,7 +108,7 @@ Converting a value to another data type is called **type casting**. There are tw
   ```java
   double myDouble = 12.5;
   int myInt = (int) myDouble;
-  System.out.println(myInt); // 12 (the decimal is cut off)
+  System.out.println(myInt); // 12 - the decimal is cut off, not rounded
   ```
 
 ## Naming Conventions
@@ -142,7 +142,7 @@ Use names that make your code readable and help avoid errors.
 
 ## Getting Input from the User
 
-To take **input**, use `Scanner`. For now, just learn the pattern:
+So far our programs only output. To take **input**, Java gives us `Scanner`. You don't need to understand everything on these lines yet, just the pattern:
 
 ```java
 import java.util.Scanner; // goes at the very top of the file
@@ -180,10 +180,13 @@ The `+` joins text and values together. We'll look at that more in Arithmetic Op
 
 ## Practice
 
-Write your code in each editor and click **Test Run** until every test passes.
+Each problem below has a code editor right on this page. Write your code, click **Test Run**, and keep going until every test passes.
 
 > [!INFO]
-> Tests type the input for you, so it doesn't show in the output. The prompts end up on one line, like `Enter your name: Enter your age: Hi Ada, you are 15`. Keep your prompts the same as the starter code.
+> When the tests run, nobody is typing, so the input doesn't show up in your output. That's why an expected output looks like `Enter your name: Enter your age: Hi Ada, you are 15`, with the prompts squished onto one line. Your program is fine; just make sure your prompts match the starter code exactly.
+
+> [!TIP]
+> Rather work in Labs? Each problem has a `ccm get` command under it. Write your code in `Main.java` and check it with `ccm test`.
 
 ### 1. Greeting
 

@@ -15,18 +15,18 @@ Enter the number of lines: 5
   5  4  3  2  1  2  3  4  5
 ```
 
-**Format:**
+**The exact format** (so the tests can check it):
 - Every number is printed with `System.out.printf("%3d", number)`, which takes up **3** spaces.
 - Before the numbers, each row has **3 spaces for every number missing** on the left. Row 1 of 5 is missing 4, so it starts with 12 spaces.
 - If the number is not from 1 to 15, print `The number of lines must be from 1 to 15` instead.
 
-Build it in pieces:
+Build it in pieces rather than all at once:
 
 1. Print just the **descending** half of each row (`5 4 3 2 1`).
 2. Add the **ascending** half (`2 3 4 5`).
 3. Add the **leading spaces** so it centers.
 
-Each row needs **three** inner loops: spaces, counting down, and counting up.
+Each row needs **three** inner loops (spaces, counting down, counting up), and the bounds of each one depend on the row number.
 
 ## In Labs
 
@@ -38,4 +38,4 @@ cd number-pyramid
 ccm test
 ```
 
-Then paste all of `Main.java` into the assignment.
+When it works, copy **all** of `Main.java` into the assignment on Charging Courses and hand it in.

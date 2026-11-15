@@ -12,7 +12,7 @@ Enter b: 3
 a = 3, b = 5
 ```
 
-**Hint:** if you write `a = b;` first, the old value of `a` is lost. Save it in a third variable:
+**Hint:** if you write `a = b;` first, the old value of `a` is gone forever. Save it in a third variable first:
 
 ```java
 int temp = a;
@@ -20,7 +20,7 @@ int temp = a;
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get swap-values

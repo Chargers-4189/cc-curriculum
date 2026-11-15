@@ -1,6 +1,6 @@
 ## Introduction
 
-Our current schedule is organized by weeks and sessions, with each session consisting of a lesson. Each week has two sessions: Session A is in-person on Mondays, while Session B is online on Fridays at 5:00 P.M.
+Our current schedule is organized by weeks and sessions, with each session consisting of a lesson. Each week has two sessions: Session A is in-person on Mondays, while Session B is online on Thursdays at 5:00 P.M.
 
 - **Session A** Lecture slides will be posted online along with recorded material and comprehensive readings on the topic
 - **Session B** classes will be online and recorded along with comprehensive readings

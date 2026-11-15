@@ -4,7 +4,7 @@ type: practice
 difficulty: easy
 ---
 
-Read a whole number and print `true` if it's even, `false` if it isn't. Use a relational operator, no `if` statements.
+Read a whole number and print `true` if it's even, `false` if it isn't. No `if` statements needed (we haven't learned them yet), just a relational operator.
 
 ```
 Enter a number: 10
@@ -15,7 +15,7 @@ Is even: true
 
 ## In Labs
 
-Download it, write your code in `Main.java`, and check it:
+Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
 
 ```bash
 ccm get is-it-even

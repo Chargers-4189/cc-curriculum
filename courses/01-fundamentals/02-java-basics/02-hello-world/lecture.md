@@ -7,7 +7,7 @@
 
 ## Follow Along
 
-You'll write your first program, `HelloWorld.java`, in **Charging Courses Labs** (your workspace from [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md)). Open VS Code, open a terminal, and run:
+In this lesson you'll write your first program, `HelloWorld.java`, right along with us. You'll do this in **Charging Courses Labs** (your workspace from [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md)). Open VS Code, open a terminal, and run:
 
 ```bash
 mkdir -p fundamentals/week1
@@ -18,10 +18,10 @@ cd hello-demo
 
 This downloads a folder called `hello-demo` with a starter `HelloWorld.java` inside. Open it from the Explorer on the left.
 
-Work through the lesson one section at a time. Type each example into `HelloWorld.java` and click **Run** (▷). Type the code out instead of copying and pasting.
+Work through the lesson one section at a time. Type each example into `HelloWorld.java` and run it with **Run** (▷). Add notes as `//` comments if they help. Type the code out yourself instead of copying and pasting. It's how you learn it!
 
 > [!TIP]
-> Keep downloads organized in folders like `fundamentals/week1` and `fundamentals/hwk`. See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized).
+> Keep your downloads organized by running these inside a folder like `fundamentals`, `week1`, or `hwk` (`mkdir -p fundamentals/hwk`, then `cd` into it). See [Java Workspace](../../01-getting-started/04-java-workspace/lecture.md#keep-your-downloads-organized) for an example.
 
 ## Creating Your First Program
 
@@ -58,6 +58,7 @@ java HelloWorld
 ## Breaking It Down
 
 - Notice how our **file name and class name are the same**: `HelloWorld.java` holds `class HelloWorld`.
+  - This keeps your code **organized** and makes your classes **easier** to find and understand.
   - This is a **strict rule** for public classes. If they don't match, Java won't compile it:
 
     ```
@@ -77,7 +78,7 @@ System.out.println("This is on a new line.");
 ```
 
 > [!TIP]
-> **Try it:** change `public class HelloWorld` to `public class Hello` and run it. You'll get the error above. Change it back.
+> **Try it:** change `public class HelloWorld` to `public class Hello` and run it. You'll get the error above. Change it back before moving on, or nothing else will run!
 
 ## Common Mistakes
 
@@ -91,7 +92,7 @@ Java is very picky. Watch out for:
 When something goes wrong, read the error! It tells you the file, the line number, and what Java expected.
 
 > [!WARNING]
-> **Try it:** make one of the mistakes above, run it, and read the error. Fix it before trying the next one.
+> **Break it on purpose:** make one of the mistakes above in your file, run it, and read the error. Then **fix it before trying the next one**. If you leave a mistake in, your program won't run at all, even the parts that were fine.
 
 ## Things to Think About
 
@@ -106,10 +107,16 @@ When something goes wrong, read the error! It tells you the file, the line numbe
 
 ## Practice
 
-Each problem has a code editor on this page. Write your code and click **Test Run** until every test passes. Keep the class named `Main`.
+Time to practice on your own! Each problem below has a code editor right on this page:
+
+1. Read the task, then write your code in the editor.
+2. Click **Test Run**. Each test shows what your program should print and what it actually printed.
+3. Keep going until every test passes.
+
+Practice problems always use a class named `Main`, because the editor runs your code as `Main.java`. Keep the class name as `Main` (the file name rule from above!).
 
 > [!TIP]
-> To work in Labs instead, use the `ccm get` command under each problem and check your code with `ccm test`.
+> Rather work in your workspace? Each problem also has a `ccm get` command. Download it in Charging Courses Labs, write your code in `Main.java`, and check it with `ccm test`.
 
 ### 1. Three Lines
 

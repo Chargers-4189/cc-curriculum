@@ -15,14 +15,14 @@ The main software you will be using through this course is Charging Courses. Thi
 
 - Charging Courses -> [https://chargingcourses.com](https://chargingcourses.com)
   - This is the virtual classroom where all materials, lectures, and meetings will be held.
-- Charging Courses Communities -> [https://chargingcourses.com/communities](https://chargingcourses.com/communities)
+- Charging Courses Communities → [https://chargingcourses.com/communities](https://chargingcourses.com/communities)
   - This is a virtual discussion space for those that don't have access to Discord, we may occasionally post updates/announcements here.
-- Charging Courses Labs -> [https://labs.chargingcourses.com/workspaces](https://labs.chargingcourses.com/workspaces)
+- Charging Courses Labs → [https://labs.chargingcourses.com/workspaces](https://labs.chargingcourses.com/workspaces)
   - This is the workspace where you'll be programming for most of the time.
   - Please look at the next lesson to see how to create a workspace
-- Charging Courses Accounts -> [https://auth.chargingcourses.com/if/user/#/library](https://auth.chargingcourses.com/if/user/#/library)
+- Charging Courses Accounts → [https://auth.chargingcourses.com/if/user/#/library](https://auth.chargingcourses.com/if/user/#/library)
   - This is where your main account is contained and where you can access all the applications.
-- GitHub -> [https://github.com](https://github.com)
+- GitHub → [https://github.com](https://github.com)
   - GitHub is not a part of Charging Courses but we use it often for storing code. It is highly recommended that you sign up now before we use it later.
 
 ## GitHub
