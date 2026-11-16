@@ -1,0 +1,10 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What does private do to an instance variable?,Only code inside its class can use it,,,Nobody can use it,Only main can use it,It can't be changed
+"balance is private in ATM. Where does quinnAccount.balance = 5; compile?",Only inside the ATM class,,,Anywhere,Only in main,Nowhere
+What is the rule of thumb for encapsulation?,"Private instance variables, public methods",,,"Public instance variables, private methods",Everything private,Everything public
+"setHeight only changes height if the new height is more than 9. Height is 27, then setHeight(0) runs. What is height?",27,,,0,9,It crashes
+How do you make a value read-only to other classes?,Give it a getter but no setter,,,Make it public,Give it a setter but no getter,Don't give it a constructor
+Which are reasons to encapsulate? (select all that apply),Setters can check values before using them,You can change the inside of a class without breaking other code,Other classes can't put bad data in an object,It makes programs run faster,It means you don't need constructors,
+Where can private be used? (select all that apply),On an instance variable,On a method,On a constructor,On a local variable inside a method,,
+"An ATM has $10. withdraw checks amount > 0 && amount <= balance. What is the balance after withdraw(50)?",10,,,-40,50,0
+Encapsulation is...,Keeping an object's data private and controlling how it changes through methods,,,Making a class inherit from another class,Writing more than one constructor,Hiding a class from main

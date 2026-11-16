@@ -1,2 +1,5 @@
-title: "Object Oriented"
-description: ""
+title: "Object Oriented Programming"
+description: "Classes and objects in Java, and the four pillars of object-oriented programming: encapsulation, inheritance, polymorphism and abstraction."
+# slides: true          # lessons get a slides.md when created with `ccm new lesson`
+# includes:             # repo files copied along when the whole course is downloaded
+#   - front-matter/preface.md

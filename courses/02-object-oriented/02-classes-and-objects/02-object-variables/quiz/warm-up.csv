@@ -1,0 +1,5 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+Which of these is a primitive type in Java?,int,,,String,Scanner,Integer
+What does a reference variable store?,"A reference to an object, or null",,,An object and the values of its instance variables,A primitive value,Nothing; it's just a placeholder
+What happens when you do a = b; with two reference variables?,Both variables refer to the same object,,,A copy of the object is made,The object's contents are copied,The original object is deleted
+"int x = 5; int y = x; y = 10; What is x?",5,,,10,0,It won't compile

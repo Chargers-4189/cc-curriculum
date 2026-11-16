@@ -1,0 +1,16 @@
+label,input,output,hidden
+All four shapes,,"--- user clicked the square ---
+Rotating the square 360 degrees around (25.0, 25.0)
+Playing square.wav
+
+--- user clicked the circle ---
+Rotating the circle 360 degrees around (20.0, 20.0)
+Playing circle.wav
+
+--- user clicked the triangle ---
+Rotating the triangle 360 degrees around (30.0, 15.0)
+Playing triangle.wav
+
+--- user clicked the amoeba ---
+Rotating the amoeba 360 degrees around (0.0, 10.0)
+Playing amoeba.mp3",

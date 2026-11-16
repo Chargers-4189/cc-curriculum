@@ -1,0 +1,4 @@
+label,input,output,hidden
+Runs main,,"Light is off
+Light is on at 80%
+Light is off",
