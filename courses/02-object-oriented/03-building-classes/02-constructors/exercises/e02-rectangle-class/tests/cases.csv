@@ -1,0 +1,4 @@
+label,input,output,hidden
+Runs main,,"1.0 x 1.0: area 1.0, perimeter 4.0
+4.0 x 40.0: area 160.0, perimeter 88.0
+3.5 x 2.0: area 7.0, perimeter 11.0",

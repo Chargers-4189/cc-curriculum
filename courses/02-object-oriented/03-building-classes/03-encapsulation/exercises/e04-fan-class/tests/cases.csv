@@ -1,0 +1,5 @@
+label,input,output,hidden
+Runs main,,"speed 3, color yellow, radius 10.0
+color blue, radius 5.0, fan is off
+speed 2, color blue, radius 5.0
+Is the first fan on? true",

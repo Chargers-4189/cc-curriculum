@@ -1,0 +1,9 @@
+label,input,output,hidden
+Runs main,,"Bolt drove 10 meters
+Bolt doesn't have enough battery to drive 20 meters
+Bolt drove 15 meters
+Battery: 0%
+Distance: 25 meters
+Battery: 80%
+Bolt drove 15 meters
+Distance: 40 meters",

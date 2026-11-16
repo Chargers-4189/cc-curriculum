@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+Which of these are primitive types? (select all that apply),double,boolean,char,String,Person,Scanner
+What does Dog myDog = new Dog(); put in myDog?,A reference to a new Dog object,,,The Dog object itself,The Dog class,null
+"In a memory map, how do you show a reference to an object?",An arrow from the variable to the object,,,The object drawn inside the variable's box,The object's name in the box,A number in the box
+"Person joe = new Person(""Joe"", 37); Person chris = joe; chris.setName(""Chris""); What does joe.getName() give?",Chris,,,Joe,null,It won't compile
+"Person joe = new Person(""Joe"", 37); Person chris = joe; How many Person objects are there?",1,,,2,0,3
+What does null mean for a reference variable?,It refers to no object,,,It refers to an empty object,It holds 0,It refers to the last object made
+Person nobody = null; What happens when you run nobody.getName()?,It crashes with a NullPointerException,,,It returns null,It returns an empty String,It won't compile
+"Robot a = new Robot(""Bolt"", 12); a = new Robot(""Volt"", 8); What happens to Bolt?",Nothing refers to it anymore so it's garbage,,,a refers to both robots,Bolt gets renamed to Volt,It won't compile
+What is the default value of a String instance variable you never set?,null,,,"""""",0,It has no value and won't compile
+Two variables that refer to the same object are called...,Aliases,,,Copies,Primitives,Twins

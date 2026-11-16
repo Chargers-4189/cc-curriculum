@@ -1,0 +1,10 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+When does a constructor run?,When you make an object with new,,,When you call it like a method,When the program starts,When the object is printed
+Which are true about constructors? (select all that apply),They have the same name as the class,They have no return type,They run when you say new,They must return the object,They must be void,They are inherited automatically
+"A class has no constructors. Can you do new Duck()?","Yes, the compiler adds a default no-arg constructor",,,"No, it won't compile",Only if Duck has instance variables,Only in main
+"Duck only has public Duck(int size). Does new Duck() compile?","No, the compiler only adds a default constructor when you write none",,,"Yes, the compiler adds it anyway",Yes but size is null,Yes but it prints an error
+What is public void Duck() { } ?,A method named Duck,,,A constructor,A default constructor,A compile error
+"Which pairs of constructors can be in the same class? (select all that apply)","Duck(int size) and Duck(String name)","Duck(int size, String name) and Duck(String name, int size)",,"Duck(int size) and Duck(int weight)",,
+A constructor doesn't set a String instance variable. What is its value?,null,,,"""""",0,It won't compile
+"In setSize(int size) { this.size = size; }, what is this.size?",The calling object's instance variable,,,The parameter,A new variable,A constructor
+Why use a constructor instead of a setter to set an important value?,So the object is never used without it,,,Setters are slower,Constructors can be called any time,Setters can't take parameters

@@ -1,0 +1,9 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What was the score in Shape Wars?,How many lines of already-working code you had to touch,,,How fast you finished,How many lines your program has,How many shapes you added
+Which team had to edit code for the square to add the amoeba?,Team A,,,Team B,Both teams,Neither team
+"In Team B's code, where does a circle's width live?",In the Circle class,,,In a switch statement,In main,In every method
+What was wrong with Team B's code?,rotate() and playSound() were written four times,,,It didn't work,It used switch statements,It had no methods
+What does it mean to override a method?,A class replaces a method it inherited with its own version,,,Calling a method twice,Deleting a method,Giving a method a new name
+Which of these are things an Amoeba object knows? (select all that apply),width,xPoint,,rotate(),playSound(),main
+What is the difference between a class and an object?,"A class is the blueprint, an object is made from it",,,"An object is the blueprint, a class is made from it",They are the same thing,A class can only make one object
+Procedural code is organized around...,What the program does,,,What the program is made of,Classes,Objects

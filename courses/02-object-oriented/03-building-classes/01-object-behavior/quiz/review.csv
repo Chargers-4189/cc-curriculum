@@ -1,0 +1,10 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+An object's state is...,Its instance variables and their current values,,,Its methods,Its class,Its name
+Do two Dog objects run the same bark() method?,"Yes, but it can behave differently based on each dog's instance variables",,,"No, each dog has its own bark method",Only if they have the same size,Only if bark is static
+"one.size = 70; two.size = 8; bark() prints Wooof! if size > 60, Ruff! if size > 14, otherwise Yip!. What does two.bark() print?",Yip! Yip!,,,Wooof! Wooof!,Ruff! Ruff!,Nothing
+"In myFish.eat(3), what is 3?",An argument,,,A parameter,A return type,An instance variable
+A method declared as int getWeight() must...,Return an int,,,Print an int,Take an int parameter,Change weight
+"void swim(int distance, int speed). Which calls work? (select all that apply)","myFish.swim(20, 3);","myFish.swim(laps, 2); where laps is an int",,myFish.swim(20);,"myFish.swim(""far"", 3);",swim();
+What is the usual getter name for a boolean instance variable called hungry?,isHungry(),,,getHungry(),hungry(),setHungry()
+Why does Dog.bark(); not compile?,"bark is an instance method, so it needs a dog to run on",,,Dog is not a class,bark needs a parameter,You can only call methods in main
+Which is the correct setter for an int instance variable called size?,void setSize(int newSize) { size = newSize; },,,int setSize() { return size; },void setSize() { size = newSize; },void getSize(int newSize) { size = newSize; }

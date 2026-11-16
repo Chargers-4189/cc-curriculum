@@ -1,0 +1,10 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What is a class?,A blueprint for making objects,,,An object,A method,A variable that holds a number
+Things an object knows are called...,Instance variables,,,Methods,Classes,Parameters
+Things an object does are called...,Methods,,,Instance variables,Classes,Objects
+Which line makes a new Cat object?,Cat myCat = new Cat();,,,Cat myCat;,myCat.meow();,Cat = new myCat();
+What does the dot in myCat.meow() do?,Gives access to the object's instance variables and methods,,,Ends the statement,Makes a new object,Copies the object
+"For a Car class, which are instance variables? (select all that apply)",speed,color,year,park(),reverse(),move()
+Why don't the instance variables in the Cat class have values?,Each cat gets its own values when it's made,,,Instance variables can't have values,Java gives them random values,So they can't be changed
+"Two cats run the same walk method, which prints their name. What prints?",Each cat's own name,,,The first cat's name both times,Nothing,An error
+Which are the four pillars of OOP? (select all that apply),Encapsulation,Inheritance,Polymorphism,Compilation,Iteration,Recursion

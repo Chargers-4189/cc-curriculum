@@ -1,0 +1,53 @@
+# Graded assignment on Charging Courses, placed after the lesson in `after`.
+title: "Check-in 1"
+after: 03-building-classes/03-encapsulation
+description: |
+  Covers Shape Wars, Objects, Object Variables, Object Behavior, Constructors and Encapsulation.
+  Answer every task, then click Hand in my work.
+
+tasks:
+  - title: "Multiple choice"
+    type: quiz
+    questions:
+      - question: "What is the difference between a class and an object?"
+        answer: "A class is the blueprint, an object is made from it"
+        incorrect: ["An object is the blueprint, a class is made from it", "They are the same thing", "A class can only make one object"]
+      - question: "Things an object knows are its..."
+        answer: "Instance variables"
+        incorrect: ["Methods", "Constructors", "Parameters"]
+      - question: "Dog a = new Dog(); Dog b = a; How many Dog objects are there?"
+        answer: "1"
+        incorrect: ["2", "0", "It won't compile"]
+      - question: "Person p = null; What happens when you run p.getName()?"
+        answer: "It crashes with a NullPointerException"
+        incorrect: ["It returns null", "It returns an empty String", "It won't compile"]
+      - question: "Which is a constructor for a class named Duck?"
+        answer: "public Duck(int size) { }"
+        incorrect: ["public void Duck(int size) { }", "public int Duck(int size) { }", "public duck(int size) { }"]
+      - question: "Duck only has the constructor public Duck(int size). What happens with new Duck()?"
+        answer: "It won't compile"
+        incorrect: ["It makes a duck with size 0", "It makes a duck with size null", "It crashes when it runs"]
+      - question: "In a setter, what does this.size = size; do?"
+        answer: "Sets the calling object's size to the parameter"
+        incorrect: ["Sets the parameter to the instance variable", "Nothing", "Makes a new Duck"]
+      - question: "Which are true about private instance variables? (select all that apply)"
+        answers: ["Only code in their class can use them", "Other classes reach them through getters and setters"]
+        incorrect: ["They can never change", "No method can read them", "They make the class public"]
+      - question: "Which are reference types? (select all that apply)"
+        answers: ["String", "Dog", "int[]"]
+        incorrect: ["int", "boolean", "double"]
+
+  - title: "Aliases"
+    type: number
+    prompt: "Counter a = new Counter(); Counter b = a; a.add(); b.add(); b.add(); (add() adds 1 to count, which starts at 0.) What is a.getCount()?"
+    answer: 3
+
+  - title: "State affects behavior"
+    type: number
+    prompt: "A Robot has int battery = 50. drive(int meters) only drives if meters * 2 <= battery, and then takes meters * 2 away from battery. After drive(10); drive(20); drive(5); what is battery?"
+    answer: 20
+
+  - title: "Setters can say no"
+    type: number
+    prompt: "setTemperature(int t) sets temperature to 60 if t < 60, to 80 if t > 80, and to t otherwise. After setTemperature(75); setTemperature(100); setTemperature(70); setTemperature(10); what is the temperature?"
+    answer: 60
