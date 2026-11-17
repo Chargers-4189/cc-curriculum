@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Bring edits made on Charging Courses back into a lesson's lecture.md (used by `ccm pull`).
 
-    python3 tools/lms/pull.py                       # list pages that changed on the site
-    python3 tools/lms/pull.py courses/.../01-while-loops     # show the changes and save them
+    python3 tools/lms/pull.py                         # pick where to look, then which pages to pull
+    python3 tools/lms/pull.py courses/02-object-oriented   # check one course (or a chapter)
+    python3 tools/lms/pull.py courses/.../01-while-loops   # show one lesson's changes and save them
 
 The page is turned back into markdown. Practice playgrounds, quizzes, homework links and
 images keep the lines they already have in lecture.md (matched in order), and links to other
@@ -221,7 +222,7 @@ class Markdown:
             cells = []
             for c in r.get("content") or []:
                 cells.append(" ".join(self.blocks(c.get("content"))).replace("|", "\\|"))
-            rows.append("| " + " | ".join(cells) + " |")
+            rows.append(("| " + " | ".join(cells) + " |").replace("|  |", "| |"))   # empty cells come back as "| |"
         if rows:
             width = rows[0].count(" | ") + 1
             rows.insert(1, "|" + "---|" * width)
@@ -292,73 +293,219 @@ def loose(node):
     return node
 
 
+NUM = re.compile(r"^(\d+)-")
+
+
+def name(folder: Path) -> str:
+    """The name you'd type for ccm (02-shape-wars -> shape-wars)."""
+    return NUM.sub("", folder.name)
+
+
+def outline() -> list[tuple[str, Path]]:
+    """Every course, chapter and lesson on the site, labelled like `ccm list` (2, 2.1, 2.1.2), so
+    you can search by address, name or title."""
+    lessons = P.IDS.get("lessons") or {}
+    out = []
+
+    def kids(d: Path) -> list[Path]:
+        return sorted((c for c in d.iterdir() if c.is_dir() and NUM.match(c.name)), key=lambda c: int(NUM.match(c.name)[1]))
+
+    for course in kids(P.COURSES):
+        if not any(k.startswith(course.name + "/") for k in lessons):
+            continue
+        n1 = int(NUM.match(course.name)[1])
+        out.append((f"{n1:<8} {name(course)}  {P.read_yaml(course / 'course.yaml').get('title') or P.lesson_title(course)}", course))
+        for ch in kids(course):
+            n2 = f"{n1}.{int(NUM.match(ch.name)[1])}"
+            out.append((f"{n2:<8}   {name(ch)}  {P.read_yaml(ch / 'chapter.yaml').get('title') or P.lesson_title(ch)}", ch))
+            for le in kids(ch):
+                if P.key(le) in lessons:
+                    n3 = f"{n2}.{int(NUM.match(le.name)[1])}"
+                    out.append((f"{n3:<8}     {name(le)}  {P.lesson_title(le)}", le))
+    return out
+
+
+def lessons_under(folder: Path) -> list[Path]:
+    """The lessons (on the site) inside a course, chapter or lesson folder."""
+    lessons = P.IDS.get("lessons") or {}
+    if (folder / "lecture.md").exists():
+        return [folder]
+    return [f.parent for f in sorted(folder.rglob("lecture.md")) if P.key(f.parent) in lessons]
+
+
+class Pulled:
+    """A lesson's page on the site, turned back into markdown."""
+
+    def __init__(self, api: P.Api, lesson: Path):
+        self.lesson = lesson
+        self.act = (P.IDS.get("lessons") or {}).get(P.key(lesson))
+        if not self.act:
+            sys.exit(f"{P.key(lesson)} isn't on the site yet (it's not in tools/lms/ids.yaml)")
+        self.live = P.trimmed((api.get(f"/activities/activity_{self.act}") or {}).get("content") or {})
+        self.current = (lesson / "lecture.md").read_text(encoding="utf-8")
+        text, self.warnings = to_markdown(lesson, self.live)
+        self.text = keep_repo_lines(self.current, text)
+        rebuilt = P.fill_images(rebuild(lesson, self.text), P.images(self.live))
+        self.exact = json.dumps(loose(P.normalized(P.trimmed(rebuilt))), sort_keys=True) == \
+            json.dumps(loose(P.normalized(self.live)), sort_keys=True)
+
+    @property
+    def differs(self) -> bool:
+        return self.text != self.current
+
+    def lines_changed(self) -> int:
+        return sum(1 for d in difflib.unified_diff(self.current.splitlines(), self.text.splitlines(), lineterm="", n=0)
+                   if d[:1] in "+-" and not d.startswith(("+++", "---")))
+
+    def show(self) -> None:
+        print(P.paint("1", f"\n{P.key(self.lesson)}"))
+        for d in difflib.unified_diff(self.current.splitlines(), self.text.splitlines(), "repo", "site", lineterm="", n=1):
+            color = "32" if d.startswith("+") else "31" if d.startswith("-") else "36" if d.startswith("@@") else "2"
+            print(P.paint(color, d))
+        for w in dict.fromkeys(self.warnings):
+            print(P.paint("1;31", f"WARNING: {w}"))
+        if not self.exact:
+            print(P.paint("33", "Note: this doesn't match the site exactly, so publishing later might change a few small things on the page."))
+
+    def save(self) -> None:
+        (self.lesson / "lecture.md").write_text(self.text, encoding="utf-8")
+        P.remember(self.act, self.live)
+        print(P.paint("32", f"saved {P.key(self.lesson)}/lecture.md"))
+
+
+def ask(question: str) -> bool:
+    sys.path.insert(0, str(P.ROOT / "tools"))
+    from ui import confirm
+    return confirm(question)
+
+
+SITE_KINDS = {"SUBTYPE_DYNAMIC_EMBED": "embed", "SUBTYPE_DYNAMIC_MARKDOWN": "markdown",
+              "SUBTYPE_DYNAMIC_PAGE": "page", "TYPE_ASSIGNMENT": "assignment"}
+
+
+def site_only(api: P.Api, folders: list[Path]) -> list[str]:
+    """Pages on the site that aren't in the repo (made by hand, like Credits or an embed), in the
+    courses or chapters being checked. Publishing leaves these where they are."""
+    known = {v for sec in ("lessons", "homework", "checkins") for v in (P.IDS.get(sec) or {}).values()}
+    courses: dict[str, set | None] = {}   # course folder -> chapter ids to look in (None = all)
+    for f in folders:
+        parts = P.key(f).split("/") if f != P.COURSES else []
+        if len(parts) > 2:
+            continue   # a single lesson
+        for c in ([parts[0]] if parts else list(P.IDS.get("courses") or {})):
+            if len(parts) == 2:
+                ch = (P.IDS.get("chapters") or {}).get("/".join(parts))
+                if courses.get(c, set()) is not None:
+                    courses.setdefault(c, set()).add(ch)
+            else:
+                courses[c] = None
+    lines = []
+    for c, chapters in courses.items():
+        cid = (P.IDS.get("courses") or {}).get(c)
+        if not cid:
+            continue
+        meta = api.get(f"/courses/course_{cid}/meta?with_unpublished_activities=true&slim=true") or {}
+        for ch in meta.get("chapters") or []:
+            if chapters is not None and ch.get("id") not in chapters:
+                continue
+            for a in ch.get("activities") or []:
+                uid = a["activity_uuid"].removeprefix("activity_")
+                if uid in known:
+                    continue
+                kind = SITE_KINDS.get(a.get("activity_sub_type")) or SITE_KINDS.get(a.get("activity_type")) or "page"
+                url = ""
+                if kind in ("embed", "markdown"):
+                    content = (api.get(f"/activities/{a['activity_uuid']}") or {}).get("content") or {}
+                    url = content.get("embed_url") or content.get("markdown_url") or ""
+                where = f"{c}  /  {ch.get('name')}  /  {a.get('name')}"
+                lines.append(f"  {where}  {P.paint('2', f'({kind}' + (f': {url}' if url else '') + ')')}")
+    return lines
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("lesson", nargs="?", type=Path)
-    ap.add_argument("-y", "--yes", action="store_true", help="save without asking")
+    ap.add_argument("folders", nargs="*", type=Path, help="courses, chapters or lessons to check (asks if left out)")
+    ap.add_argument("-y", "--yes", action="store_true", help="pull every changed page without asking")
     args = ap.parse_args()
-    api = P.Api(P.token())
+    sys.path.insert(0, str(P.ROOT / "tools"))
+    import ui
 
-    if args.lesson is None:  # list what changed on the site, then offer to pull one
-        found = 0
-        changed = []
-        with P.Spinner("Checking the site...") as spin:
-            for k, act in sorted((P.IDS.get("lessons") or {}).items()):
-                if not (P.COURSES / k / "lecture.md").exists():
-                    continue
-                spin.update(f"Checking {k}...")
-                live = P.trimmed((api.get(f"/activities/activity_{act}") or {}).get("content") or {})
-                if P.edited_on_site(act, live):
-                    found += 1
-                    why = "changed on the site" if act in P.STATE else "never published from the repo"
-                    spin.echo(f"{P.paint('33', 'changed')}  {k}  ({why})")
-                    changed.append(k)
-        print(P.paint("2", f"{found} page(s) to pull" if found else "nothing changed on the site"))
-        if not changed:
-            return 0
-        sys.path.insert(0, str(P.ROOT / "tools"))
-        from ui import choose
-        pick = choose("Pull which one?", changed + ["none"])
-        if not pick or pick == "none":
-            return 0
-        args.lesson = P.COURSES / pick
-
-    lesson = args.lesson.resolve()
-    if not (lesson / "lecture.md").exists():
-        sys.exit("ccm pull works on lessons (folders with a lecture.md)")
-    act = (P.IDS.get("lessons") or {}).get(P.key(lesson))
-    if not act:
-        sys.exit(f"{P.key(lesson)} isn't on the site yet (it's not in tools/lms/ids.yaml)")
-    live = P.trimmed((api.get(f"/activities/activity_{act}") or {}).get("content") or {})
-    current = (lesson / "lecture.md").read_text(encoding="utf-8")
-    text, warnings = to_markdown(lesson, live)
-    text = keep_repo_lines(current, text)
-
-    rebuilt = P.fill_images(rebuild(lesson, text), P.images(live))
-    exact = json.dumps(loose(P.trimmed(rebuilt)), sort_keys=True) == json.dumps(loose(live), sort_keys=True)
-
-    if text == current:
-        print("lecture.md already matches the site.")
-        if exact:
-            P.remember(act, live)
-        return 0
-    for d in difflib.unified_diff(current.splitlines(), text.splitlines(), "repo", "site", lineterm="", n=1):
-        color = "32" if d.startswith("+") else "31" if d.startswith("-") else "36" if d.startswith("@@") else "2"
-        print(P.paint(color, d))
-    for w in dict.fromkeys(warnings):
-        print(P.paint("1;31", f"WARNING: {w}"))
-    if not exact:
-        print(P.paint("33", "Note: this doesn't match the site exactly, so publishing later might change a few small things on the page."))
-    if not args.yes:
+    folders = [f.resolve() for f in args.folders]
+    if not folders:
         if not sys.stdin.isatty():
-            sys.exit("not saving without confirmation (use -y)")
-        sys.path.insert(0, str(P.ROOT / "tools"))
-        from ui import confirm
-        if not confirm("Save this into lecture.md?"):
-            sys.exit("cancelled, nothing was saved")
-    (lesson / "lecture.md").write_text(text, encoding="utf-8")
-    P.remember(act, live)
-    print(P.paint("32", f"saved {P.key(lesson)}/lecture.md"))
+            folders = [P.COURSES]
+        else:
+            items = outline()
+            everything = "Everything"
+            pick = ui.search("What should I check for changes on the site?", [everything] + [label for label, _ in items])
+            if not pick:
+                print("cancelled")
+                return 0
+            folders = [P.COURSES] if pick == everything else [dict(items)[pick]]
+    for f in folders:
+        if P.COURSES != f and P.COURSES not in f.parents:
+            sys.exit(f"not under courses/: {f}")
+
+    # One lesson named on its own: always show how it compares, even if the site looks unchanged.
+    named = len(folders) == 1 and (folders[0] / "lecture.md").exists()
+    lessons = list(dict.fromkeys(le for f in folders for le in lessons_under(f)))
+    if not lessons:
+        print("nothing in there is on the site yet")
+        return 0
+
+    api = P.Api(P.token())
+    changed: list[Pulled] = []
+    with P.Spinner("Checking the site...") as spin:
+        for le in lessons:
+            spin.update(f"Checking {P.key(le)}...")
+            act = (P.IDS.get("lessons") or {}).get(P.key(le))
+            if not named:
+                live = P.trimmed((api.get(f"/activities/activity_{act}") or {}).get("content") or {})
+                if not P.edited_on_site(act, live):
+                    continue
+            page = Pulled(api, le)
+            if not page.differs:
+                # Saved in the editor but nothing that matters changed: count it as published.
+                if page.exact:
+                    P.remember(page.act, page.live)
+                continue
+            changed.append(page)
+            spin.echo(f"{P.paint('33', 'changed')}  {P.key(le)}  ({page.lines_changed()} line(s))")
+
+    if not named:
+        with P.Spinner("Looking for pages that are only on the site..."):
+            extra = site_only(api, folders)
+        if extra:
+            print(P.paint("2", "Only on the site (not in the repo, so there's nothing to pull; publishing leaves them alone):"))
+            for line in extra:
+                print(line)
+    if not changed:
+        print(P.paint("2", "lecture.md already matches the site." if named else "nothing changed on the site"))
+        return 0
+    print(P.paint("2", f"{len(changed)} page(s) changed on the site"))
+
+    if args.yes:
+        picked = changed
+    elif not sys.stdin.isatty():
+        sys.exit("not saving without confirmation (run it in a terminal, or use -y)")
+    elif len(changed) == 1:
+        picked = changed
+    else:
+        labels = {P.key(c.lesson): c for c in changed}
+        picked = [labels[k] for k in ui.pick_many("Which pages do you want to pull?", list(labels))]
+        if not picked:
+            print("nothing pulled")
+            return 0
+
+    saved = 0
+    for page in picked:
+        page.show()
+        if args.yes or ask(f"Save this into {P.key(page.lesson)}/lecture.md?"):
+            page.save()
+            saved += 1
+        else:
+            print(P.paint("2", "skipped"))
+    print(P.paint("2", f"pulled {saved} of {len(picked)}"))
     return 0
 
 

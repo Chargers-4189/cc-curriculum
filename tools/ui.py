@@ -26,8 +26,42 @@ def choose(header: str, options: list[str]) -> str | None:
     print(header, file=sys.stderr)
     for i, o in enumerate(options, 1):
         print(f"  {i}) {o}", file=sys.stderr)
-    pick = input("> ").strip()
+    try:
+        pick = input("> ").strip()
+    except EOFError:
+        return None
     return options[int(pick) - 1] if pick.isdigit() and 1 <= int(pick) <= len(options) else None
+
+
+def search(header: str, options: list[str]) -> str | None:
+    """Pick one option from a long list you can type to search. None if cancelled."""
+    if not options or not sys.stdin.isatty():
+        return None
+    if have_gum():
+        r = subprocess.run([GUM, "filter", "--header", header, "--placeholder", "Type to search", "--height", "14"],
+                           input="\n".join(options), stdout=subprocess.PIPE, text=True)
+        return r.stdout.strip() or None if r.returncode == 0 else None
+    return choose(header, options)
+
+
+def pick_many(header: str, options: list[str]) -> list[str]:
+    """Pick any number of options. Returns [] if cancelled or there's no one to ask."""
+    if not options or not sys.stdin.isatty():
+        return []
+    if have_gum():
+        r = subprocess.run([GUM, "choose", "--no-limit", "--header", header + " (space to select, enter when done)",
+                            *options], stdout=subprocess.PIPE, text=True)
+        return [l for l in r.stdout.splitlines() if l] if r.returncode == 0 else []
+    print(header, file=sys.stderr)
+    for i, o in enumerate(options, 1):
+        print(f"  {i}) {o}", file=sys.stderr)
+    try:
+        picks = input("Numbers separated by spaces, or 'all': ").strip().lower()
+    except EOFError:
+        return []
+    if picks == "all":
+        return list(options)
+    return [options[int(p) - 1] for p in picks.replace(",", " ").split() if p.isdigit() and 1 <= int(p) <= len(options)]
 
 
 class Spinner:
@@ -108,4 +142,7 @@ def confirm(question: str) -> bool:
         return False
     if have_gum():
         return subprocess.run([GUM, "confirm", "--default=false", question]).returncode == 0
-    return input(f"{question} [y/N] ").strip().lower() in ("y", "yes")
+    try:
+        return input(f"{question} [y/N] ").strip().lower() in ("y", "yes")
+    except EOFError:
+        return False

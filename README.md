@@ -144,7 +144,7 @@ ccm check                            # run every exercise's tests against its so
 ccm cases --fill                     # fill in empty outputs in cases.csv by running the solution
 ccm export 1.2.1                     # print a quiz with an answer key
 ccm publish --dry-run                # see what would change on Charging Courses
-ccm pull                             # see which pages were changed on the site
+ccm pull                             # pick what to check, then which site edits to pull
 ccm release --dry-run                # check what students would get in the next release
 ```
 
