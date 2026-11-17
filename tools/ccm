@@ -233,6 +233,12 @@ yaml_list() {    # yaml_list <file> <key>  (simple block lists only)
     inlist && /^[^[:space:]#]/ { inlist = 0 }' "$1"
 }
 
+# label_of <repo path>: "2.2.1.e1     cat-demo  Cats (Follow Along)", the way ccm list shows it,
+# so pickers can be searched by address, by the name you type for ccm get, or by title.
+label_of() {
+  printf '%-10s %s  %s' "$(addr_of "$1")" "$(dslug "$(basename "$1")")" "$(title_of "$TREE/$1" "$(kind_of "$1")")"
+}
+
 title_of() {  # title_of <abs dir> <kind>
   case $2 in
     course)   yaml_scalar "$1/course.yaml" title ;;
@@ -887,7 +893,7 @@ mv_menu() {
         [ -d "$d" ] || continue
         n=$((n + 1)); d=${d%/}
         here=""; [ "${d#"$TREE"/}" != "$src" ] || here="  (here now)"
-        labels+=("$n  $(title_of "$d" "$kind")$here")
+        labels+=("$n  $(dslug "$(basename "$d")")  $(title_of "$d" "$kind")$here")
       done
       pos=$(ui_choose "Where should it go?" "${labels[@]}") || die "cancelled"
       exec "$PY" "$TREE/tools/move.py" "$TREE/$src" --position "${pos%% *}" ;;
@@ -904,6 +910,7 @@ cmd_pull() {
     case $a in -y|--yes) args+=(--yes) ;; *) args+=("$TREE/$(resolve "$a")") ;; esac
   done
   ensure_python "$TREE"
+  have_gum || true   # the pickers in pull.py use the same gum (CCM_GUM)
   exec "$PY" "$TREE/tools/lms/pull.py" ${args[@]+"${args[@]}"}
 }
 
@@ -1061,7 +1068,7 @@ search_index() {
     while IFS= read -r d; do
       rel=${d#"$TREE"/}; kind=$(kind_of "$rel")
       case $kind in course|chapter|lesson|exercise) ;; *) continue ;; esac
-      printf '%-12s %s  · %s\n' "$(addr_of "$rel")" "$(title_of "$d" "$kind")" "$kind"
+      printf '%s  · %s\n' "$(label_of "$rel")" "$kind"
     done
 }
 
@@ -1095,7 +1102,7 @@ cmd_search() {
     say "${DIM}Also mentioned in:${RESET}"
     printf '%s\n' "$hits" | while IFS= read -r f; do
       d=$(dirname "$f"); rel=${d#"$TREE"/}
-      printf '  %s%-12s%s %s\n' "$EMERALD" "$(addr_of "$rel")" "$RESET" "$(title_of "$d" "$(kind_of "$rel")")"
+      printf '  %s\n' "$(label_of "$rel")"
     done
   fi
   [ -n "$lines$hits" ] || say "nothing found for '$query'"
@@ -1393,7 +1400,7 @@ pick_child() {  # pick_child <header> <parent repo path> [e]  -> repo path of th
     [ -d "$d" ] || continue
     rel=${d#"$TREE"/}; rel=${rel%/}
     kind=$(kind_of "$rel")
-    label="$(addr_of "$rel")  $(title_of "$TREE/$rel" "$kind")"
+    label=$(label_of "$rel")
     labels+=("$label"); paths+=("$rel")
   done
   [ "${#labels[@]}" -gt 0 ] || die "nothing to pick in $parent"
@@ -1461,14 +1468,14 @@ pick_any() {
     sub=$path; [ "$kind" = lesson ] && sub="$path/exercises"
     labels=(); paths=()
     if [ "$path" != courses ]; then
-      here="all of $(addr_of "$path")  $(title_of "$TREE/$path" "$kind")"
+      here="all of $(label_of "$path")"
       labels+=("$here"); paths+=("$path")
     fi
     for d in "$TREE/$sub"/[0-9e]*-*/; do
       [ -d "$d" ] || continue
       rel=${d#"$TREE"/}; rel=${rel%/}
       case $(kind_of "$rel") in course|chapter|lesson|exercise) ;; *) continue ;; esac
-      labels+=("$(addr_of "$rel")  $(title_of "$TREE/$rel" "$(kind_of "$rel")")"); paths+=("$rel")
+      labels+=("$(label_of "$rel")"); paths+=("$rel")
     done
     if [ "${#paths[@]}" -le 1 ] && [ "$path" != courses ]; then echo "$path"; return; fi
     label=$(ui_choose "$header" "${labels[@]}") || die "cancelled"
@@ -1642,7 +1649,7 @@ Instructors (inside a clone of the repo):
   ccm cases [--fill]          rebuild MainTest.java (--fill: run solutions to fill empty outputs)
   ccm export [address]        quizzes -> Markdown with answer keys
   ccm publish [folder]...     upload to Charging Courses (--dry-run, --force)
-  ccm pull [address]          bring edits made on the site back into the repo
+  ccm pull [address]          pick which site edits to bring back (a course, chapter or lesson)
   ccm release [--dry-run]     tag a release so students get the new material
   ccm instructor on|off       show these commands in ccm help everywhere
 

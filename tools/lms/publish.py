@@ -112,9 +112,12 @@ def remember(act: str, live) -> None:
 CREATED: set[str] = set()  # pages made by this run
 
 
+WAITING = "waiting-for-images"  # in published.json: filled in with image notes, images not added yet
+
+
 def edited_on_site(act: str, live) -> bool:
     """True if the page changed on the site since we last uploaded it (or we never uploaded it)."""
-    return act not in CREATED and STATE.get(act) != fingerprint(live)
+    return act not in CREATED and STATE.get(act) not in (fingerprint(live), fingerprint(normalized(live)))
 
 
 def page_text(doc) -> list[str]:
@@ -341,8 +344,27 @@ def image_note(src: str) -> dict:
                                            "then delete this note."}]}]}
 
 
+def normalized(node):
+    """The editor fills in settings it doesn't use (like "type": null on lists) when a page is
+    saved there. Drop those so a page that was only opened and saved still matches."""
+    if isinstance(node, dict):
+        out = {}
+        for k, v in node.items():
+            if k == "attrs" and isinstance(v, dict):
+                v = {ak: av for ak, av in v.items() if av is not None}
+                if not v:
+                    continue
+            if k == "marks" and isinstance(v, list):   # the editor reorders marks (bold, link...)
+                v = sorted(v, key=lambda m: json.dumps(m, sort_keys=True))
+            out[k] = normalized(v)
+        return out
+    if isinstance(node, list):
+        return [normalized(n) for n in node]
+    return node
+
+
 def same(a, b) -> bool:
-    return json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
+    return json.dumps(normalized(a), sort_keys=True) == json.dumps(normalized(b), sort_keys=True)
 
 
 def trimmed(doc: dict) -> dict:
@@ -612,11 +634,12 @@ def publish_lesson(api: Api, folder: Path, act: str, args) -> str:
             return f"would fill in the page ({need} image(s) to add by hand after)"
         notes = [image_note(src) for src in built["images"]]
         api.put(path, {"content": fill_images(built["content"], notes)})
-        remember(act, trimmed((api.get(path) or {}).get("content") or {}))
+        STATE[act] = WAITING
+        STATE_FILE.write_text(json.dumps(dict(sorted(STATE.items())), indent=2) + "\n", encoding="utf-8")
         return (f"filled in; now add {need} image(s) in the editor where the notes say "
                 f"({', '.join(built['images'])}), then run this again")
     if need != len(imgs) and not args.force:
-        if "Add image here:" in json.dumps(live):
+        if "from the repo here, then delete this note" in json.dumps(live):
             return (f"SKIPPED: waiting for images. Add {need} image(s) in the editor where the "
                     f"notes say (it has {len(imgs)} so far), then run this again")
         return f"SKIPPED: the page has {len(imgs)} image(s), the markdown has {need}"
@@ -631,7 +654,9 @@ def publish_lesson(api: Api, folder: Path, act: str, args) -> str:
             remember(act, trimmed(live))
         return "up to date"
     diff = changes(page_text(live), page_text(content))
-    if edited_on_site(act, trimmed(live)) and not args.force:
+    # Images were just added by hand: that's the only change we expected, so the text should match.
+    added_images = STATE.get(act) == WAITING and page_text(live) == page_text(content)
+    if edited_on_site(act, trimmed(live)) and not added_images and not args.force:
         why = ("it changed on the site since the last publish" if act in STATE
                else "it hasn't been published from the repo yet, so it might have edits from the site")
         return (f"SKIPPED: {why}. Copy the site's changes into the repo, or use --force to replace them "
