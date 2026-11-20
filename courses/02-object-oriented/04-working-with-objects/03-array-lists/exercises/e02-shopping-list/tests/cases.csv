@@ -1,0 +1,15 @@
+label,input,output,hidden
+Three items,"zip ties
+duct tape
+bolts
+done","Enter items, then done:
+You have 3 items:
+1. zip ties
+2. duct tape
+3. bolts",
+One item,"pizza
+done","Enter items, then done:
+You have 1 items:
+1. pizza",
+Nothing,done,"Enter items, then done:
+You have 0 items:",

@@ -5,6 +5,8 @@
 >
 > **Prerequisites:** Every lesson in this course! This is where it all comes together.
 
+*Parts of this lesson are adapted from Introduction to Java Programming (Liang), Chapters 3, 5 and 6.*
+
 ## 1. Variables and Types
 
 ```java
@@ -171,3 +173,9 @@ Write your code in each editor and click **Test Run** until every test passes. (
 ### Quadratic Roots
 
 [Quadratic Roots](exercises/e05-quadratic-roots/prompt.md)
+
+## Readings
+
+### Further
+
+- Introduction to Java Programming (Liang), Chapters 2 to 7. The Programming Exercises at the end of each chapter are good extra practice.

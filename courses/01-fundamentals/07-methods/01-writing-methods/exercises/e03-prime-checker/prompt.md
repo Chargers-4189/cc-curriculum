@@ -27,6 +27,8 @@ Enter a number: 8
 - Try every divisor from 2 up to `number / 2`. If any divides evenly, `return false` right away.
 - If the loop finishes without finding one, it's prime.
 
+*Adapted from Listing 6.7 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:

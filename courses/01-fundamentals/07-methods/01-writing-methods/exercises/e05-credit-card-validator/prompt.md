@@ -65,6 +65,8 @@ public static long getPrefix(long number, int k) // getPrefix(4388576018410707L,
 - Use `long` for the card number. It's too big for an `int`; long literals end in `L`: `4388576018410707L`.
 - In Labs, `ccm test` also checks each method on its own, so you can see your progress one method at a time.
 
+*Adapted from Programming Exercise 6.31 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Download it, write your code in `Main.java`, and check it:

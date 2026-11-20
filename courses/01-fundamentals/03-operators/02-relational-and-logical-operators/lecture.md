@@ -170,3 +170,10 @@ Write your code in each editor and click **Test Run** until every test passes. (
 ### 3. Same Word
 
 [Same Word](exercises/e04-same-word/prompt.md)
+
+## Readings
+
+### Further
+
+- Introduction to Java Programming (Liang), 3.2: boolean Data Type, Values, and Expressions, 3.10: Logical Operators, and 3.15: Operator Precedence and Associativity
+- Introduction to Java Programming (Liang), 4.4: The String Type (comparing strings)

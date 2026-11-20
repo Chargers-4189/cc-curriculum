@@ -28,6 +28,8 @@ Toy Story 5 is a Comedy movie
 - The instance variables don't get values in the class. `main` gives each movie its own.
 - Your variable names have to match the ones `main` uses: `title`, `genre`, `rating`.
 
+*Adapted from the Movie example in Head First Java (Sierra, Bates & Gee), Chapter 2.*
+
 ## In Labs
 
 Download it, write your code in `Main.java`, and check it:

@@ -1,0 +1,14 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What does a method get when you pass it an object?,A copy of the reference to the object,,,A copy of the whole object,The original variable,Nothing until it returns
+"chargeUp(Robot r, int amount) charges r and sets amount to 0. bolt has 40, amount is 30, and chargeUp(bolt, 30) adds 30. What is bolt's battery after?",70,,,40,0,30
+"After chargeUp(bolt, amount) sets its amount parameter to 0, what is main's amount?",30,,,0,70,null
+"replace(Robot r) does r = new Robot(""Spare"", 100);. After replace(bolt), what is bolt.getName()?",Bolt,,,Spare,null,It won't compile
+Which changes in a method does the caller see? (select all that apply),r.charge(10);,r.charge(-5);,,"r = new Robot(""Amp"", 50);",r = null;,
+"Robot[] team = new Robot[3]; What is team[0]?",null,,,A new Robot,0,It won't compile
+"Robot[] team = new Robot[3]; team[0].getName(); What happens?",It crashes with a NullPointerException,,,It prints null,It returns an empty String,It makes a Robot
+How many Robot objects does new Robot[5] make?,0,,,5,1,6
+What is the return type of a method that makes and returns a Robot?,Robot,,,void,Robot[],Object variable
+Why does an array have .length with a dot?,Arrays are objects,,,length is a method,All variables have length,It's a static variable
+"for (Robot r : team) { ... } What is r?",The next robot in team each time through,,,The index of the robot,The whole team array,The number of robots
+Which of these need a regular for loop instead of a for-each loop? (select all that apply),Printing each robot's slot number,Putting a new robot in every slot,,Adding up every robot's battery,Charging every robot,
+"Inside for (Robot r : team), you write r = new Robot(""Spare"", 100);. What happens to team?",Nothing: only r changes,,,Every slot becomes Spare,The current slot becomes Spare,It won't compile

@@ -199,3 +199,10 @@ Each problem below has a code editor right on this page. Write your code, click 
 ### 3. Swap Two Values
 
 [Swap Two Values](exercises/e04-swap-values/prompt.md)
+
+## Readings
+
+### Further
+
+- Head First Java (Sierra, Bates & Gee), Chapter 3: Know Your Variables ("Declaring a variable")
+- Introduction to Java Programming (Liang), 2.3 to 2.10 and 2.16: input, variables, numeric types, and type conversions

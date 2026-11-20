@@ -212,3 +212,10 @@ Each homework has its own assignment page after the lesson.
 ### Subtraction Quiz
 
 [Subtraction Quiz](exercises/e05-subtraction-quiz/prompt.md)
+
+## Readings
+
+### Further
+
+- Head First Java (Sierra, Bates & Gee), Chapter 1: Breaking the Surface ("Simple boolean tests" and "Conditional branching")
+- Introduction to Java Programming (Liang), 3.3 to 3.6: if statements, if-else, nested if, and common errors, and 3.14: Conditional Operators

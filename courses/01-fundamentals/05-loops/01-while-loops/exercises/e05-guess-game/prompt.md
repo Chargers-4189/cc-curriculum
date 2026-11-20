@@ -28,6 +28,8 @@ Build it with the 3-step recipe from the lesson:
 
 **Challenge:** limit the player to 7 attempts, and tell them how many guesses they used.
 
+*Adapted from Listing 5.2 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Download it and write your code in `Main.java`:

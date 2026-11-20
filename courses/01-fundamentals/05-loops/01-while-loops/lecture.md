@@ -6,6 +6,8 @@
 >
 > **Prerequisites:** [If Statements](../../04-conditionals/01-if-statements/lecture.md): conditions and booleans
 
+*Parts of this lesson are adapted from Introduction to Java Programming (Liang), 5.2 to 5.6.*
+
 ## Follow Along
 
 Write `While.java` along with this lesson. Get the starter file in Charging Courses Labs with `ccm get while-demo` and open `While.java`. It has a `// --- Section ---` comment for each heading in this lesson. As you go, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one.
@@ -153,3 +155,9 @@ Write your code in each editor and click **Test Run** until every test passes. (
 ### Guess the Number
 
 [Guess the Number](exercises/e05-guess-game/prompt.md)
+
+## Readings
+
+### Further
+
+- Introduction to Java Programming (Liang), 5.2 to 5.6: the while loop, the guessing game, loop design, sentinel values, and the do-while loop

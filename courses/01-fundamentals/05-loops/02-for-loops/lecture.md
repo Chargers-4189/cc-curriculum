@@ -164,3 +164,10 @@ Write your code in each editor and click **Test Run** until every test passes. (
 ### Leap Years
 
 [Leap Years](exercises/e06-leap-years/prompt.md)
+
+## Readings
+
+### Further
+
+- Head First Java (Sierra, Bates & Gee), Chapter 5: Extra-Strength Methods ("More about for loops")
+- Introduction to Java Programming (Liang), 5.7 to 5.9: the for loop, which loop to use, and nested loops, and 5.12: Keywords break and continue

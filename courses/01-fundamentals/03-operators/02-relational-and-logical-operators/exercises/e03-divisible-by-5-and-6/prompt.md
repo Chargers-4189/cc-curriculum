@@ -18,6 +18,8 @@ Divisible by 5 or 6, but not both: true
 - "But not both" is true when exactly **one** of them is true. You can build it from `&&`, `||`, and `!`.
 - Don't forget the parentheses around each expression when you join it to the text.
 
+*Adapted from Programming Exercise 3.26 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:

@@ -180,3 +180,9 @@ Write your code in each editor and click **Test Run** until every test passes. (
 ### 3. Sum of Digits
 
 [Sum of Digits](exercises/e04-sum-of-digits/prompt.md)
+
+## Readings
+
+### Further
+
+- Introduction to Java Programming (Liang), 2.9: Numeric Data Types and Operations, 2.12: Evaluating Expressions and Operator Precedence, and 2.14 to 2.15: augmented assignment, increment and decrement

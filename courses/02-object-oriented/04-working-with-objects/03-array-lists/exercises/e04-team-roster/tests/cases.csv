@@ -1,0 +1,45 @@
+label,input,output,hidden
+The example,"add Quinn
+add Caleb
+add Quinn
+list
+remove Bryan
+remove Caleb
+count
+quit","Added Quinn
+Added Caleb
+Quinn is already on the team
+Team: [Quinn, Caleb]
+Bryan isn't on the team
+Removed Caleb
+1 of 4
+Bye!",
+Full team,"add A
+add B
+add C
+add D
+add E
+count
+list
+quit","Added A
+Added B
+Added C
+Added D
+The team is full
+4 of 4
+Team: [A, B, C, D]
+Bye!",
+Unknown command,"dance
+list
+quit","Unknown command: dance
+Team: []
+Bye!",
+Remove then add again,"add Avery
+remove Avery
+add Avery
+list
+quit","Added Avery
+Removed Avery
+Added Avery
+Team: [Avery]
+Bye!",yes

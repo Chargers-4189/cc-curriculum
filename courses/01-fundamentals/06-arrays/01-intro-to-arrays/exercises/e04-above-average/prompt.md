@@ -17,6 +17,8 @@ You need to go through the array **twice**: once to find the average, and again 
 
 **Hint:** `(double) sum / count` avoids integer division.
 
+*Adapted from the Analyzing Numbers case study (7.3) in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:

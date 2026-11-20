@@ -24,6 +24,7 @@ chapters:  # chapter folder (under courses/) -> chapter id
   02-object-oriented/01-introduction-to-oop: 14
   02-object-oriented/02-classes-and-objects: 15
   02-object-oriented/03-building-classes: 16
+  02-object-oriented/04-working-with-objects: 17
 
 lessons:  # lesson folder (under courses/) -> activity
   00-start-here/01-introduction/01-welcome: b1106058-5ac8-4e3c-bfa0-19c4d8210857
@@ -58,6 +59,9 @@ lessons:  # lesson folder (under courses/) -> activity
   02-object-oriented/03-building-classes/01-object-behavior: c8d4dc76-6341-4489-992e-21f6fd66598b
   02-object-oriented/03-building-classes/02-constructors: 86fa73d0-36f9-4632-a819-985c7b0eb78d
   02-object-oriented/03-building-classes/03-encapsulation: 2d9a8c9a-8598-4089-834b-d2c5e8ec943e
+  02-object-oriented/04-working-with-objects/01-static-and-final: 20f4ef2e-da78-4544-8894-db0bf395b854
+  02-object-oriented/04-working-with-objects/02-objects-in-methods-and-arrays: e7b8d0f4-c30a-4ff8-a3a0-ba0ca15efe64
+  02-object-oriented/04-working-with-objects/03-array-lists: fcbe9950-88dd-43fd-a00b-65064dee3c72
 
 homework:  # exercise name -> assignment activity
   subtraction-quiz: 936b587c-319f-435d-b47f-4ba8fff6b3ea
@@ -73,6 +77,9 @@ homework:  # exercise name -> assignment activity
   robot-drive: cff2dca9-0994-4078-b7b4-51ec72607edd
   stock-class: 01d90700-eef9-44b2-a011-9da3bac8ad7b
   fan-class: 462463d4-7770-4b74-920c-92548e8aef2f
+  savings-accounts: 4b4df01a-89ff-4489-99cd-feb17b2ee103
+  match-results: a22c28cb-c6b4-47e7-8a45-34231c2af85d
+  team-roster: 93a91a1e-1b9c-43f5-931d-dfe46c2cce58
 
 checkins:  # check-in file (under courses/) -> assignment activity
   01-fundamentals/check-ins/check-in-1.yaml: 76419dc5-6620-43d1-9331-0c08e9567e73

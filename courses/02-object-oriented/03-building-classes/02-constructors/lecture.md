@@ -8,6 +8,8 @@
 
 *Parts of this lesson are adapted from Head First Java (Sierra, Bates & Gee), Chapter 9, and Introduction to Java Programming (Liang), Chapter 9.*
 
+*Memory diagrams made with the [CS1302 Code Visualizer](https://github.com/cs1302uga/cs1302-code-visualizer) (Livengood & Cotterell).*
+
 ## Follow Along
 
 Write `Duck.java` and `Nature.java` along with this lesson. Get the starter files in Charging Courses Labs with `ccm get duck-demo`. Write each section's code under its matching `// --- Section ---` comment, and run `Nature` as you go.

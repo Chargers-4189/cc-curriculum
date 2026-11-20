@@ -130,3 +130,10 @@ Write your code in each editor and click **Test Run** until every test passes. (
 ### 3. Above Average
 
 [Above Average](exercises/e04-above-average/prompt.md)
+
+## Readings
+
+### Further
+
+- Head First Java (Sierra, Bates & Gee), Chapter 3: Know Your Variables ("An array is like a tray of cups")
+- Introduction to Java Programming (Liang), 7.1 to 7.3: Array Basics and the Analyzing Numbers case study

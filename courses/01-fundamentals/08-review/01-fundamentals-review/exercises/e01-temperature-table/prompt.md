@@ -25,6 +25,8 @@ The starter's formula has the classic **integer division** bug in it. Run the te
 
 **Hint:** `5 / 9` is `0`. What happens if you multiply by 5 **before** dividing by 9?
 
+*Adapted from Programming Exercise 6.8 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:

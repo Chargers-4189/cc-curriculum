@@ -129,3 +129,9 @@ Practice problems always use a class named `Main`, because the editor runs your 
 ### 3. Robot Face
 
 [Robot Face](exercises/e04-robot-face/prompt.md)
+
+## Readings
+
+### Further
+
+- Introduction to Java Programming (Liang), 1.7 to 1.10: A Simple Java Program, compiling and running it, programming style, and programming errors

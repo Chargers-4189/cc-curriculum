@@ -21,6 +21,8 @@ Sum of digits: 11
 - `n % 10` is the last digit and `n / 10` removes it.
 - Loop while `n > 0`. Since `n` is a parameter (a copy!), changing it inside the method doesn't change anything in `main`.
 
+*Adapted from Programming Exercise 6.2 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:

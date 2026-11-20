@@ -27,6 +27,8 @@ Your answer is wrong.
 - Swapping needs a third variable: `int temp = num1; num1 = num2; num2 = temp;`
 - Since the numbers are random, run it several times. Try a right answer **and** a wrong one.
 
+*Adapted from Listing 3.3 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Download it and write your code in `Main.java`:

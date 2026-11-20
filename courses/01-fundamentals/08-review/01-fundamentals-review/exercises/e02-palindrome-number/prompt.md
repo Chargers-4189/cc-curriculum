@@ -27,6 +27,8 @@ Enter a number: 456
 
 **Hint:** to build the reversed number, take the last digit off `number` and add it to the end of `reversed`: `reversed = reversed * 10 + number % 10`.
 
+*Adapted from Programming Exercise 6.3 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:
