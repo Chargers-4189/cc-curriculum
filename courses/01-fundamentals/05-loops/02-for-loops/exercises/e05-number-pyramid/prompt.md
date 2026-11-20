@@ -28,6 +28,8 @@ Build it in pieces rather than all at once:
 
 Each row needs **three** inner loops (spaces, counting down, counting up), and the bounds of each one depend on the row number.
 
+*Adapted from Programming Exercise 5.17 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Download it, write your code in `Main.java`, and check it:

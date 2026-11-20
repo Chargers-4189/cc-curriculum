@@ -9,6 +9,8 @@
 > - [For Loops](../../05-loops/02-for-loops/lecture.md)
 > - [If Statements](../../04-conditionals/01-if-statements/lecture.md)
 
+*Parts of this lesson are adapted from Introduction to Java Programming (Liang), 6.2 to 6.8.*
+
 ## Follow Along
 
 Write `Methods.java` along with this lesson. Get the starter file in Charging Courses Labs with `ccm get methods-demo` and open `Methods.java`. It has a `// --- Section ---` comment for each heading in this lesson. As you go, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one. Your method **calls** go in `main` under the matching section comment, and the methods themselves go below `main` (inside the class).
@@ -236,3 +238,10 @@ Write your code in each editor and click **Test Run** until every test passes. (
 ### Credit Card Validator
 
 [Credit Card Validator](exercises/e05-credit-card-validator/prompt.md)
+
+## Readings
+
+### Further
+
+- Head First Java (Sierra, Bates & Gee), Chapter 4: How Objects Behave ("You can send things to a method" and "You can get things back from a method")
+- Introduction to Java Programming (Liang), 6.1 to 6.9: defining and calling methods, void methods, pass-by-value, overloading, and scope

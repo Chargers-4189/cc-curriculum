@@ -37,6 +37,8 @@ Day of the week is Sunday
 - `26(m + 1)` means `26 * (m + 1)`. Java needs the `*`.
 - Check your program with today's date!
 
+*Adapted from Programming Exercise 3.21 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Download it, write your code in `Main.java`, and check it:

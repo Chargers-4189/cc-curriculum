@@ -29,6 +29,8 @@ A year is a **leap year** if it is divisible by 4 but not by 100, **or** it is d
 - Use a counter to know when you've printed 10 on a line, then `System.out.println()` and reset it.
 - `%` is your friend for "divisible by".
 
+*Adapted from Programming Exercise 5.27 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Download it, write your code in `Main.java`, and check it:

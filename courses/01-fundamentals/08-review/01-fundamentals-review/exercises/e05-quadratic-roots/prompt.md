@@ -29,6 +29,8 @@ Print the `+` root first.
 - Calculate `b² - 4ac` once and store it in a variable (it's called the **discriminant**).
 - Watch your parentheses! `/ 2 * a` is not the same as `/ (2 * a)`.
 
+*Adapted from Programming Exercise 3.1 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Download it, write your code in `Main.java`, and check it:

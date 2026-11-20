@@ -95,3 +95,10 @@ public class Main {
 ## Review Quiz
 
 [How Java Works Quiz](quiz/review.csv)
+
+## Readings
+
+### Further
+
+- Head First Java (Sierra, Bates & Gee), Chapter 1: Breaking the Surface ("The Way Java Works", "Code structure in Java" and "Writing a class with a main()")
+- Introduction to Java Programming (Liang), 1.5 to 1.8

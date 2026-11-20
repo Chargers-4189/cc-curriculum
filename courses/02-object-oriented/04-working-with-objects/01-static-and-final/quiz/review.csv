@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What does static mean on a method or variable?,It belongs to the class instead of each object,,,It can never change,It's private,It runs faster
+How do you usually call a static method?,With the class name: Math.abs(-5),,,With an object: myMath.abs(-5),With new: new Math().abs(-5),You can't call it
+Why can't a static method use an instance variable?,It doesn't know which object's variable you mean,,,Instance variables are private,Static methods can't use any variables,It can
+"Robot has private static int robotCount, and the constructor adds 1 to it. After making 3 robots, what is robotCount?",3,,,1,0,It's different for each robot
+How many copies of an instance variable are there?,One per object,,,One per class,One per program,One per method
+Which of these should be static? (select all that apply),A method that converts inches to meters,A count of how many objects were made,A constant like MAX_BATTERY,A robot's name,A method that returns a robot's battery,
+What does final mean on a variable?,Once it has a value it can never change,,,It's the last variable in the class,It's shared by every object,It can only be used in main
+How are constants usually named?,ALL_CAPS_WITH_UNDERSCORES,,,camelCase,PascalCase,lowercase
+private final String name; Where can name be given its value?,Where it's declared or in the constructor,,,Anywhere in the class,Only in main,In a setter
+Why is Math's constructor private?,"All of its methods are static, so nobody needs a Math object",,,To hide Math.PI,So Math can't have methods,It isn't private

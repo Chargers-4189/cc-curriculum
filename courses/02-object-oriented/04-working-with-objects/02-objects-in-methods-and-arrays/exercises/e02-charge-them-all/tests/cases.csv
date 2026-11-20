@@ -1,0 +1,8 @@
+label,input,output,hidden
+Runs main,,"Bolt: 40%
+Volt: 90%
+Amp: 10%
+After charging:
+Bolt: 65%
+Volt: 100%
+Amp: 35%",

@@ -16,6 +16,8 @@ So if today is Friday (5), in 50 days it will be Saturday (6). Use only arithmet
 
 **Hint:** `%` wraps around, but it gives 0 to 6, not 1 to 7. Shift the day down by 1 before you use `%`, then shift it back up.
 
+*Adapted from Programming Exercise 3.5 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Download it, write your code in `Main.java`, and check it:

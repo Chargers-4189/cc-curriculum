@@ -5,6 +5,8 @@
 >
 > **Prerequisites:** [If Statements](../01-if-statements/lecture.md)
 
+*Parts of this lesson are adapted from Introduction to Java Programming (Liang), 3.9 and 3.13.*
+
 ## Follow Along
 
 Write `Switch.java` along with this lesson. Get the starter file in Charging Courses Labs with `ccm get switch-demo` and open `Switch.java`. It has a `// --- Section ---` comment for each heading in this lesson. As you go, write each section's code (and any notes you want, as `//` comments) under its matching comment, then run it. If a variable name is already taken earlier in your file, just pick a new one.
@@ -140,3 +142,9 @@ Write your code in each editor and click **Test Run** until every test passes. (
 ### Day of the Week
 
 [Day of the Week](exercises/e05-day-of-week/prompt.md)
+
+## Readings
+
+### Further
+
+- Introduction to Java Programming (Liang), 3.13: switch Statements

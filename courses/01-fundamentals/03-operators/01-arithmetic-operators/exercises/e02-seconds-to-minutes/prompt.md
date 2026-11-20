@@ -15,6 +15,8 @@ Enter seconds: 500
 - There are 60 seconds in a minute. Integer division `/` gives the minutes.
 - What operator gives you what's **left over**?
 
+*Adapted from Listing 2.5 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:

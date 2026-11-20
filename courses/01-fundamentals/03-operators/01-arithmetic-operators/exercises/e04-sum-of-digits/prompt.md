@@ -18,6 +18,8 @@ The sum of the digits is 14
 - `932 / 10` gives `93`, which removes the last digit.
 - Do that three times.
 
+*Adapted from Programming Exercise 2.6 in Introduction to Java Programming (Liang).*
+
 ## In Labs
 
 Prefer to work in Charging Courses Labs? Download it, write your code in `Main.java`, and check it:

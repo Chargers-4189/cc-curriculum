@@ -1,0 +1,11 @@
+question,answer,answer_2,answer_3,incorrect_1,incorrect_2,incorrect_3
+What is the main difference between an array and an ArrayList?,An ArrayList can grow and shrink,,,An array can grow and shrink,An ArrayList can only hold Strings,Arrays start at index 1
+How do you find how many items are in an ArrayList called list?,list.size(),,,list.length,list.length(),list.count()
+"list is [a, b, c]. After list.add(1, ""x""), what is list?","[a, x, b, c]",,,"[x, a, b, c]","[a, b, c, x]","[a, x, c]"
+"list is [a, b, c]. After list.remove(0), what is list.get(0)?",b,,,a,null,It crashes
+"list is [a, b, c]. What does list.indexOf(""z"") give back?",-1,,,0,null,It crashes
+Which line makes a list that can hold whole numbers?,ArrayList<Integer> nums = new ArrayList<>();,,,ArrayList<int> nums = new ArrayList<>();,int[] nums = new ArrayList<>();,ArrayList nums = new int[10];
+"nums is an ArrayList<Integer> holding [5, 1, 9]. After nums.remove(1), what is nums?","[5, 9]",,,"[1, 9]","[5, 1, 9]","[5, 1]"
+"for (String part : parts) { ... } What is this loop called?",A for-each loop,,,A while loop,A backward loop,A static loop
+Which are ArrayList methods? (select all that apply),add,contains,set,length,push,
+"You need to store the 4 wheels on a drivetrain. Which fits best?",An array,,,An ArrayList,A static variable,A String

@@ -24,6 +24,7 @@ This course goes through the four main pillars of object-oriented programming:
 | **Introduction to OOP** | Shape Wars: two ways to write the same program |
 | **Classes and Objects** | Classes, objects, and how reference variables work |
 | **Building Classes** | Object behavior, constructors, and **encapsulation** |
+| **Working with Objects** | Static and final, objects in methods and arrays, and ArrayList |
 | **Inheritance** | <!-- planned --> |
 | **Polymorphism** | <!-- planned --> |
 | **Abstraction** | <!-- planned --> |

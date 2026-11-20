@@ -127,3 +127,9 @@ Examples are VS Code, Eclipse, and Repl.it. We use VS Code, both in your workspa
 ## Review Quiz
 
 [Basics of Computers Quiz](quiz/review.csv)
+
+## Readings
+
+### Further
+
+- Introduction to Java Programming (Liang), 1.2 to 1.4: What Is a Computer?, Programming Languages, and Operating Systems

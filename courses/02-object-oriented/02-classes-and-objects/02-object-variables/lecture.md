@@ -9,6 +9,8 @@
 
 *Parts of this lesson are adapted from Head First Java (Sierra, Bates & Gee), Chapter 3, and from CSCI 1302 Software Development (Cotterell & Barnes), cs1302book.com.*
 
+*Memory diagrams made with the [CS1302 Code Visualizer](https://github.com/cs1302uga/cs1302-code-visualizer) (Livengood & Cotterell).*
+
 ## Warm Up
 
 See how much you already know. Don't worry if you're not sure yet, we'll come back to these.

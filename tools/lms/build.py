@@ -443,19 +443,34 @@ TASK_LINE = "Write your program here (keep the class named Main), then click Run
 
 def plain_text(md: str) -> str:
     """Markdown -> readable plain text for places the LMS doesn't render markdown."""
-    out, in_code = [], False
-    for line in md.strip("\n").split("\n"):
+    def inline(line: str) -> str:
+        line = re.sub(r"\*\*(.+?)\*\*", r"\1", line)
+        line = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"\1", line)  # *italic*
+        line = re.sub(r"`([^`]+)`", r"\1", line)
+        return re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", line)
+
+    def table(rows: list[str]) -> list[str]:
+        """A markdown table as a list: "- first cell: other cells". The header row is dropped,
+        since the page isn't monospace and columns wouldn't line up."""
+        cells = [[inline(c.strip()) for c in r.strip().strip("|").split("|")] for r in rows]
+        body = [r for r in cells[2:]] if len(cells) > 2 and re.fullmatch(r"\|?[\s:|-]+\|?", rows[1].strip()) else cells
+        return ["- " + r[0] + (": " + "; ".join(c for c in r[1:] if c) if any(r[1:]) else "") for r in body]
+
+    out, in_code, rows = [], False, []
+    for line in md.strip("\n").split("\n") + [""]:
+        if rows and not line.lstrip().startswith("|"):
+            out += table(rows)
+            rows = []
         if line.startswith("```"):
             in_code = not in_code
             continue
         if in_code:
             out.append("    " + line)
             continue
-        line = re.sub(r"^#{1,6}\s+", "", line)
-        line = re.sub(r"\*\*(.+?)\*\*", r"\1", line)
-        line = re.sub(r"`([^`]+)`", r"\1", line)
-        line = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", line)
-        out.append(line)
+        if line.lstrip().startswith("|"):
+            rows.append(line)
+            continue
+        out.append(inline(re.sub(r"^#{1,6}\s+", "", line)))
     return re.sub(r"\n{3,}", "\n\n", "\n".join(out)).strip() + "\n"
 
 
